@@ -34,6 +34,9 @@ func (config *Config) getConfig(index index, path string) map[string]string {
 
 func (config *Config) getIndex() index {
 	return index{
+		"src": {
+			"b": "asdf",
+		},
 		"src/js": {
 			"test": "asdf",
 		},

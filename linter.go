@@ -41,8 +41,9 @@ func (linter *Linter) Run(config *Config) error {
 
 	g.Go(func() error {
 		return filepath.Walk(linter.getEntrypoint(), func(path string, info os.FileInfo, err error) error {
+			log.Printf("%+v %s", config.getConfig(index, path), path)
+
 			if info.IsDir() {
-				log.Printf("%+v", config.getConfig(index, path))
 			}
 
 			return nil
