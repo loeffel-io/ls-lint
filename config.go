@@ -23,10 +23,11 @@ func (config *Config) getLs() ls {
 }
 
 func (config *Config) getConfig(index index, path string) map[string]string {
-	dirs := strings.Split(path, "/")
+	const sep = "/"
+	dirs := strings.Split(path, sep)
 
 	for i := len(dirs); i >= 0; i-- {
-		if find, exists := index[strings.Join(dirs[:i], "/")]; exists {
+		if find, exists := index[strings.Join(dirs[:i], sep)]; exists {
 			return find
 		}
 	}
@@ -35,13 +36,15 @@ func (config *Config) getConfig(index index, path string) map[string]string {
 }
 
 func (config *Config) walkIndex(index index, key string, value map[interface{}]interface{}) {
+	const sep = "/"
+
 	if index[key] == nil {
 		index[key] = make(map[string]string)
 	}
 
 	for k, v := range value {
 		if reflect.TypeOf(v).Kind() == reflect.Map {
-			config.walkIndex(index, fmt.Sprintf("%s/%s", key, k.(string)), v.(map[interface{}]interface{}))
+			config.walkIndex(index, fmt.Sprintf("%s%s%s", key, sep, k.(string)), v.(map[interface{}]interface{}))
 			continue
 		}
 
