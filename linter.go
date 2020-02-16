@@ -36,19 +36,24 @@ func (linter *Linter) addError(error *Error) {
 }
 
 func (linter *Linter) Run(config *Config) error {
-	var g = new(errgroup.Group)
-	var index = config.getIndex()
+	var (
+		g     = new(errgroup.Group)
+		ls    = config.getLs()
+		index = config.getIndex()
+	)
 
-	g.Go(func() error {
-		return filepath.Walk(linter.getEntrypoint(), func(path string, info os.FileInfo, err error) error {
-			log.Printf("%+v %s", config.getConfig(index, path), path)
+	for entrypoint := range ls {
+		g.Go(func() error {
+			return filepath.Walk(entrypoint, func(path string, info os.FileInfo, err error) error {
+				log.Printf("%+v", config.getConfig(index, path))
 
-			if info.IsDir() {
-			}
+				if info.IsDir() {
+				}
 
-			return nil
+				return nil
+			})
 		})
-	})
+	}
 
 	return g.Wait()
 }
