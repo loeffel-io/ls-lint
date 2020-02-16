@@ -10,6 +10,8 @@ import (
 type ls map[string]interface{}
 type index map[string]map[string]string
 
+const sep = "/"
+
 type Config struct {
 	Ls ls `yaml:"ls"`
 	*sync.RWMutex
@@ -23,7 +25,6 @@ func (config *Config) getLs() ls {
 }
 
 func (config *Config) getConfig(index index, path string) map[string]string {
-	const sep = "/"
 	dirs := strings.Split(path, sep)
 
 	for i := len(dirs); i >= 0; i-- {
@@ -36,8 +37,6 @@ func (config *Config) getConfig(index index, path string) map[string]string {
 }
 
 func (config *Config) walkIndex(index index, key string, value map[interface{}]interface{}) {
-	const sep = "/"
-
 	if index[key] == nil {
 		index[key] = make(map[string]string)
 	}
