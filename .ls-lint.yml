@@ -1,0 +1,11 @@
+ls:
+  src:
+    .dir: lowercase
+    .js: kebab-case
+    .vue: camelCase
+
+    js:
+      .dir: lowercase, plural
+
+    test:
+      .dir: lowercase, plural
