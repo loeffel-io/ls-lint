@@ -39,7 +39,7 @@ func (linter *Linter) Run(config *Config) error {
 	var (
 		g     = new(errgroup.Group)
 		ls    = config.getLs()
-		index = config.getIndex()
+		index = config.getIndex(ls)
 	)
 
 	for entrypoint := range ls {

@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+	"reflect"
 	"strings"
 	"sync"
 )
@@ -32,13 +34,27 @@ func (config *Config) getConfig(index index, path string) map[string]string {
 	return nil
 }
 
-func (config *Config) getIndex() index {
-	return index{
-		"src": {
-			"b": "asdf",
-		},
-		"src/js": {
-			"test": "asdf",
-		},
+func (config *Config) walkIndex(index index, key string, value map[interface{}]interface{}) {
+	if index[key] == nil {
+		index[key] = make(map[string]string)
 	}
+
+	for k, v := range value {
+		if reflect.TypeOf(v).Kind() == reflect.Map {
+			config.walkIndex(index, fmt.Sprintf("%s/%s", key, k.(string)), v.(map[interface{}]interface{}))
+			continue
+		}
+
+		index[key][k.(string)] = v.(string)
+	}
+}
+
+func (config *Config) getIndex(ls ls) index {
+	var index = make(index)
+
+	for key, value := range ls {
+		config.walkIndex(index, key, value.(map[interface{}]interface{}))
+	}
+
+	return index
 }
