@@ -6,7 +6,7 @@ ls:
     .go: lowercase
 
     js:
-      .dir: lowercase, lowercase
+      .dir: lowercase
 
     test:
       .dir: lowercase, lowercase

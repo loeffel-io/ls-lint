@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"golang.org/x/sync/errgroup"
-	"log"
 	"os"
 	"path/filepath"
 	"strings"
@@ -38,10 +37,40 @@ func (linter *Linter) addError(error *Error) {
 }
 
 func (linter *Linter) validateDir(config *Config, index index, path string) error {
+	var g = new(errgroup.Group)
+	var errRules = make([]Rule, 0)
+
 	rules := config.getConfig(index, path)
 	basename := filepath.Base(path)
 
-	log.Printf("%s %s %+v", basename, path, rules[".dir"])
+	for _, rule := range rules[".dir"] {
+		g.Go(func() error {
+			valid, err := rule.Validate(basename)
+
+			if err != nil {
+				return err
+			}
+
+			if !valid {
+				errRules = append(errRules, rule)
+			}
+
+			return nil
+		})
+	}
+
+	if err := g.Wait(); err != nil {
+		return err
+	}
+
+	if errRules != nil && len(errRules) > 0 {
+		linter.addError(&Error{
+			Path:    path,
+			Rules:   errRules,
+			RWMutex: new(sync.RWMutex),
+		})
+	}
+
 	return nil
 }
 
