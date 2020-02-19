@@ -37,12 +37,31 @@ func (linter *Linter) addError(error *Error) {
 	linter.Errors = append(linter.Errors, error)
 }
 
+func (linter *Linter) validateDir(config *Config, index index, path string) error {
+	rules := config.getConfig(index, path)
+	basename := filepath.Base(path)
+
+	log.Printf("%s %s %+v", basename, path, rules[".dir"])
+	return nil
+}
+
+func (linter *Linter) validateFile(config *Config, index index, entrypoint string, path string) error {
+	ext := filepath.Ext(path)
+	rules := config.getConfig(index, path)
+	withoutExt := strings.TrimSuffix(filepath.Base(path), ext)
+
+	log.Printf("%s %s %+v", ext, withoutExt, rules)
+	return nil
+}
+
 func (linter *Linter) Run(config *Config) error {
-	var (
-		g     = new(errgroup.Group)
-		ls    = config.getLs()
-		index = config.getIndex(ls)
-	)
+	var g = new(errgroup.Group)
+	var ls = config.getLs()
+	var index, err = config.getIndex(ls)
+
+	if err != nil {
+		return err
+	}
 
 	for entrypoint := range ls {
 		g.Go(func() error {
@@ -52,19 +71,10 @@ func (linter *Linter) Run(config *Config) error {
 				}
 
 				if info.IsDir() {
-					rules := index[path]
-					basename := filepath.Base(path)
-
-					log.Printf("%+v %s", rules, basename)
-					return nil
+					return linter.validateDir(config, index, path)
 				}
 
-				ext := filepath.Ext(path)
-				rules := index[entrypoint][ext]
-				withoutExt := strings.TrimSuffix(filepath.Base(path), ext)
-
-				log.Printf("%s %s %+v", ext, withoutExt, rules)
-				return nil
+				return linter.validateFile(config, index, entrypoint, path)
 			})
 		})
 	}

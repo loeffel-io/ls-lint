@@ -1,23 +1,11 @@
 package main
 
-import "sync"
-
-type Rule struct {
-	Name  string
-	Regex string
-	*sync.RWMutex
+var rules = map[string]Rule{
+	"lowercase": new(RuleLowercase).Init(),
 }
 
-func (rule *Rule) getName() string {
-	rule.RLock()
-	defer rule.RUnlock()
-
-	return rule.Name
-}
-
-func (rule *Rule) getRegex() string {
-	rule.RLock()
-	defer rule.RUnlock()
-
-	return rule.Regex
+type Rule interface {
+	Init() Rule
+	GetName() string
+	Validate(value string) bool
 }
