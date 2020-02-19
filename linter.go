@@ -50,7 +50,7 @@ func (linter *Linter) validateFile(config *Config, index index, entrypoint strin
 	rules := config.getConfig(index, path)
 	withoutExt := strings.TrimSuffix(filepath.Base(path), ext)
 
-	log.Printf("%s %s %+v", ext, withoutExt, rules)
+	log.Printf("%s %s %+v", ext, withoutExt, rules[ext])
 	return nil
 }
 

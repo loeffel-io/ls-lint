@@ -1,12 +1,12 @@
 ls:
   src:
     .dir: lowercase
-    .js: kebab-case
-    .vue: camelCase
-    .go: snake_case
+    .js: lowercase
+    .vue: lowercase
+    .go: lowercase
 
     js:
-      .dir: lowercase, plural
+      .dir: lowercase, lowercase
 
     test:
-      .dir: lowercase, plural
+      .dir: lowercase, lowercase
