@@ -10,3 +10,9 @@ ls:
 
     test:
       .dir: lowercase, lowercase
+
+  src-2:
+    .dir: lowercase
+    .js: lowercase
+    .vue: lowercase
+    .go: lowercase
