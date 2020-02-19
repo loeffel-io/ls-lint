@@ -1,10 +1,12 @@
 package main
 
 import (
+	"fmt"
 	"golang.org/x/sync/errgroup"
 	"log"
 	"os"
 	"path/filepath"
+	"strings"
 	"sync"
 )
 
@@ -45,11 +47,23 @@ func (linter *Linter) Run(config *Config) error {
 	for entrypoint := range ls {
 		g.Go(func() error {
 			return filepath.Walk(entrypoint, func(path string, info os.FileInfo, err error) error {
-				log.Printf("%+v", config.getConfig(index, path))
-
-				if info.IsDir() {
+				if info == nil {
+					return fmt.Errorf("%s not found", entrypoint)
 				}
 
+				if info.IsDir() {
+					rules := index[path]
+					basename := filepath.Base(path)
+
+					log.Printf("%+v %s", rules, basename)
+					return nil
+				}
+
+				ext := filepath.Ext(path)
+				rules := index[entrypoint][ext]
+				withoutExt := strings.TrimSuffix(filepath.Base(path), ext)
+
+				log.Printf("%s %s %+v", ext, withoutExt, rules)
 				return nil
 			})
 		})

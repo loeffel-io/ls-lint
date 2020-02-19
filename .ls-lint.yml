@@ -3,6 +3,7 @@ ls:
     .dir: lowercase
     .js: kebab-case
     .vue: camelCase
+    .go: snake_case
 
     js:
       .dir: lowercase, plural
