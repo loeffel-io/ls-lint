@@ -20,6 +20,6 @@ func (rule *RuleLowercase) GetName() string {
 	return rule.Name
 }
 
-func (rule *RuleLowercase) Validate(value string) bool {
-	return false
+func (rule *RuleLowercase) Validate(value string) (bool, error) {
+	return false, nil
 }

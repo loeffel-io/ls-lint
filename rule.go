@@ -7,5 +7,5 @@ var rules = map[string]Rule{
 type Rule interface {
 	Init() Rule
 	GetName() string
-	Validate(value string) bool
+	Validate(value string) (bool, error)
 }

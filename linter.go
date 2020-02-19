@@ -46,11 +46,33 @@ func (linter *Linter) validateDir(config *Config, index index, path string) erro
 }
 
 func (linter *Linter) validateFile(config *Config, index index, entrypoint string, path string) error {
+	var g = new(errgroup.Group)
+	var errRules = make([]Rule, 0)
+
 	ext := filepath.Ext(path)
 	rules := config.getConfig(index, path)
 	withoutExt := strings.TrimSuffix(filepath.Base(path), ext)
 
-	log.Printf("%s %s %+v", ext, withoutExt, rules[ext])
+	for _, rule := range rules[ext] {
+		g.Go(func() error {
+			valid, err := rule.Validate(withoutExt)
+
+			if err != nil {
+				return err
+			}
+
+			if !valid {
+				errRules = append(errRules, rule)
+			}
+
+			return nil
+		})
+	}
+
+	if err := g.Wait(); err != nil {
+		return err
+	}
+
 	return nil
 }
 
