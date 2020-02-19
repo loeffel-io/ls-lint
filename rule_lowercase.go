@@ -1,8 +1,8 @@
 package main
 
 import (
-	"strings"
 	"sync"
+	"unicode"
 )
 
 type RuleLowercase struct {
@@ -26,7 +26,7 @@ func (rule *RuleLowercase) GetName() string {
 
 func (rule *RuleLowercase) Validate(value string) (bool, error) {
 	for _, c := range value {
-		if string(c) != strings.ToLower(string(c)) {
+		if !unicode.IsLower(c) {
 			return false, nil
 		}
 	}
