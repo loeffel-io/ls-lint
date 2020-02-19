@@ -26,7 +26,7 @@ func (rule *RuleLowercase) GetName() string {
 
 func (rule *RuleLowercase) Validate(value string) (bool, error) {
 	for _, c := range value {
-		if !unicode.IsLower(c) {
+		if unicode.IsLetter(c) && !unicode.IsLower(c) {
 			return false, nil
 		}
 	}
