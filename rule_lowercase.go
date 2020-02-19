@@ -31,5 +31,5 @@ func (rule *RuleLowercase) Validate(value string) (bool, error) {
 		}
 	}
 
-	return false, nil
+	return true, nil
 }
