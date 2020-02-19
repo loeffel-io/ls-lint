@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"strings"
 	"sync"
 )
 
@@ -49,7 +50,29 @@ func main() {
 		log.Fatal(err)
 	}
 
+	// runner
 	if err := linter.Run(config); err != nil {
 		log.Fatal(err)
 	}
+
+	// errors
+	errors := linter.getErrors()
+
+	// no errors
+	if errors == nil || len(errors) == 0 {
+		os.Exit(0)
+	}
+
+	// with errors
+	for _, err := range linter.getErrors() {
+		var ruleNames []string
+
+		for _, rule := range err.getRules() {
+			ruleNames = append(ruleNames, rule.GetName())
+		}
+
+		log.Printf("%s failed for rules: %s", err.getPath(), strings.Join(ruleNames, ", "))
+	}
+
+	os.Exit(1)
 }

@@ -8,6 +8,7 @@ type RuleLowercase struct {
 }
 
 func (rule *RuleLowercase) Init() Rule {
+	rule.Name = "lowercase"
 	rule.RWMutex = new(sync.RWMutex)
 
 	return rule

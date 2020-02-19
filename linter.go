@@ -73,6 +73,14 @@ func (linter *Linter) validateFile(config *Config, index index, entrypoint strin
 		return err
 	}
 
+	if errRules != nil && len(errRules) > 0 {
+		linter.addError(&Error{
+			Path:    path,
+			Rules:   errRules,
+			RWMutex: new(sync.RWMutex),
+		})
+	}
+
 	return nil
 }
 
