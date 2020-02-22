@@ -78,6 +78,7 @@ func (linter *Linter) validateFile(config *Config, index index, entrypoint strin
 	var g = new(errgroup.Group)
 	var errRules = make([]Rule, 0)
 
+	path = fmt.Sprintf("./%s", path)
 	ext := filepath.Ext(path)
 	rules := config.getConfig(index, path)
 	withoutExt := strings.TrimSuffix(filepath.Base(path), ext)

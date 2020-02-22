@@ -1,4 +1,3 @@
 ls:
   .:
-    .dir: lowercase
     .go: snake_case
