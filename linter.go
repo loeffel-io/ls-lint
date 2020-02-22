@@ -77,7 +77,7 @@ func (linter *Linter) validateDir(config *Config, index index, path string) erro
 func (linter *Linter) validateFile(config *Config, index index, entrypoint string, path string) error {
 	var g = new(errgroup.Group)
 	var errRules = make([]Rule, 0)
-	
+
 	ext := filepath.Ext(path)
 	rules := config.getConfig(index, path)
 	withoutExt := strings.TrimSuffix(filepath.Base(path), ext)
