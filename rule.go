@@ -4,7 +4,7 @@ var definitions = map[string]Rule{
 	"lowercase":  new(RuleLowercase).Init(),
 	"camelcase":  new(RuleCamelCase).Init(),
 	"pascalcase": new(RulePascalCase).Init(),
-	"sneakcase":  new(RuleSneakCase).Init(),
+	"snakecase":  new(RuleSnakeCase).Init(),
 }
 
 var rules = map[string]Rule{
@@ -16,8 +16,8 @@ var rules = map[string]Rule{
 	"pascalcase": definitions["pascalcase"],
 	"PascalCase": definitions["pascalcase"],
 
-	"sneakcase":  definitions["sneakcase"],
-	"sneak_case": definitions["sneakcase"],
+	"snakecase":  definitions["snakecase"],
+	"snake_case": definitions["snakecase"],
 }
 
 type Rule interface {

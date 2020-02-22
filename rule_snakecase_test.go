@@ -1,0 +1,33 @@
+package main
+
+import "testing"
+
+func TestRuleSnakeCase(t *testing.T) {
+	var rule = new(RuleSnakeCase).Init()
+
+	var tests = []*test{
+		{value: "sneak", expected: true, err: nil},
+		{value: "sneakcase", expected: true, err: nil},
+		{value: "sneakCase", expected: false, err: nil},
+		{value: "Sneakcase", expected: false, err: nil},
+		{value: "SneakCase", expected: false, err: nil},
+		{value: "SNEAKCASE", expected: false, err: nil},
+		{value: "snake_case", expected: true, err: nil},
+		{value: "snake_case_test", expected: true, err: nil},
+	}
+
+	var i = 0
+	for _, test := range tests {
+		res, err := rule.Validate(test.value)
+
+		if err != nil && err != test.err {
+			t.Errorf("Test %d failed with unmatched error - %s", i, err.Error())
+		}
+
+		if res != test.expected {
+			t.Errorf("Test %d failed with unmatched return value - %+v", i, res)
+		}
+
+		i++
+	}
+}
