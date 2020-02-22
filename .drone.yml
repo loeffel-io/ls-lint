@@ -13,4 +13,5 @@ steps:
     image: golang
     commands:
       - make install
+      - make test-coverage
       - make build

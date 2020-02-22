@@ -4,8 +4,8 @@ install:
 linter:
 	golangci-lint run
 
-test:
-	make linter
+test-coverage:
+	go test -v -race -coverprofile=coverage.txt -covermode=atomic ./...
 
 build:
 	GOOS=darwin GOARCH=amd64 go build -o ls-lint-darwin

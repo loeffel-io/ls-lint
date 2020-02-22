@@ -24,6 +24,7 @@ func (rule *RuleLowercase) GetName() string {
 	return rule.Name
 }
 
+// Validate checks if every letter is lower
 func (rule *RuleLowercase) Validate(value string) (bool, error) {
 	for _, c := range value {
 		if unicode.IsLetter(c) && !unicode.IsLower(c) {
