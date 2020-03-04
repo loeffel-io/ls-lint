@@ -35,6 +35,10 @@ func (linter *Linter) validateDir(config *Config, index index, path string) erro
 	rules := config.getConfig(index, path)
 	basename := filepath.Base(path)
 
+	if basename == root {
+		return nil
+	}
+
 	for _, rule := range rules[".dir"] {
 		g.Go(func() error {
 			valid, err := rule.Validate(basename)
