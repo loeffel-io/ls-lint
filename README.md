@@ -63,13 +63,13 @@ ignore:
 ### MacOS
 
 ```bash
-curl -sL -o ls-lint https://github.com/loeffel-io/ls-lint/releases/download/v1.0.2/ls-lint-darwin && chmod +x ls-lint && ./ls-lint
+curl -sL -o ls-lint https://github.com/loeffel-io/ls-lint/releases/download/v1.0.3/ls-lint-darwin && chmod +x ls-lint && ./ls-lint
 ```
 
 ### Linux
 
 ```bash
-curl -sL -o ls-lint https://github.com/loeffel-io/ls-lint/releases/download/v1.0.2/ls-lint-linux && chmod +x ls-lint && ./ls-lint
+curl -sL -o ls-lint https://github.com/loeffel-io/ls-lint/releases/download/v1.0.3/ls-lint-linux && chmod +x ls-lint && ./ls-lint
 ```
 
 ## Rules
