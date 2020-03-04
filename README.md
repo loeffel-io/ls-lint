@@ -23,6 +23,9 @@ ls:
   .json: snake_case
   .py: kebab-case
   .vue: PascalCase
+
+  src:
+    .js: kebab-case
 ```
 
 ## Rules 
