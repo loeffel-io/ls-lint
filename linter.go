@@ -122,11 +122,7 @@ func (linter *Linter) Run(config *Config) error {
 					return nil
 				}
 
-				path = fmt.Sprintf("%s/%s", root, path)
-
-				if config.shouldIgnore(ignoreIndex, path) {
-					return nil
-				}
+				path = getFullPath(path)
 
 				if info == nil {
 					return fmt.Errorf("%s not found", entrypoint)

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"log"
@@ -9,14 +10,18 @@ import (
 	"sync"
 )
 
+func getFullPath(path string) string {
+	return fmt.Sprintf("%s/%s", root, path)
+}
+
 func main() {
 	var config = &Config{
 		RWMutex: new(sync.RWMutex),
 	}
 
 	var linter = &Linter{
-		Errors:     make([]*Error, 0),
-		RWMutex:    new(sync.RWMutex),
+		Errors:  make([]*Error, 0),
+		RWMutex: new(sync.RWMutex),
 	}
 
 	// open config file

@@ -54,8 +54,23 @@ func (config *Config) getIgnoreIndex() map[string]bool {
 }
 
 func (config *Config) shouldIgnore(ignoreIndex map[string]bool, path string) bool {
-	if _, exists := ignoreIndex[path]; exists {
-		return true
+	if ignore, exists := ignoreIndex[path]; exists {
+		return ignore
+	}
+
+	if ignore, exists := ignoreIndex[getFullPath(path)]; exists {
+		return ignore
+	}
+
+	dirs := strings.Split(path, sep)
+	for i := 0; i < len(dirs); i++ {
+		if ignore, exists := ignoreIndex[strings.Join(dirs[:i], sep)]; exists {
+			return ignore
+		}
+
+		if ignore, exists := ignoreIndex[getFullPath(strings.Join(dirs[:i], sep))]; exists {
+			return ignore
+		}
 	}
 
 	return false
