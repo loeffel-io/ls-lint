@@ -8,19 +8,21 @@ File and Directory name linter
 - Linux & Mac Support (Windows coming soon)
 - Incredibly fast
 - All rules tested
- 
+
 ## Example
+
+- Multiple rules supported by `,`
+- Rules for subdirectories will overwrite the rules for all their subdirectories!
 
 ```yaml
 # .ls-lint.yml
 
 ls:
-  src:
-    .dir: lowercase
-    .js: snake_case
-    .json: snake_case
-    .py: kebab-case
-    .vue: PascalCase
+  .dir: lowercase, kebab-case
+  .js: snake_case
+  .json: snake_case
+  .py: kebab-case
+  .vue: PascalCase
 ```
 
 ## Rules 
@@ -32,5 +34,3 @@ ls:
 | pascalcase | PascalCase  | Checks if string is pascal case; Only letters allowed        |
 | snakecase  | snake_case  | Checks if string is snake case; Only letters and `_` allowed |
 | kebabcase  | kebab-case  | Checks if string is kebab case; Only letters and `-` allowed |
-
-
