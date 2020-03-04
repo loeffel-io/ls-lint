@@ -26,7 +26,7 @@ func (config *Config) getLs() ls {
 }
 
 func (config *Config) shiftLs(list ls) ls {
-	var shift = make(ls, 0)
+	var shift = make(ls)
 	shift[root] = list
 
 	return shift
