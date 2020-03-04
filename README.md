@@ -7,7 +7,6 @@ File and Directory name linter
 - Works for directory and file names (all extensions supported)
 - Linux & Mac Support (Windows coming soon)
 - Incredibly fast
-- All rules tested
 
 ## Demo
 
