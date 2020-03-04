@@ -7,6 +7,7 @@ File and Directory name linter
 - Works for directory and file names (all extensions supported)
 - Linux & Mac Support (Windows coming soon)
 - Incredibly fast
+- Full unicode support
 - Almost zero third-party dependencies (only [go-yaml](https://github.com/go-yaml/yaml))
 
 ## Demo
