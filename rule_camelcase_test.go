@@ -5,7 +5,7 @@ import "testing"
 func TestRuleCamelCase(t *testing.T) {
 	var rule = new(RuleCamelCase).Init()
 
-	var tests = []*test{
+	var tests = []*ruleTest{
 		{value: "camel", expected: true, err: nil},
 		{value: "camelcase", expected: true, err: nil},
 		{value: "camelCase", expected: true, err: nil},

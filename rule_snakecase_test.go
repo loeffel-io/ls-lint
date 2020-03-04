@@ -5,7 +5,7 @@ import "testing"
 func TestRuleSnakeCase(t *testing.T) {
 	var rule = new(RuleSnakeCase).Init()
 
-	var tests = []*test{
+	var tests = []*ruleTest{
 		{value: "sneak", expected: true, err: nil},
 		{value: "sneakcase", expected: true, err: nil},
 		{value: "sneakCase", expected: false, err: nil},

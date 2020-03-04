@@ -5,7 +5,7 @@ import "testing"
 func TestRulePointCase(t *testing.T) {
 	var rule = new(RulePointCase).Init()
 
-	var tests = []*test{
+	var tests = []*ruleTest{
 		{value: "point", expected: true, err: nil},
 		{value: "pointcase", expected: true, err: nil},
 		{value: "pointCase", expected: false, err: nil},

@@ -1,6 +1,6 @@
 package main
 
-type test struct {
+type ruleTest struct {
 	value    string
 	expected bool
 	err      error

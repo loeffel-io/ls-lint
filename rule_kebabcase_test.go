@@ -5,7 +5,7 @@ import "testing"
 func TestRuleKebabCase(t *testing.T) {
 	var rule = new(RuleKebabCase).Init()
 
-	var tests = []*test{
+	var tests = []*ruleTest{
 		{value: "kebab", expected: true, err: nil},
 		{value: "kebabcase", expected: true, err: nil},
 		{value: "kebabCase", expected: false, err: nil},

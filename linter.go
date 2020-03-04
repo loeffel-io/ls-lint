@@ -117,6 +117,8 @@ func (linter *Linter) Run(config *Config) error {
 	for entrypoint := range ls {
 		g.Go(func() error {
 			return filepath.Walk(entrypoint.(string), func(path string, info os.FileInfo, err error) error {
+				path = fmt.Sprintf("./%s", path)
+
 				if info == nil {
 					return fmt.Errorf("%s not found", entrypoint)
 				}

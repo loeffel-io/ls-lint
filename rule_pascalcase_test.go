@@ -5,7 +5,7 @@ import "testing"
 func TestRulePascalCase(t *testing.T) {
 	var rule = new(RulePascalCase).Init()
 
-	var tests = []*test{
+	var tests = []*ruleTest{
 		{value: "pascal", expected: false, err: nil},
 		{value: "pascalcase", expected: false, err: nil},
 		{value: "pascalCase", expected: false, err: nil},

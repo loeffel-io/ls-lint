@@ -5,7 +5,7 @@ import "testing"
 func TestRuleLowercase(t *testing.T) {
 	var rule = new(RuleLowercase).Init()
 
-	var tests = []*test{
+	var tests = []*ruleTest{
 		{value: "abC", expected: false, err: nil},
 		{value: "abc", expected: true, err: nil},
 		{value: "abc-1", expected: true, err: nil},

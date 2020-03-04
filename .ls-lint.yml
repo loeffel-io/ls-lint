@@ -1,3 +1,7 @@
 ls:
-  .:
-    .go: snake_case
+  .dir: snake_case
+  .go: snake_case
+
+  src:
+    .dir: lowercase
+    .js: PascalCase

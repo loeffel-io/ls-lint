@@ -10,8 +10,10 @@ import (
 type ls map[interface{}]interface{}
 type index map[string]map[string][]Rule
 
-const sep = "/"
-const root = "."
+const (
+	sep  = "/"
+	root = "."
+)
 
 type Config struct {
 	Ls ls `yaml:"ls"`
