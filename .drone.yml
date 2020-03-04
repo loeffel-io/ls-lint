@@ -6,7 +6,7 @@ steps:
   - name: install
     image: golang
     commands:
-      - make install
+      - make install 
 
   - name: linter
     image: golangci/golangci-lint
