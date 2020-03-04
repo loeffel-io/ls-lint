@@ -30,9 +30,9 @@ ls:
   .vue: PascalCase
 
   src: # set new rules for the src subdirectory and all their subdirectories
-      .dir: lowercase, kebab-case
-      .js: kebab-case
-      .vue: PascalCase
+    .dir: lowercase, kebab-case
+    .js: kebab-case
+    .vue: PascalCase
 
 ignore:
   - .idea
