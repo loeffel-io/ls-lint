@@ -68,6 +68,7 @@ curl -sL -o ls-lint https://github.com/loeffel-io/ls-lint/releases/download/v1.0
 
 ## Roadmap
 
+- [ ] Color highlighting
 - [ ] Windows support
 - [ ] Docker support
 - [ ] Add more rules
