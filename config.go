@@ -7,10 +7,11 @@ import (
 	"sync"
 )
 
-type ls map[string]interface{}
+type ls map[interface{}]interface{}
 type index map[string]map[string][]Rule
 
 const sep = "/"
+const root = "."
 
 type Config struct {
 	Ls ls `yaml:"ls"`
@@ -21,7 +22,14 @@ func (config *Config) getLs() ls {
 	config.RLock()
 	defer config.RUnlock()
 
-	return config.Ls
+	return config.shiftLs(config.Ls)
+}
+
+func (config *Config) shiftLs(list ls) ls {
+	var shift = make(ls, 0)
+	shift[root] = list
+
+	return shift
 }
 
 func (config *Config) getConfig(index index, path string) map[string][]Rule {
@@ -36,14 +44,14 @@ func (config *Config) getConfig(index index, path string) map[string][]Rule {
 	return nil
 }
 
-func (config *Config) walkIndex(index index, key string, value map[interface{}]interface{}) error {
+func (config *Config) walkIndex(index index, key string, list ls) error {
 	if index[key] == nil {
 		index[key] = make(map[string][]Rule)
 	}
 
-	for k, v := range value {
+	for k, v := range list {
 		if reflect.TypeOf(v).Kind() == reflect.Map {
-			if err := config.walkIndex(index, fmt.Sprintf("%s%s%s", key, sep, k.(string)), v.(map[interface{}]interface{})); err != nil {
+			if err := config.walkIndex(index, fmt.Sprintf("%s%s%s", key, sep, k.(string)), v.(ls)); err != nil {
 				return err
 			}
 
@@ -65,11 +73,11 @@ func (config *Config) walkIndex(index index, key string, value map[interface{}]i
 	return nil
 }
 
-func (config *Config) getIndex(ls ls) (index, error) {
+func (config *Config) getIndex(list ls) (index, error) {
 	var index = make(index)
 
-	for key, value := range ls {
-		if err := config.walkIndex(index, key, value.(map[interface{}]interface{})); err != nil {
+	for key, value := range list {
+		if err := config.walkIndex(index, key.(string), value.(ls)); err != nil {
 			return nil, err
 		}
 	}
