@@ -4,12 +4,14 @@ File and Directory name linter
 
 [![Build Status](http://ci.loeffel.io/api/badges/loeffel-io/ls-lint/status.svg)](http://ci.loeffel.io/loeffel-io/ls-lint)
 
-<p><img src="https://i.imgur.com/plZml7D.gif" alt="command" width="400"></p>
-
 - Works for directory and file names (all extensions supported)
 - Linux & Mac Support (Windows coming soon)
 - Incredibly fast
 - All rules tested
+
+## Demo
+
+<img src="https://i.imgur.com/plZml7D.gif" alt="command" width="400">
 
 ## Example
 
