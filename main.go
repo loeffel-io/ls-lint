@@ -15,7 +15,6 @@ func main() {
 	}
 
 	var linter = &Linter{
-		Entrypoint: ".",
 		Errors:     make([]*Error, 0),
 		RWMutex:    new(sync.RWMutex),
 	}

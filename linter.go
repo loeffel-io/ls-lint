@@ -10,16 +10,8 @@ import (
 )
 
 type Linter struct {
-	Entrypoint string
-	Errors     []*Error
+	Errors []*Error
 	*sync.RWMutex
-}
-
-func (linter *Linter) getEntrypoint() string {
-	linter.RLock()
-	defer linter.RUnlock()
-
-	return linter.Entrypoint
 }
 
 func (linter *Linter) getErrors() []*Error {
