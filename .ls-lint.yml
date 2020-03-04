@@ -1,5 +1,5 @@
 ls:
-  .dir: snake_case
+  .dir: kebab-case
   .go: snake_case
 
 ignore:

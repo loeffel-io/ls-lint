@@ -32,7 +32,11 @@ func (rule *RulePointCase) Validate(value string) (bool, error) {
 			continue
 		}
 
-		if unicode.IsLetter(c) && !unicode.IsLower(c) {
+		if !unicode.IsLetter(c) {
+			return false, nil
+		}
+
+		if !unicode.IsLower(c) {
 			return false, nil
 		}
 	}
