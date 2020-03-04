@@ -2,10 +2,6 @@ ls:
   .dir: snake_case
   .go: snake_case
 
-  src:
-    .dir: lowercase
-    .js: PascalCase
-
 ignore:
   - .idea
   - .git
