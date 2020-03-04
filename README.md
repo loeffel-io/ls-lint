@@ -11,7 +11,7 @@ File and Directory name linter
 
 ## Demo
 
-<img src="https://i.imgur.com/plZml7D.gif" alt="command" width="400">
+<img src="https://i.imgur.com/plZml7D.gif" alt="command" width="600">
 
 ## Example
 
