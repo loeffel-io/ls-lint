@@ -21,10 +21,3 @@ func (error *Error) getRules() []Rule {
 
 	return error.Rules
 }
-
-func (error *Error) addRule(rule Rule) {
-	error.Lock()
-	defer error.Unlock()
-
-	error.Rules = append(error.Rules, rule)
-}
