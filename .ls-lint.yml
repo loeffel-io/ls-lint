@@ -5,3 +5,7 @@ ls:
   src:
     .dir: lowercase
     .js: PascalCase
+
+ignore:
+  - .idea
+  - .git

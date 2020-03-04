@@ -108,6 +108,7 @@ func (linter *Linter) validateFile(config *Config, index index, entrypoint strin
 func (linter *Linter) Run(config *Config) error {
 	var g = new(errgroup.Group)
 	var ls = config.getLs()
+	var ignoreIndex = config.getIgnoreIndex()
 	var index, err = config.getIndex(ls)
 
 	if err != nil {
@@ -117,7 +118,15 @@ func (linter *Linter) Run(config *Config) error {
 	for entrypoint := range ls {
 		g.Go(func() error {
 			return filepath.Walk(entrypoint.(string), func(path string, info os.FileInfo, err error) error {
-				path = fmt.Sprintf("./%s", path)
+				if config.shouldIgnore(ignoreIndex, path) {
+					return nil
+				}
+
+				path = fmt.Sprintf("%s/%s", root, path)
+
+				if config.shouldIgnore(ignoreIndex, path) {
+					return nil
+				}
 
 				if info == nil {
 					return fmt.Errorf("%s not found", entrypoint)

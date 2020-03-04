@@ -33,6 +33,10 @@ ls:
       .dir: lowercase, kebab-case
       .js: kebab-case
       .vue: PascalCase
+
+ignore:
+  - .idea
+  - .git
 ```
 
 ## Rules

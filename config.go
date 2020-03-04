@@ -16,7 +16,8 @@ const (
 )
 
 type Config struct {
-	Ls ls `yaml:"ls"`
+	Ls     ls       `yaml:"ls"`
+	Ignore []string `yaml:"ignore"`
 	*sync.RWMutex
 }
 
@@ -32,6 +33,32 @@ func (config *Config) shiftLs(list ls) ls {
 	shift[root] = list
 
 	return shift
+}
+
+func (config *Config) getIgnore() []string {
+	config.RLock()
+	defer config.RUnlock()
+
+	return config.Ignore
+}
+
+func (config *Config) getIgnoreIndex() map[string]bool {
+	var ignoreIndex = make(map[string]bool)
+
+	for _, path := range config.getIgnore() {
+		ignoreIndex[path] = true
+		ignoreIndex[fmt.Sprintf("%s/%s", root, path)] = true
+	}
+
+	return ignoreIndex
+}
+
+func (config *Config) shouldIgnore(ignoreIndex map[string]bool, path string) bool {
+	if _, exists := ignoreIndex[path]; exists {
+		return true
+	}
+
+	return false
 }
 
 func (config *Config) getConfig(index index, path string) map[string][]Rule {
