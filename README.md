@@ -68,10 +68,10 @@ curl -sL -o ls-lint https://github.com/loeffel-io/ls-lint/releases/download/v1.0
 
 ## Roadmap
 
-- Windows support
-- Docker support
-- Add more rules
-- Add ignore directories and files
+- [ ] Windows support
+- [ ] Docker support
+- [ ] Add more rules
+- [x] Add ignore directories and files
 
 ## License
 
