@@ -63,7 +63,7 @@ func (linter *Linter) validateDir(config *Config, index index, path string) erro
 		return err
 	}
 
-	if errRules != nil && len(errRules) > 0 {
+	if len(errRules) > 0 {
 		linter.addError(&Error{
 			Path:    path,
 			Rules:   errRules,
@@ -102,7 +102,7 @@ func (linter *Linter) validateFile(config *Config, index index, entrypoint strin
 		return err
 	}
 
-	if errRules != nil && len(errRules) > 0 {
+	if len(errRules) > 0 {
 		linter.addError(&Error{
 			Path:    path,
 			Rules:   errRules,

@@ -59,7 +59,7 @@ func main() {
 	errors := linter.getErrors()
 
 	// no errors
-	if errors == nil || len(errors) == 0 {
+	if len(errors) == 0 {
 		os.Exit(0)
 	}
 
