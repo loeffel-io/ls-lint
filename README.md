@@ -15,7 +15,7 @@ File and Directory name linter
 
 <img src="https://i.imgur.com/plZml7D.gif" alt="command" width="600">
 
-## Example
+## Example ([vue.js](https://github.com/vuejs/vue))
 
 - `.ls-lint.yml` file must be present in your root directory
 - Multiple rules supported by `,`
@@ -26,18 +26,36 @@ File and Directory name linter
 # .ls-lint.yml
 
 ls:
-  .dir: lowercase, kebab-case 
-  .js: snake_case
-  .vue: PascalCase
+  .dir: kebab-case
+  .js: kebab-case
+  .css: kebab-case
+  .html: kebab-case
+  .json: kebab-case
+  .ts: point.case
+  .sh: kebab-case
 
-  src: # set new rules for the src subdirectory and all their subdirectories
-    .dir: lowercase, kebab-case
+  dist:
+    .dir: kebab-case
+    .js: point.case
+
+  packages/vue-server-renderer:
+    .dir: kebab-case
+    .js: point.case
+    .json: kebab-case
+
+  types/test:
+    .dir: kebab-case
     .js: kebab-case
-    .vue: PascalCase
+    .json: kebab-case
 
 ignore:
-  - .idea
+  - .babelrc.js
+  - .eslintrc.js
+  - .github
+  - .circleci
   - .git
+  - benchmarks
+  - test
 ```
 
 ## Install & Run
