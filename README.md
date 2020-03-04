@@ -12,23 +12,24 @@ File and Directory name linter
 ## Example
 
 - Multiple rules supported by `,`
-- Rules for subdirectories will overwrite the rules for all their subdirectories!
+- `.dir` set rules for the current directory and their subdirectories
+- Rules for subdirectories will overwrite the rules for all their subdirectories
 
 ```yaml
 # .ls-lint.yml
 
 ls:
-  .dir: lowercase, kebab-case
+  .dir: lowercase, kebab-case 
   .js: snake_case
-  .json: snake_case
-  .py: kebab-case
   .vue: PascalCase
 
-  src:
-    .js: kebab-case
+  src: # set new rules for the src subdirectory and all their subdirectories
+      .dir: lowercase, kebab-case
+      .js: kebab-case
+      .vue: PascalCase
 ```
 
-## Rules 
+## Rules
 
 | Rule       | Alias       | Description                                                  |
 | ---------- | ----------- | ------------------------------------------------------------ |
