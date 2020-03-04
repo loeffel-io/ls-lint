@@ -41,6 +41,20 @@ ignore:
   - .git
 ```
 
+## Install & Run
+
+### MacOS
+
+```bash
+curl -sL -o ls-lint https://github.com/loeffel.io/ls-lint/releases/download/v1.0.0/ls-lint-darwin && chmod +x ls-lint && ./ls-lint
+```
+
+### Linux
+
+```bash
+curl -sL -o ls-lint https://github.com/loeffel.io/ls-lint/releases/download/v1.0.0/ls-lint-linux && chmod +x ls-lint && ./ls-lint
+```
+
 ## Rules
 
 | Rule       | Alias       | Description                                                    |
