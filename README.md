@@ -42,3 +42,14 @@ ls:
 | pascalcase | PascalCase  | Checks if string is pascal case; Only letters allowed        |
 | snakecase  | snake_case  | Checks if string is snake case; Only letters and `_` allowed |
 | kebabcase  | kebab-case  | Checks if string is kebab case; Only letters and `-` allowed |
+
+## Roadmap
+
+- Windows support
+- Docker support
+- Add more rules
+- Add ignore directories and files
+
+## License
+
+ls-lint is open-source software licensed under the MIT license.
