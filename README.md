@@ -15,7 +15,7 @@ File and Directory name linter
 
 <img src="https://i.imgur.com/plZml7D.gif" alt="command" width="600">
 
-## Example ([vue.js](https://github.com/vuejs/vue))
+## Example & How-to ([vue.js](https://github.com/vuejs/vue))
 
 - `.ls-lint.yml` file must be present in your root directory
 - Multiple rules supported by `,`
