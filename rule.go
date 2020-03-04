@@ -6,6 +6,7 @@ var definitions = map[string]Rule{
 	"pascalcase": new(RulePascalCase).Init(),
 	"snakecase":  new(RuleSnakeCase).Init(),
 	"kebabcase":  new(RuleKebabCase).Init(),
+	"pointcase":  new(RulePointCase).Init(),
 }
 
 var rules = map[string]Rule{
@@ -22,6 +23,9 @@ var rules = map[string]Rule{
 
 	"kebabcase":  definitions["kebabcase"],
 	"kebab-case": definitions["kebabcase"],
+
+	"pointcase":  definitions["pointcase"],
+	"point.case": definitions["pointcase"],
 }
 
 type Rule interface {
