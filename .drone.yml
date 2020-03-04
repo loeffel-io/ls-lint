@@ -3,15 +3,22 @@ type: docker
 name: docker
 
 steps:
+  - name: install
+    image: golang
+    commands:
+      - make install
+
   - name: linter
     image: golangci/golangci-lint
     commands:
-      - make install
       - make linter
 
   - name: test
     image: golang
     commands:
-      - make install
       - make test-coverage
+
+  - name: build
+    image: golang
+    commands:
       - make build
