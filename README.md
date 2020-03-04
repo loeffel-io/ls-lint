@@ -15,6 +15,7 @@ File and Directory name linter
 
 ## Example
 
+- `.ls-lint.yml` file must be present in your root directory
 - Multiple rules supported by `,`
 - `.dir` set rules for the current directory and their subdirectories
 - Rules for subdirectories will overwrite the rules for all their subdirectories
