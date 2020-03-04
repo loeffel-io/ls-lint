@@ -22,3 +22,14 @@ steps:
     image: golang
     commands:
       - make build
+
+  - name: github release
+    image: plugins/github-release
+    settings:
+      api_key:
+        from_secret: GITHUB_TOKEN
+      files:
+        - ls-lint-darwin
+        - ls-lint-linux
+    when:
+      event: tag
