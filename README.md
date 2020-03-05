@@ -87,8 +87,9 @@ curl -sL -o ls-lint https://github.com/loeffel-io/ls-lint/releases/download/v1.0
 
 - [ ] Color highlighting
 - [ ] Windows support
+- [ ] Npm package
+- [ ] Regex Rule
 - [ ] Docker support
-- [ ] Add more rules
 - [x] Add ignore directories and files
 
 ## License
