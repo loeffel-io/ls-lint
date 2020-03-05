@@ -114,9 +114,9 @@ npx ls-lint
 
 - [ ] Color highlighting
 - [ ] Windows support
-- [ ] Npm package
 - [ ] Regex Rule
 - [ ] Docker support
+- [x] Npm package
 - [x] Add ignore directories and files
 
 ## License
