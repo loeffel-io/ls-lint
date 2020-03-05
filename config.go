@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"os"
 	"reflect"
 	"strings"
 	"sync"
@@ -11,7 +12,7 @@ type ls map[interface{}]interface{}
 type index map[string]map[string][]Rule
 
 const (
-	sep  = "/"
+	sep  = string(os.PathSeparator)
 	root = "."
 )
 
