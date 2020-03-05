@@ -38,3 +38,14 @@ steps:
         - ls-lint-linux
     when:
       event: tag
+
+  - name: npm-darwin
+    image: plugins/npm
+    commands:
+      - cp ls-lint-darwin npm/ls-lint-darwin/ls-lint
+      - chmod +x ls-lint
+    settings:
+      username: loeffel-io
+      password:
+        from_secret: NPM_PASSWORD
+      email: lucas@loeffel.io
