@@ -42,10 +42,10 @@ steps:
   - name: npm-darwin
     image: plugins/npm
     commands:
-      - ls -al
       - mkdir -p npm/ls-lint-darwin/bin
       - cp ls-lint-darwin npm/ls-lint-darwin/bin/ls-lint
       - chmod +x npm/ls-lint-darwin/bin/ls-lint
+      - ls -al npm/ls-lint-darwin
     settings:
       username: loeffel-io
       password:
