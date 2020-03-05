@@ -48,3 +48,12 @@ steps:
         from_secret: NPM_PASSWORD
       email: lucas@loeffel.io
       folder: npm/ls-lint-darwin
+
+  - name: npm-linux
+    image: plugins/npm
+    settings:
+      username: loeffel-io
+      password:
+        from_secret: NPM_PASSWORD
+      email: lucas@loeffel.io
+      folder: npm/ls-lint-linux
