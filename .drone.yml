@@ -27,6 +27,7 @@ steps:
     image: golang
     commands:
       - make build
+      - make build-npm
 
   - name: github release
     image: plugins/github-release
@@ -41,8 +42,6 @@ steps:
 
   - name: npm-darwin
     image: plugins/npm
-    commands:
-      - make npm-darwin
     settings:
       username: loeffel-io
       password:
