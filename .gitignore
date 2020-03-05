@@ -16,7 +16,7 @@
 
 # custom
 /.idea
-/ls-lint
+ls-lint
 /ls-lint-darwin
 /ls-lint-linux
 /coverage.txt
