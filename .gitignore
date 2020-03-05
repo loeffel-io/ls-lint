@@ -19,5 +19,6 @@
 ls-lint
 /ls-lint-darwin
 /ls-lint-linux
+/ls-lint-windows.exe
 /coverage.txt
 !npm
