@@ -6,7 +6,7 @@ An extremely fast file and directory name linter
 [![Go Report Card](https://goreportcard.com/badge/github.com/loeffel-io/ls-lint)](https://goreportcard.com/report/github.com/loeffel-io/ls-lint)
 
 - Works for directory and file names (all extensions supported)
-- Linux & Mac Support (Windows coming soon)
+- Linux, MacOS & Windows Support
 - Incredibly fast
 - Full unicode support
 - Almost zero third-party dependencies (only [go-yaml](https://github.com/go-yaml/yaml))
@@ -65,13 +65,20 @@ ignore:
 ### MacOS
 
 ```bash
-curl -sL -o ls-lint https://github.com/loeffel-io/ls-lint/releases/download/v1.0.4/ls-lint-darwin && chmod +x ls-lint && ./ls-lint
+curl -sL -o ls-lint https://github.com/loeffel-io/ls-lint/releases/download/v1.1.0/ls-lint-darwin && chmod +x ls-lint && ./ls-lint
 ```
 
 ### Linux
 
 ```bash
-curl -sL -o ls-lint https://github.com/loeffel-io/ls-lint/releases/download/v1.0.4/ls-lint-linux && chmod +x ls-lint && ./ls-lint
+curl -sL -o ls-lint https://github.com/loeffel-io/ls-lint/releases/download/v1.1.0/ls-lint-linux && chmod +x ls-lint && ./ls-lint
+```
+
+### Windows
+
+```bash
+# (!) First download the .exe from https://github.com/loeffel-io/ls-lint/releases/download/v1.1.0/ls-lint-windows.exe
+ls-lint-windows.exe
 ```
 
 ## NPM
@@ -113,9 +120,9 @@ npx ls-lint
 ## Roadmap
 
 - [ ] Color highlighting
-- [ ] Windows support
 - [ ] Regex Rule
 - [ ] Docker support
+- [x] Windows support
 - [x] Npm package
 - [x] Add ignore directories and files
 

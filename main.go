@@ -11,7 +11,7 @@ import (
 )
 
 func getFullPath(path string) string {
-	return fmt.Sprintf("%s/%s", root, path)
+	return fmt.Sprintf("%s%s%s", root, sep, path)
 }
 
 func main() {

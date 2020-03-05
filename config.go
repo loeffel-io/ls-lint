@@ -48,7 +48,7 @@ func (config *Config) getIgnoreIndex() map[string]bool {
 
 	for _, path := range config.getIgnore() {
 		ignoreIndex[path] = true
-		ignoreIndex[fmt.Sprintf("%s/%s", root, path)] = true
+		ignoreIndex[fmt.Sprintf("%s%s%s", root, sep, path)] = true
 	}
 
 	return ignoreIndex
