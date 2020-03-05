@@ -60,6 +60,8 @@ ignore:
 
 ## Install & Run
 
+## Binary
+
 ### MacOS
 
 ```bash
@@ -70,6 +72,31 @@ curl -sL -o ls-lint https://github.com/loeffel-io/ls-lint/releases/download/v1.0
 
 ```bash
 curl -sL -o ls-lint https://github.com/loeffel-io/ls-lint/releases/download/v1.0.3/ls-lint-linux && chmod +x ls-lint && ./ls-lint
+```
+
+## NPM
+
+### Install
+
+```bash
+# global
+npm install -g ls-lint-linux # for Linux
+npm install -g ls-lint-darwin # for macOS
+
+# local
+npm install ls-lint-linux # for Linux
+npm install ls-lint-darwin # for macOS
+```
+
+### Run
+
+```bash
+# global
+ls-lint
+
+# local
+node_modules/.bin/ls-lint
+npx ls-lint
 ```
 
 ## Rules
