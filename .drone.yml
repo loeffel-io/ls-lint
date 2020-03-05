@@ -37,6 +37,7 @@ steps:
       files:
         - ls-lint-darwin
         - ls-lint-linux
+        - ls-lint-windows
     when:
       event: tag
 

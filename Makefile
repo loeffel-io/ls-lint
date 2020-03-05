@@ -10,6 +10,7 @@ test-coverage:
 build:
 	GOOS=darwin GOARCH=amd64 go build -o ls-lint-darwin
 	GOOS=linux GOARCH=amd64 go build -o ls-lint-linux
+	GOOS=windows GOARCH=amd64 go build -o ls-lint-windows.exe
 
 build-npm:
 	make build-npm-darwin
