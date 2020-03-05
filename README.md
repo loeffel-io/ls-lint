@@ -120,6 +120,7 @@ npx ls-lint
 
 ## Roadmap
 
+- [ ] Npm Windows package
 - [ ] Color highlighting
 - [ ] Regex Rule
 - [ ] Docker support
