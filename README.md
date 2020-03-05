@@ -21,6 +21,7 @@ An extremely fast file and directory name linter
 - Multiple rules supported by `,`
 - `.dir` set rules for the current directory and their subdirectories
 - Rules for subdirectories will overwrite the rules for all their subdirectories
+- For Windows you must use backslashs `\` instead of slashs `/` 
 
 ```yaml
 # .ls-lint.yml
