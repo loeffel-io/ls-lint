@@ -12,8 +12,9 @@ type ls map[interface{}]interface{}
 type index map[string]map[string][]Rule
 
 const (
-	sep  = string(os.PathSeparator)
-	root = "."
+	sep    = string(os.PathSeparator)
+	extSep = "."
+	root   = "."
 )
 
 type Config struct {

@@ -74,24 +74,32 @@ func (linter *Linter) validateFile(config *Config, index index, entrypoint strin
 	var g = new(errgroup.Group)
 	var errRules = make([]Rule, 0)
 
-	ext := filepath.Ext(path)
+	exts := strings.Split(filepath.Base(path), extSep)
 	rules := config.getConfig(index, path)
-	withoutExt := strings.TrimSuffix(filepath.Base(path), ext)
 
-	for _, rule := range rules[ext] {
-		g.Go(func() error {
-			valid, err := rule.Validate(withoutExt)
+	for i := 1; i < len(exts); i++ {
+		ext := fmt.Sprintf("%s%s", extSep, strings.Join(exts[i:], extSep))
+		withoutExt := strings.TrimSuffix(filepath.Base(path), ext)
 
-			if err != nil {
-				return err
+		if _, exists := rules[ext]; exists {
+			for _, rule := range rules[ext] {
+				g.Go(func() error {
+					valid, err := rule.Validate(withoutExt)
+
+					if err != nil {
+						return err
+					}
+
+					if !valid {
+						errRules = append(errRules, rule)
+					}
+
+					return nil
+				})
 			}
 
-			if !valid {
-				errRules = append(errRules, rule)
-			}
-
-			return nil
-		})
+			break
+		}
 	}
 
 	if err := g.Wait(); err != nil {
