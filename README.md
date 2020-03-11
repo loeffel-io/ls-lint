@@ -32,31 +32,28 @@ ls:
   .css: kebab-case
   .html: kebab-case
   .json: kebab-case
-  .ts: point.case
+  .ts: kebab-case
   .sh: kebab-case
+  .dev.js: kebab-case
+  .prod.js: kebab-case
+  .d.ts: kebab-case
+  .vdom.js: kebab-case
+  .spec.js: kebab-case
 
   dist:
-    .dir: kebab-case
     .js: point.case
 
-  packages/vue-server-renderer:
-    .dir: kebab-case
-    .js: point.case
-    .json: kebab-case
-
-  types/test:
-    .dir: kebab-case
-    .js: kebab-case
-    .json: kebab-case
+  benchmarks/ssr:
+    .js: camelCase
 
 ignore:
+  - test
+  - benchmarks/dbmon/ENV.js
   - .babelrc.js
   - .eslintrc.js
   - .github
   - .circleci
   - .git
-  - benchmarks
-  - test
 ```
 
 ## Install & Run
