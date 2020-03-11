@@ -1,4 +1,4 @@
-<img width="120" src="https://raw.githubusercontent.com/loeffel-io/ls-lint/master/ls-lint-logo.png" alt="logo">
+<img width="100" src="https://raw.githubusercontent.com/loeffel-io/ls-lint/master/ls-lint.png" alt="logo">
 
 # ls-lint
 
