@@ -125,6 +125,12 @@ npx ls-lint
 - [x] Npm package
 - [x] Add ignore directories and files
 
+## Benchmarks ([hyperfine](https://github.com/sharkdp/hyperfine))
+
+| Package                                    | Mean [s]           | File                                                                                                    | 
+| ------------------------------------------ | ------------------ | ------------------------------------------------------------------------------------------------------- |
+| [vuejs/vue](https://github.com/vuejs/vue)  | 13.9 ms ± 1.2 ms   | [examples/vuejs-vue](https://github.com/loeffel-io/ls-lint/tree/master/examples/vuejs-vue/.ls-lint.yml) |
+
 ## License
 
 ls-lint is open-source software licensed under the MIT license.
