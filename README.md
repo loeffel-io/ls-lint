@@ -1,3 +1,5 @@
+<img width="120" src="https://raw.githubusercontent.com/loeffel-io/ls-lint/master/ls-lint-logo.png" alt="logo">
+
 # ls-lint
 
 An extremely fast file and directory name linter
