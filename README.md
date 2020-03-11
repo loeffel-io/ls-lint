@@ -133,6 +133,10 @@ npx ls-lint
 | ------------------------------------------ | ------------------ | ------------------------------------------------------------------------------------------------------- |
 | [vuejs/vue](https://github.com/vuejs/vue)  | 13.9 ms ± 1.2 ms   | [examples/vuejs-vue](https://github.com/loeffel-io/ls-lint/tree/master/examples/vuejs-vue/.ls-lint.yml) |
 
+## Logo
+
+Logo created by [Anastasia Marx](https://www.behance.net/AnastasiaMarx)
+
 ## License
 
 ls-lint is open-source software licensed under the MIT license.
