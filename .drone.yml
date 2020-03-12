@@ -68,7 +68,7 @@ steps:
     settings:
       username: loeffel-io
       password:
-        from_secret: GITHUB_TOKEN
+        from_secret: GITHUB_DOCKER_TOKEN
       dockerfile: docker/Dockerfile
       auto_tag: true
       repo: docker.pkg.github.com/ls-lint/ls-lint/ls-lint
