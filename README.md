@@ -98,12 +98,6 @@ npm install ls-lint-linux # for Linux
 npm install ls-lint-darwin # for macOS
 ```
 
-## Docker
-
-```bash
-docker run -t -v /path/to/files:/data lslintorg/ls-lint:1
-```
-
 ### Run
 
 ```bash
@@ -113,6 +107,12 @@ ls-lint
 # local
 node_modules/.bin/ls-lint
 npx ls-lint
+```
+
+## Docker
+
+```bash
+docker run -t -v /path/to/files:/data lslintorg/ls-lint:1
 ```
 
 ## Rules
