@@ -31,7 +31,7 @@ An extremely fast file and directory name linter
 # .ls-lint.yml
 
 ls:
-  .dir: kebab-case
+  .dir: regex:^[a-z0-9\-]+$
   .js: kebab-case
   .css: kebab-case
   .html: kebab-case
@@ -111,7 +111,8 @@ npx ls-lint
 ## Rules
 
 | Rule       | Alias       | Description                                                    |
-| ---------- | ----------- | -------------------------------------------------------------- |
+| ---------- | ----------- | -------------------------------------------------------------- | 
+| regex      | -           | Checks if string matches regex pattern                         |
 | lowercase  | -           | Checks if every letter is lower; Skip non letters              |
 | camelcase  | camelCase   | Checks if string is camel case; Only letters allowed           |
 | pascalcase | PascalCase  | Checks if string is pascal case; Only letters allowed          |
@@ -123,8 +124,8 @@ npx ls-lint
 
 - [ ] Npm Windows package
 - [ ] Color highlighting
-- [ ] Regex Rule
 - [ ] Docker support
+- [x] Regex Rule
 - [x] Windows support
 - [x] Npm package
 - [x] Add ignore directories and files
@@ -133,7 +134,7 @@ npx ls-lint
 
 | Package                                    | Mean [s]           | File                                                                                                    | 
 | ------------------------------------------ | ------------------ | ------------------------------------------------------------------------------------------------------- |
-| [vuejs/vue](https://github.com/vuejs/vue)  | 13.9 ms ± 1.2 ms   | [examples/vuejs-vue](https://github.com/loeffel-io/ls-lint/tree/master/examples/vuejs-vue/.ls-lint.yml) |
+| [vuejs/vue](https://github.com/vuejs/vue)  | 14.6 ms ± 1.1 ms   | [examples/vuejs-vue](https://github.com/loeffel-io/ls-lint/tree/master/examples/vuejs-vue/.ls-lint.yml) |
 
 ## Logo
 
