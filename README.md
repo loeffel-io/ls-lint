@@ -100,7 +100,7 @@ npm install ls-lint-darwin # for macOS
 ## Docker
 
 ```bash
-docker run -t -v "/path/to/files:/data" lslintorg/ls-lint
+docker run -t -v /path/to/files:/data lslintorg/ls-lint
 ```
 
 ### Run
