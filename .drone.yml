@@ -69,3 +69,5 @@ steps:
       auto_tag: true
       repo: docker.pkg.github.com/ls-lint/ls-lint
       registry: docker.pkg.github.com
+    when:
+      event: tag
