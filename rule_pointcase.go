@@ -24,6 +24,10 @@ func (rule *RulePointCase) GetName() string {
 	return rule.Name
 }
 
+func (rule *RulePointCase) SetParameters(params []string) error {
+	return nil
+}
+
 // Validate checks if string is "point case"
 // false if rune is no lowercase letter or .
 func (rule *RulePointCase) Validate(value string) (bool, error) {
@@ -42,4 +46,8 @@ func (rule *RulePointCase) Validate(value string) (bool, error) {
 	}
 
 	return true, nil
+}
+
+func (rule *RulePointCase) GetErrorMessage() string {
+	return rule.GetName()
 }

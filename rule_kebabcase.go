@@ -24,6 +24,10 @@ func (rule *RuleKebabCase) GetName() string {
 	return rule.Name
 }
 
+func (rule *RuleKebabCase) SetParameters(params []string) error {
+	return nil
+}
+
 // Validate checks if string is kebab case
 // false if rune is no lowercase letter or -
 func (rule *RuleKebabCase) Validate(value string) (bool, error) {
@@ -42,4 +46,8 @@ func (rule *RuleKebabCase) Validate(value string) (bool, error) {
 	}
 
 	return true, nil
+}
+
+func (rule *RuleKebabCase) GetErrorMessage() string {
+	return rule.GetName()
 }
