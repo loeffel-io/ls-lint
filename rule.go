@@ -13,9 +13,7 @@ var definitions = map[string]Rule{
 
 var rules = map[string]Rule{
 	"lowercase": definitions["lowercase"],
-
-	"regex": definitions["regex"],
-	"match": definitions["regex"],
+	"regex":     definitions["regex"],
 
 	"camelcase": definitions["camelcase"],
 	"camelCase": definitions["camelcase"],

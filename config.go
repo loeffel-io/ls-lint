@@ -91,6 +91,15 @@ func (config *Config) getConfig(index index, path string) map[string][]Rule {
 	return nil
 }
 
+func (config *Config) copyRule(rule Rule) Rule {
+	switch rule.GetName() {
+	case "regex":
+		return new(RuleRegex).Init()
+	}
+
+	return rule
+}
+
 func (config *Config) walkIndex(index index, key string, list ls) error {
 	if index[key] == nil {
 		index[key] = make(map[string][]Rule)
@@ -111,6 +120,8 @@ func (config *Config) walkIndex(index index, key string, list ls) error {
 			ruleName = ruleSplit[0]
 
 			if rule, exists := rules[ruleName]; exists {
+				rule = config.copyRule(rule)
+
 				if err := rule.SetParameters(ruleSplit[1:]); err != nil {
 					return fmt.Errorf("rule %s failed with %s", ruleName, err.Error())
 				}
