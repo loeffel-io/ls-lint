@@ -71,7 +71,7 @@ steps:
         from_secret: GITHUB_DOCKER_TOKEN
       dockerfile: docker/Dockerfile
       auto_tag: true
-      repo: docker.pkg.github.com/ls-lint/ls-lint/ls-lint
+      repo: docker.pkg.github.com/loeffel-io/ls-lint/ls-lint
       registry: docker.pkg.github.com
       #when:
       #event: tag
