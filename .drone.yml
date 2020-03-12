@@ -63,15 +63,14 @@ steps:
     when:
       event: tag
 
-  - name: docker
+  - name: docker hub
     image: plugins/docker
     settings:
       username: loeffel-io
       password:
-        from_secret: GITHUB_DOCKER_TOKEN
+        from_secret: DOCKER_PASSWORD
       dockerfile: docker/Dockerfile
       auto_tag: true
-      repo: docker.pkg.github.com/loeffel-io/ls-lint/ls-lint
-      registry: docker.pkg.github.com
+      repo: loeffel/ls-lint
       #when:
       #event: tag
