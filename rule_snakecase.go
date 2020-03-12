@@ -24,6 +24,10 @@ func (rule *RuleSnakeCase) GetName() string {
 	return rule.Name
 }
 
+func (rule *RuleSnakeCase) SetParameters(params []string) error {
+	return nil
+}
+
 // Validate checks if string is sneak case
 // false if rune is no lowercase letter or _
 func (rule *RuleSnakeCase) Validate(value string) (bool, error) {
@@ -42,4 +46,8 @@ func (rule *RuleSnakeCase) Validate(value string) (bool, error) {
 	}
 
 	return true, nil
+}
+
+func (rule *RuleSnakeCase) GetErrorMessage() string {
+	return rule.GetName()
 }

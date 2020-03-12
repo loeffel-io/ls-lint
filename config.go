@@ -107,8 +107,14 @@ func (config *Config) walkIndex(index index, key string, list ls) error {
 
 		for _, ruleName := range strings.Split(v.(string), ",") {
 			ruleName = strings.TrimSpace(ruleName)
+			ruleSplit := strings.SplitN(ruleName, ":", 2)
+			ruleName = ruleSplit[0]
 
 			if rule, exists := rules[ruleName]; exists {
+				if err := rule.SetParameters(ruleSplit[1:]); err != nil {
+					return fmt.Errorf("rule %s failed with %s", ruleName, err.Error())
+				}
+
 				index[key][k.(string)] = append(index[key][k.(string)], rule)
 				continue
 			}

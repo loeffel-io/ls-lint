@@ -24,6 +24,10 @@ func (rule *RuleLowercase) GetName() string {
 	return rule.Name
 }
 
+func (rule *RuleLowercase) SetParameters(params []string) error {
+	return nil
+}
+
 // Validate checks if every letter is lower
 func (rule *RuleLowercase) Validate(value string) (bool, error) {
 	for _, c := range value {
@@ -33,4 +37,8 @@ func (rule *RuleLowercase) Validate(value string) (bool, error) {
 	}
 
 	return true, nil
+}
+
+func (rule *RuleLowercase) GetErrorMessage() string {
+	return rule.GetName()
 }

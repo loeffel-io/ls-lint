@@ -24,6 +24,10 @@ func (rule *RuleCamelCase) GetName() string {
 	return rule.Name
 }
 
+func (rule *RuleCamelCase) SetParameters(params []string) error {
+	return nil
+}
+
 // Validate checks if string is camel case
 // false if rune is no letter
 func (rule *RuleCamelCase) Validate(value string) (bool, error) {
@@ -40,4 +44,8 @@ func (rule *RuleCamelCase) Validate(value string) (bool, error) {
 	}
 
 	return true, nil
+}
+
+func (rule *RuleCamelCase) GetErrorMessage() string {
+	return rule.GetName()
 }

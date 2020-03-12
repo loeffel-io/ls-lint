@@ -24,6 +24,10 @@ func (rule *RulePascalCase) GetName() string {
 	return rule.Name
 }
 
+func (rule *RulePascalCase) SetParameters(params []string) error {
+	return nil
+}
+
 // Validate checks if string is pascal case
 // false if rune is no letter
 // false if first rune is not upper
@@ -49,4 +53,8 @@ func (rule *RulePascalCase) Validate(value string) (bool, error) {
 	}
 
 	return true, nil
+}
+
+func (rule *RulePascalCase) GetErrorMessage() string {
+	return rule.GetName()
 }

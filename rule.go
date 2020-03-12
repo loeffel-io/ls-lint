@@ -1,7 +1,9 @@
 package main
 
 var definitions = map[string]Rule{
-	"lowercase":  new(RuleLowercase).Init(),
+	"lowercase": new(RuleLowercase).Init(),
+	"regex":     new(RuleRegex).Init(),
+
 	"camelcase":  new(RuleCamelCase).Init(),
 	"pascalcase": new(RulePascalCase).Init(),
 	"snakecase":  new(RuleSnakeCase).Init(),
@@ -11,6 +13,9 @@ var definitions = map[string]Rule{
 
 var rules = map[string]Rule{
 	"lowercase": definitions["lowercase"],
+
+	"regex": definitions["regex"],
+	"match": definitions["regex"],
 
 	"camelcase": definitions["camelcase"],
 	"camelCase": definitions["camelcase"],
@@ -31,5 +36,7 @@ var rules = map[string]Rule{
 type Rule interface {
 	Init() Rule
 	GetName() string
+	SetParameters(params []string) error
 	Validate(value string) (bool, error)
+	GetErrorMessage() string
 }

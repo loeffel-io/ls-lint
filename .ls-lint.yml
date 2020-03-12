@@ -1,6 +1,9 @@
 ls:
-  .dir: kebab-case
+  .dir: regex:^[a-z]+$
   .go: snake_case
+
+  npm:
+    .dir: regex:^[0-9]+$
 
 ignore:
   - .idea

@@ -69,13 +69,13 @@ func main() {
 
 	// with errors
 	for _, err := range linter.getErrors() {
-		var ruleNames []string
+		var ruleMessages []string
 
 		for _, rule := range err.getRules() {
-			ruleNames = append(ruleNames, rule.GetName())
+			ruleMessages = append(ruleMessages, rule.GetErrorMessage())
 		}
 
-		log.Printf("%s failed for rules: %s", err.getPath(), strings.Join(ruleNames, ", "))
+		log.Printf("%s failed for rules: %s", err.getPath(), strings.Join(ruleMessages, ", "))
 	}
 
 	os.Exit(1)
