@@ -66,11 +66,11 @@ steps:
   - name: docker hub
     image: plugins/docker
     settings:
-      username: loeffel-io
+      username: loeffel
       password:
         from_secret: DOCKER_PASSWORD
       dockerfile: docker/Dockerfile
       auto_tag: true
-      repo: loeffel/ls-lint
+      repo: lslintorg/ls-lint
       #when:
       #event: tag
