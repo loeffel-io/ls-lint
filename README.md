@@ -11,6 +11,7 @@ An extremely fast file and directory name linter
 
 - Works for directory and file names (all extensions supported)
 - Linux, MacOS & Windows Support
+- Docker support
 - Incredibly fast
 - Full unicode support
 - Almost zero third-party dependencies (only [go-yaml](https://github.com/go-yaml/yaml))
@@ -130,7 +131,7 @@ npx ls-lint
 
 - [ ] Npm Windows package
 - [ ] Color highlighting
-- [ ] Docker support
+- [x] Docker support
 - [x] Regex Rule
 - [x] Windows support
 - [x] Npm package
