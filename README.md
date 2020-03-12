@@ -129,8 +129,8 @@ npx ls-lint
 
 ## Roadmap
 
-- [ ] Npm Windows package
-- [ ] Color highlighting
+- [ ] Npm Windows package (one package for all os)
+- [ ] Registry to share configurations
 - [x] Docker support
 - [x] Regex Rule
 - [x] Windows support
