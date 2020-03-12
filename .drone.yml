@@ -72,5 +72,6 @@ steps:
       dockerfile: docker/Dockerfile
       auto_tag: true
       repo: lslintorg/ls-lint
+      tags: latest
     when:
       event: tag
