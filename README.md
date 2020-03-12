@@ -130,7 +130,7 @@ npx ls-lint
 ## Roadmap
 
 - [ ] Npm Windows package (one package for all os)
-- [ ] Registry to share configurations
+- [ ] Public and Private Registry to share configurations
 - [x] Docker support
 - [x] Regex Rule
 - [x] Windows support
