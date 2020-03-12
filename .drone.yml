@@ -58,3 +58,14 @@ steps:
         from_secret: NPM_PASSWORD
       email: lucas@loeffel.io
       folder: npm/ls-lint-linux
+
+  - name: docker
+    image: plugins/docker
+    settings:
+      username: loeffel-io
+      password:
+        from_secret: GITHUB_TOKEN
+      dockerfile: docker/Dockerfile
+      auto_tag: true
+      repo: docker.pkg.github.com/ls-lint/ls-lint
+      registry: docker.pkg.github.com
