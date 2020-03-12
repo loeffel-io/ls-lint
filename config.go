@@ -15,6 +15,7 @@ const (
 	sep    = string(os.PathSeparator)
 	extSep = "."
 	root   = "."
+	dir    = ".dir"
 )
 
 type Config struct {
