@@ -39,7 +39,11 @@ func (linter *Linter) validateDir(config *Config, index index, path string) erro
 		return nil
 	}
 
-	for _, rule := range rules[".dir"] {
+	if _, exists := rules[dir]; !exists {
+		return nil
+	}
+
+	for _, rule := range rules[dir] {
 		g.Go(func() error {
 			valid, err := rule.Validate(basename)
 
