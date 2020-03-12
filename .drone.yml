@@ -14,9 +14,9 @@ steps:
       - make linter
 
   - name: ls-lint
-    image: lslintorg/ls-lint
+    image: byrnedo/alpine-curl
     commands:
-      - ls-lint
+      - curl -sL -o ls-lint https://github.com/loeffel-io/ls-lint/releases/download/v1.4.1/ls-lint-linux && chmod +x ls-lint && ./ls-lint
 
   - name: test
     image: golang
