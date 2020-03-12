@@ -49,6 +49,8 @@ steps:
         from_secret: NPM_PASSWORD
       email: lucas@loeffel.io
       folder: npm/ls-lint-darwin
+    when:
+      event: tag
 
   - name: npm-linux
     image: plugins/npm
@@ -58,6 +60,8 @@ steps:
         from_secret: NPM_PASSWORD
       email: lucas@loeffel.io
       folder: npm/ls-lint-linux
+    when:
+      event: tag
 
   - name: docker
     image: plugins/docker
