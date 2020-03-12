@@ -31,7 +31,7 @@ An extremely fast file and directory name linter
 # .ls-lint.yml
 
 ls:
-  .dir: regex:^[a-z0-9\-]+$
+  .dir: regex:[a-z0-9\-]+
   .js: kebab-case
   .css: kebab-case
   .html: kebab-case
