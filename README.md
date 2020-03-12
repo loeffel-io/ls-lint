@@ -112,7 +112,7 @@ npx ls-lint
 
 | Rule       | Alias       | Description                                                    |
 | ---------- | ----------- | -------------------------------------------------------------- | 
-| regex      | -           | Checks if string matches regex pattern                         |
+| regex      | -           | Checks if string matches regex pattern: ^{pattern}$            |
 | lowercase  | -           | Checks if every letter is lower; Skip non letters              |
 | camelcase  | camelCase   | Checks if string is camel case; Only letters allowed           |
 | pascalcase | PascalCase  | Checks if string is pascal case; Only letters allowed          |
