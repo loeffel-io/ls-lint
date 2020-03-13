@@ -104,7 +104,8 @@ ls-lint
 
 # local
 node_modules/.bin/ls-lint # use backslashs for windows
-npx ls-lint
+
+npx @ls-lint/ls-lint
 ```
 
 ## Docker
