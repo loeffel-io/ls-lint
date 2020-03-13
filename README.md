@@ -68,19 +68,19 @@ ignore:
 ### MacOS
 
 ```bash
-curl -sL -o ls-lint https://github.com/loeffel-io/ls-lint/releases/download/v1.4.2/ls-lint-darwin && chmod +x ls-lint && ./ls-lint
+curl -sL -o ls-lint https://github.com/loeffel-io/ls-lint/releases/download/v1.5.0/ls-lint-darwin && chmod +x ls-lint && ./ls-lint
 ```
 
 ### Linux
 
 ```bash
-curl -sL -o ls-lint https://github.com/loeffel-io/ls-lint/releases/download/v1.4.2/ls-lint-linux && chmod +x ls-lint && ./ls-lint
+curl -sL -o ls-lint https://github.com/loeffel-io/ls-lint/releases/download/v1.5.0/ls-lint-linux && chmod +x ls-lint && ./ls-lint
 ```
 
 ### Windows
 
 ```bash
-# (!) First download the .exe from https://github.com/loeffel-io/ls-lint/releases/download/v1.4.2/ls-lint-windows.exe
+# (!) First download the .exe from https://github.com/loeffel-io/ls-lint/releases/download/v1.5.0/ls-lint-windows.exe
 ls-lint-windows.exe
 ```
 
@@ -103,7 +103,7 @@ npm install @ls-lint/ls-lint
 ls-lint
 
 # local
-node_modules/.bin/ls-lint
+node_modules/.bin/ls-lint # use backslashs for windows
 npx ls-lint
 ```
 
@@ -127,8 +127,8 @@ docker run -t -v /path/to/files:/data lslintorg/ls-lint:1
 
 ## Roadmap
 
-- [ ] Npm Windows package (one package for all os)
 - [ ] Public and Private Registry to share configurations
+- [x] Npm Windows package (one package for all os)
 - [x] Docker support
 - [x] Regex Rule
 - [x] Windows support
