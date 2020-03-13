@@ -49,8 +49,9 @@ steps:
         from_secret: NPM_PASSWORD
       email: lucas@loeffel.io
       folder: npm
-    when:
-      event: tag
+      access: public
+      #when:
+      #event: tag
 
   - name: docker hub
     image: plugins/docker
