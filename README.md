@@ -90,12 +90,10 @@ ls-lint-windows.exe
 
 ```bash
 # global
-npm install -g ls-lint-linux # for Linux
-npm install -g ls-lint-darwin # for macOS
+npm install -g @ls-lint/ls-lint
 
 # local
-npm install ls-lint-linux # for Linux
-npm install ls-lint-darwin # for macOS
+npm install @ls-lint/ls-lint
 ```
 
 ### Run

@@ -1,0 +1,19 @@
+{
+  "name": "@ls-lint/ls-lint",
+  "version": "1.4.2",
+  "description": "The 64-bit binary for ls-lint",
+  "repository": "https://github.com/loeffel-io/ls-lint",
+  "license": "MIT",
+  "main": "./bin/cli.js",
+  "bin": {
+    "ls-lint": "./bin/cli.js"
+  },
+  "os": [
+    "darwin",
+    "linux",
+    "win32"
+  ],
+  "cpu": [
+    "x64"
+  ]
+}

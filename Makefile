@@ -15,13 +15,16 @@ build:
 build-npm:
 	make build-npm-darwin
 	make build-npm-linux
+	make build-npm-windows
 
 build-npm-darwin:
-	mkdir -p npm/ls-lint-darwin/bin
-	cp ls-lint-darwin npm/ls-lint-darwin/bin/ls-lint
-	chmod +x npm/ls-lint-darwin/bin/ls-lint
+	cp ls-lint-darwin npm/bin/ls-lint-darwin
+	chmod +x npm/bin/ls-lint-darwin
 
 build-npm-linux:
-	mkdir -p npm/ls-lint-linux/bin
-	cp ls-lint-linux npm/ls-lint-linux/bin/ls-lint
-	chmod +x npm/ls-lint-linux/bin/ls-lint
+	cp ls-lint-linux npm/bin/ls-lint-linux
+	chmod +x npm/bin/ls-lint-linux
+
+build-npm-windows:
+	cp ls-lint-windows.exe npm/bin/ls-lint-windows.exe
+	chmod +x npm/bin/ls-lint-windows.exe
