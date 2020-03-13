@@ -19,13 +19,18 @@ function spawnCommand(binaryExecutable) {
   });
 }
 
-if (process.platform === 'darwin') {
-  spawnCommand('ls-lint-darwin');
-} else if (process.platform === 'linux') {
-  spawnCommand('ls-lint-linux');
-} else if (process.platform === 'win32') {
-  spawnCommand('ls-lint-windows.exe');
-} else {
-  console.log("Unsupported OS");
-  process.exit(1);
+function getPlatformPath() {
+  switch (process.platform) {
+    case 'darwin':
+      return 'ls-lint-darwin';
+    case 'linux':
+      return 'ls-lint-linux';
+    case 'win32':
+      return 'ls-lint-windows.exe';
+    default:
+      console.log('ls-lint builds are not available on platform: ' + process.platform)
+      process.exit(1);
+  }
 }
+
+spawnCommand(getPlatformPath());

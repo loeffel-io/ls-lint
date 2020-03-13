@@ -13,9 +13,18 @@ build:
 	GOOS=windows GOARCH=amd64 go build -o ls-lint-windows.exe
 
 build-npm:
-	cp ls-lint-darwin npm/ls-lint/bin/ls-lint-darwin
-	cp ls-lint-linux npm/ls-lint/bin/ls-lint-linux
-	cp ls-lint-windows.exe npm/ls-lint/bin/ls-lint-windows.exe
-	chmod +x npm/ls-lint/bin/ls-lint-darwin
-	chmod +x npm/ls-lint/bin/ls-lint-linux
-	chmod +x npm/ls-lint/bin/ls-lint-windows.exe
+	make build-npm-darwin
+	make build-npm-linux
+	make build-npm-windows
+
+build-npm-darwin:
+	cp ls-lint-darwin npm/bin/ls-lint-darwin
+	chmod +x npm/bin/ls-lint-darwin
+
+build-npm-linux:
+	cp ls-lint-linux npm/bin/ls-lint-linux
+	chmod +x npm/bin/ls-lint-linux
+
+build-npm-windows:
+	cp ls-lint-windows.exe npm/bin/ls-lint-windows.exe
+	chmod +x npm/bin/ls-lint-windows.exe

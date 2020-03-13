@@ -90,10 +90,10 @@ ls-lint-windows.exe
 
 ```bash
 # global
-npm install -g ls-lint
+npm install -g @ls-lint/ls-lint
 
 # local
-npm install ls-lint
+npm install @ls-lint/ls-lint
 ```
 
 ### Run
