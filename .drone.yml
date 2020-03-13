@@ -50,8 +50,8 @@ steps:
       email: lucas@loeffel.io
       folder: npm
       access: public
-      #when:
-      #event: tag
+    when:
+      event: tag
 
   - name: docker hub
     image: plugins/docker
