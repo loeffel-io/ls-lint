@@ -138,7 +138,7 @@ docker run -t -v /path/to/files:/data lslintorg/ls-lint:1
 
 ## Major changes
 
-**v1.6.x**
+**v1.6.0**
 
 - Rules are not longer logicly `AND` combined - Now they are logicly `OR` combined by `|`
 
