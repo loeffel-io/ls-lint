@@ -16,6 +16,7 @@ const (
 	extSep = "."
 	root   = "."
 	dir    = ".dir"
+	or     = "|"
 )
 
 type Config struct {
@@ -114,7 +115,7 @@ func (config *Config) walkIndex(index index, key string, list ls) error {
 			continue
 		}
 
-		for _, ruleName := range strings.Split(v.(string), ",") {
+		for _, ruleName := range strings.Split(v.(string), or) {
 			ruleName = strings.TrimSpace(ruleName)
 			ruleSplit := strings.SplitN(ruleName, ":", 2)
 			ruleName = ruleSplit[0]
