@@ -23,7 +23,7 @@ An extremely fast file and directory name linter
 ## Example & How-to ([vue.js](https://github.com/vuejs/vue))
 
 - `.ls-lint.yml` file must be present in your root directory
-- Multiple rules supported by `,` - They are logicly *AND* combined
+- Multiple rules supported by `|` - They are logicly *OR* combined
 - `.dir` set rules for the current directory and their subdirectories
 - Rules for subdirectories will overwrite the rules for all their subdirectories
 - For Windows you must use backslashs `\` instead of slashs `/` 
