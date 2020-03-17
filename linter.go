@@ -44,6 +44,7 @@ func (linter *Linter) validateDir(config *Config, index index, path string) erro
 	}
 
 	for _, rule := range rules[dir] {
+		rule := rule
 		g.Go(func() error {
 			valid, err := rule.Validate(basename)
 
@@ -87,6 +88,7 @@ func (linter *Linter) validateFile(config *Config, index index, entrypoint strin
 
 		if _, exists := rules[ext]; exists {
 			for _, rule := range rules[ext] {
+				rule := rule
 				g.Go(func() error {
 					valid, err := rule.Validate(withoutExt)
 
@@ -132,6 +134,7 @@ func (linter *Linter) Run(config *Config) error {
 	}
 
 	for entrypoint := range ls {
+		entrypoint := entrypoint
 		g.Go(func() error {
 			return filepath.Walk(entrypoint.(string), func(path string, info os.FileInfo, err error) error {
 				if config.shouldIgnore(ignoreIndex, path) {
