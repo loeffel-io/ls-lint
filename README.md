@@ -68,19 +68,19 @@ ignore:
 ### MacOS
 
 ```bash
-curl -sL -o ls-lint https://github.com/loeffel-io/ls-lint/releases/download/v1.6.0/ls-lint-darwin && chmod +x ls-lint && ./ls-lint
+curl -sL -o ls-lint https://github.com/loeffel-io/ls-lint/releases/download/v1.7.0/ls-lint-darwin && chmod +x ls-lint && ./ls-lint
 ```
 
 ### Linux
 
 ```bash
-curl -sL -o ls-lint https://github.com/loeffel-io/ls-lint/releases/download/v1.6.0/ls-lint-linux && chmod +x ls-lint && ./ls-lint
+curl -sL -o ls-lint https://github.com/loeffel-io/ls-lint/releases/download/v1.7.0/ls-lint-linux && chmod +x ls-lint && ./ls-lint
 ```
 
 ### Windows
 
 ```bash
-# (!) First download the .exe from https://github.com/loeffel-io/ls-lint/releases/download/v1.6.0/ls-lint-windows.exe
+# (!) First download the .exe from https://github.com/loeffel-io/ls-lint/releases/download/v1.7.0/ls-lint-windows.exe
 ls-lint-windows.exe
 ```
 
@@ -138,9 +138,17 @@ docker run -t -v /path/to/files:/data lslintorg/ls-lint:1
 
 ## Major changes
 
+**v1.7.0**
+
+- Rules improved: more tests, more flexibility, digits allowed. Checkout [rules](https://github.com/loeffel-io/ls-lint#rules) for more informations
+
 **v1.6.0**
 
 - Rules are not longer logicly `AND` combined - Now they are logicly `OR` combined by `|`
+
+**v1.5.0**
+
+- Npm packages `ls-lint-darwin` and `ls-lint-linux` are not longer supported. Please use `@ls-lint/ls-lint` instead (linux, windows and macOS support)
 
 ## Benchmarks ([hyperfine](https://github.com/sharkdp/hyperfine))
 
