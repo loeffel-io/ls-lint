@@ -68,19 +68,19 @@ ignore:
 ### MacOS
 
 ```bash
-curl -sL -o ls-lint https://github.com/loeffel-io/ls-lint/releases/download/v1.5.1/ls-lint-darwin && chmod +x ls-lint && ./ls-lint
+curl -sL -o ls-lint https://github.com/loeffel-io/ls-lint/releases/download/v1.6.0/ls-lint-darwin && chmod +x ls-lint && ./ls-lint
 ```
 
 ### Linux
 
 ```bash
-curl -sL -o ls-lint https://github.com/loeffel-io/ls-lint/releases/download/v1.5.1/ls-lint-linux && chmod +x ls-lint && ./ls-lint
+curl -sL -o ls-lint https://github.com/loeffel-io/ls-lint/releases/download/v1.6.0/ls-lint-linux && chmod +x ls-lint && ./ls-lint
 ```
 
 ### Windows
 
 ```bash
-# (!) First download the .exe from https://github.com/loeffel-io/ls-lint/releases/download/v1.5.1/ls-lint-windows.exe
+# (!) First download the .exe from https://github.com/loeffel-io/ls-lint/releases/download/v1.6.0/ls-lint-windows.exe
 ls-lint-windows.exe
 ```
 
@@ -135,6 +135,12 @@ docker run -t -v /path/to/files:/data lslintorg/ls-lint:1
 - [x] Windows support
 - [x] Npm package
 - [x] Add ignore directories and files
+
+## Major changes
+
+**v1.6.x**
+
+- Rules are not longer logicly `AND` combined - Now they are logicly `OR` combined by `|`
 
 ## Benchmarks ([hyperfine](https://github.com/sharkdp/hyperfine))
 
