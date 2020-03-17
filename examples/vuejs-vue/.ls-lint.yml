@@ -1,7 +1,7 @@
 # https://github.com/vuejs/vue - 98b9270ab50fe393111dd1e57f9259636e0d980c
 
 ls:
-  .dir: regex:[a-z0-9\-]+
+  .dir: kebab-case
   .js: kebab-case
   .css: kebab-case
   .html: kebab-case

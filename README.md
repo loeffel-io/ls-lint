@@ -20,7 +20,7 @@ An extremely fast file and directory name linter
 
 <img src="https://i.imgur.com/plZml7D.gif" alt="command" width="600">
 
-## Example & How-to ([vue.js](https://github.com/vuejs/vue))
+## Example & How-to ([vuejs/vue-next](https://github.com/vuejs/vue-next))
 
 - `.ls-lint.yml` file must be present in your root directory
 - Multiple rules supported by `|` - They are logicly *OR* combined
@@ -32,33 +32,23 @@ An extremely fast file and directory name linter
 # .ls-lint.yml
 
 ls:
-  .dir: regex:[a-z0-9\-]+
-  .js: kebab-case
-  .css: kebab-case
-  .html: kebab-case
-  .json: kebab-case
-  .ts: kebab-case
-  .sh: kebab-case
-  .dev.js: kebab-case
-  .prod.js: kebab-case
+  .js: kebab-case | camelCase
+  .ts: camelCase | PascalCase
   .d.ts: kebab-case
-  .vdom.js: kebab-case
-  .spec.js: kebab-case
-
-  dist:
-    .js: point.case
-
-  benchmarks/ssr:
-    .js: camelCase
+  .mock.ts: kebab-case
+  .spec.ts: camelCase | PascalCase
+  .test-d.ts: kebab-case
+  .config.js: kebab-case
+  .umd.js: kebab-case
+  .spec.ts.snap: camelCase | PascalCase
+  .global.js: kebab-case
 
 ignore:
-  - test
-  - benchmarks/dbmon/ENV.js
-  - .babelrc.js
-  - .eslintrc.js
-  - .github
-  - .circleci
+  - node_modules
   - .git
+  - .circleci
+  - .github
+  - .vscode
 ```
 
 ## Install & Run

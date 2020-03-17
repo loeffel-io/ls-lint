@@ -1,39 +1,18 @@
 # https://github.com/vuejs/vue-next - b716a906fe51e82a1b3f82cf538b67abdaf66154
 
 ls:
-  .js: kebab-case
-  .ts: camelCase
+  .js: kebab-case | camelCase
+  .ts: camelCase | PascalCase
   .d.ts: kebab-case
   .mock.ts: kebab-case
-  .spec.ts: camelCase
+  .spec.ts: camelCase | PascalCase
   .test-d.ts: kebab-case
   .config.js: kebab-case
   .umd.js: kebab-case
-  .spec.ts.snap: camelCase
-
-  scripts:
-    .js: camelCase
-
-  packages/reactivity/__tests__/collections:
-    .spec.ts: PascalCase
-
-  packages/runtime-core/src/components:
-    .ts: PascalCase
-
-  packages/runtime-dom/src/components:
-    .ts: PascalCase
-
-  packages/runtime-core/__tests__/components:
-    .spec.ts: PascalCase
-
-  packages/vue/examples/__tests__:
-    .ts: regex:[a-zA-Z0-9]+
-    .spec.ts: camelCase
-    .mock.ts: kebab-case
+  .spec.ts.snap: camelCase | PascalCase
+  .global.js: kebab-case
 
 ignore:
-  - packages/compiler-ssr
-  - packages/server-renderer
   - node_modules
   - .git
   - .circleci
