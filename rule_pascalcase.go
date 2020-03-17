@@ -29,7 +29,7 @@ func (rule *RulePascalCase) SetParameters(params []string) error {
 }
 
 // Validate checks if string is pascal case
-// false if rune is no letter
+// false if rune is no letter and no digit
 // false if first rune is not upper
 func (rule *RulePascalCase) Validate(value string) (bool, error) {
 	for i, c := range value {
