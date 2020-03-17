@@ -142,9 +142,10 @@ docker run -t -v /path/to/files:/data lslintorg/ls-lint:1
 
 ## Benchmarks ([hyperfine](https://github.com/sharkdp/hyperfine))
 
-| Package                                    | Mean [s]           | File                                                                                                    | 
-| ------------------------------------------ | ------------------ | ------------------------------------------------------------------------------------------------------- |
-| [vuejs/vue](https://github.com/vuejs/vue)  | 14.6 ms ± 1.1 ms   | [examples/vuejs-vue](https://github.com/loeffel-io/ls-lint/tree/master/examples/vuejs-vue/.ls-lint.yml) |
+| Package                                              | Mean [s]            | File                                                                                                              | 
+| ---------------------------------------------------- | ------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| [vuejs/vue](https://github.com/vuejs/vue)            | 283.3 ms ± 19.6 ms  | [examples/vuejs-vue](https://github.com/loeffel-io/ls-lint/tree/master/examples/vuejs-vue/.ls-lint.yml)           |
+| [vuejs/vue-next](https://github.com/vuejs/vue-next)  | 267.3 ms ±   9.3 ms | [examples/vuejs-vue-next](https://github.com/loeffel-io/ls-lint/tree/master/examples/vuejs-vue-next/.ls-lint.yml) |
 
 ## Logo
 

@@ -28,3 +28,4 @@ ignore:
   - .github
   - .circleci
   - .git
+  - node_modules
