@@ -116,15 +116,15 @@ docker run -t -v /path/to/files:/data lslintorg/ls-lint:1
 
 ## Rules
 
-| Rule       | Alias       | Description                                                    |
-| ---------- | ----------- | -------------------------------------------------------------- | 
-| regex      | -           | Checks if string matches regex pattern: ^{pattern}$            |
-| lowercase  | -           | Checks if every letter is lower; Skip non letters              |
-| camelcase  | camelCase   | Checks if string is camel case; Only letters allowed           |
-| pascalcase | PascalCase  | Checks if string is pascal case; Only letters allowed          |
-| snakecase  | snake_case  | Checks if string is snake case; Only letters and `_` allowed   |
-| kebabcase  | kebab-case  | Checks if string is kebab case; Only letters and `-` allowed   |
-| pointcase  | point.case  | Checks if string is "point case"; Only letters and `.` allowed |
+| Rule       | Alias       | Description                                                      |
+| ---------- | ----------- | ---------------------------------------------------------------- | 
+| regex      | -           | Checks if string matches regex pattern: ^{pattern}$              |
+| lowercase  | -           | Checks if every letter is lower; Skip non letters                |
+| camelcase  | camelCase   | Checks if string is camel case; Only letters and digits allowed  |
+| pascalcase | PascalCase  | Checks if string is pascal case; Only letters allowed            |
+| snakecase  | snake_case  | Checks if string is snake case; Only letters and `_` allowed     |
+| kebabcase  | kebab-case  | Checks if string is kebab case; Only letters and `-` allowed     |
+| pointcase  | point.case  | Checks if string is "point case"; Only letters and `.` allowed   |
 
 ## Roadmap
 
