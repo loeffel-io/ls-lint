@@ -23,7 +23,7 @@ An extremely fast file and directory name linter
 ## Example & How-to ([vue.js](https://github.com/vuejs/vue))
 
 - `.ls-lint.yml` file must be present in your root directory
-- Multiple rules supported by `,` - They are logicly *AND* combined
+- Multiple rules supported by `|` - They are logicly *OR* combined
 - `.dir` set rules for the current directory and their subdirectories
 - Rules for subdirectories will overwrite the rules for all their subdirectories
 - For Windows you must use backslashs `\` instead of slashs `/` 
@@ -68,19 +68,19 @@ ignore:
 ### MacOS
 
 ```bash
-curl -sL -o ls-lint https://github.com/loeffel-io/ls-lint/releases/download/v1.5.1/ls-lint-darwin && chmod +x ls-lint && ./ls-lint
+curl -sL -o ls-lint https://github.com/loeffel-io/ls-lint/releases/download/v1.6.0/ls-lint-darwin && chmod +x ls-lint && ./ls-lint
 ```
 
 ### Linux
 
 ```bash
-curl -sL -o ls-lint https://github.com/loeffel-io/ls-lint/releases/download/v1.5.1/ls-lint-linux && chmod +x ls-lint && ./ls-lint
+curl -sL -o ls-lint https://github.com/loeffel-io/ls-lint/releases/download/v1.6.0/ls-lint-linux && chmod +x ls-lint && ./ls-lint
 ```
 
 ### Windows
 
 ```bash
-# (!) First download the .exe from https://github.com/loeffel-io/ls-lint/releases/download/v1.5.1/ls-lint-windows.exe
+# (!) First download the .exe from https://github.com/loeffel-io/ls-lint/releases/download/v1.6.0/ls-lint-windows.exe
 ls-lint-windows.exe
 ```
 
@@ -135,6 +135,12 @@ docker run -t -v /path/to/files:/data lslintorg/ls-lint:1
 - [x] Windows support
 - [x] Npm package
 - [x] Add ignore directories and files
+
+## Major changes
+
+**v1.6.x**
+
+- Rules are not longer logicly `AND` combined - Now they are logicly `OR` combined by `|`
 
 ## Benchmarks ([hyperfine](https://github.com/sharkdp/hyperfine))
 

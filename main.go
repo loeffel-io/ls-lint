@@ -75,7 +75,7 @@ func main() {
 			ruleMessages = append(ruleMessages, rule.GetErrorMessage())
 		}
 
-		log.Printf("%s failed for rules: %s", err.getPath(), strings.Join(ruleMessages, ", "))
+		log.Printf("%s failed for rules: %s", err.getPath(), strings.Join(ruleMessages, fmt.Sprintf(" %s ", or)))
 	}
 
 	os.Exit(1)

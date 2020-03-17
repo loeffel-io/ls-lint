@@ -30,7 +30,8 @@ func (linter *Linter) addError(error *Error) {
 
 func (linter *Linter) validateDir(config *Config, index index, path string) error {
 	var g = new(errgroup.Group)
-	var errRules = make([]Rule, 0)
+	var rulesError = 0
+	var rulesErrorMutex = new(sync.Mutex)
 
 	rules := config.getConfig(index, path)
 	basename := filepath.Base(path)
@@ -53,7 +54,9 @@ func (linter *Linter) validateDir(config *Config, index index, path string) erro
 			}
 
 			if !valid {
-				errRules = append(errRules, rule)
+				rulesErrorMutex.Lock()
+				rulesError += 1
+				rulesErrorMutex.Unlock()
 			}
 
 			return nil
@@ -64,26 +67,30 @@ func (linter *Linter) validateDir(config *Config, index index, path string) erro
 		return err
 	}
 
-	if len(errRules) > 0 {
-		linter.addError(&Error{
-			Path:    path,
-			Rules:   errRules,
-			RWMutex: new(sync.RWMutex),
-		})
+	if rulesError == 0 || rulesError != len(rules[dir]) {
+		return nil
 	}
+
+	linter.addError(&Error{
+		Path:    path,
+		Rules:   rules[dir],
+		RWMutex: new(sync.RWMutex),
+	})
 
 	return nil
 }
 
 func (linter *Linter) validateFile(config *Config, index index, entrypoint string, path string) error {
+	var ext string
 	var g = new(errgroup.Group)
-	var errRules = make([]Rule, 0)
+	var rulesError = 0
+	var rulesErrorMutex = new(sync.Mutex)
 
 	exts := strings.Split(filepath.Base(path), extSep)
 	rules := config.getConfig(index, path)
 
 	for i := 1; i < len(exts); i++ {
-		ext := fmt.Sprintf("%s%s", extSep, strings.Join(exts[i:], extSep))
+		ext = fmt.Sprintf("%s%s", extSep, strings.Join(exts[i:], extSep))
 		withoutExt := strings.TrimSuffix(filepath.Base(path), ext)
 
 		if _, exists := rules[ext]; exists {
@@ -97,7 +104,9 @@ func (linter *Linter) validateFile(config *Config, index index, entrypoint strin
 					}
 
 					if !valid {
-						errRules = append(errRules, rule)
+						rulesErrorMutex.Lock()
+						rulesError += 1
+						rulesErrorMutex.Unlock()
 					}
 
 					return nil
@@ -112,13 +121,15 @@ func (linter *Linter) validateFile(config *Config, index index, entrypoint strin
 		return err
 	}
 
-	if len(errRules) > 0 {
-		linter.addError(&Error{
-			Path:    path,
-			Rules:   errRules,
-			RWMutex: new(sync.RWMutex),
-		})
+	if rulesError == 0 || rulesError != len(rules[ext]) {
+		return nil
 	}
+
+	linter.addError(&Error{
+		Path:    path,
+		Rules:   rules[ext],
+		RWMutex: new(sync.RWMutex),
+	})
 
 	return nil
 }
