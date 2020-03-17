@@ -11,8 +11,13 @@ func TestRulePascalCase(t *testing.T) {
 		{value: "pascalCase", expected: false, err: nil},
 		{value: "Pascalcase", expected: true, err: nil},
 		{value: "PascalCase", expected: true, err: nil},
+		{value: "Pascal1Case", expected: true, err: nil},
+		{value: "PascalVCase", expected: true, err: nil},
+		{value: "PascalCaseForever", expected: true, err: nil},
 		{value: "PASCALCASE", expected: false, err: nil},
 		{value: "pascal_case", expected: false, err: nil},
+		{value: "pascal.case", expected: false, err: nil},
+		{value: "pascal-case", expected: false, err: nil},
 	}
 
 	var i = 0

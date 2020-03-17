@@ -29,15 +29,32 @@ func (rule *RuleCamelCase) SetParameters(params []string) error {
 }
 
 // Validate checks if string is camel case
-// false if rune is no letter
+// false if rune is no letter and no digit
 func (rule *RuleCamelCase) Validate(value string) (bool, error) {
 	for i, c := range value {
-		if !unicode.IsLetter(c) {
+		// must be letter or digit
+		if !unicode.IsLetter(c) && !unicode.IsDigit(c) {
 			return false, nil
 		}
 
 		if unicode.IsUpper(c) {
-			if i == 0 || !unicode.IsLower(rune(value[i-1])) {
+			// first rune cannot be upper
+			if i == 0 {
+				return false, nil
+			}
+
+			// rune -1 can be digit
+			if unicode.IsDigit(rune(value[i-1])) {
+				continue
+			}
+
+			// allow cases like ssrVFor.ts
+			if i >= 2 && unicode.IsUpper(rune(value[i-1])) && unicode.IsLower(rune(value[i-2])) {
+				continue
+			}
+
+			// rune -1 must be lower
+			if !unicode.IsLower(rune(value[i-1])) {
 				return false, nil
 			}
 		}

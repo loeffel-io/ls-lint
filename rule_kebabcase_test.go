@@ -14,6 +14,9 @@ func TestRuleKebabCase(t *testing.T) {
 		{value: "KEBABCASE", expected: false, err: nil},
 		{value: "kebab-case", expected: true, err: nil},
 		{value: "kebab-case-test", expected: true, err: nil},
+		{value: "kebab-123-test", expected: true, err: nil},
+		{value: "kebab.test", expected: false, err: nil},
+		{value: "kebab_test", expected: false, err: nil},
 	}
 
 	var i = 0
