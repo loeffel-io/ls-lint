@@ -29,10 +29,10 @@ func (rule *RuleKebabCase) SetParameters(params []string) error {
 }
 
 // Validate checks if string is kebab case
-// false if rune is no lowercase letter or -
+// false if rune is no lowercase letter, digit or -
 func (rule *RuleKebabCase) Validate(value string) (bool, error) {
 	for _, c := range value {
-		if c == 45 { // -
+		if c == 45 || unicode.IsDigit(c) { // 45 => -
 			continue
 		}
 
