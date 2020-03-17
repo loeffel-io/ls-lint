@@ -13,7 +13,10 @@ func TestRulePointCase(t *testing.T) {
 		{value: "PointCase", expected: false, err: nil},
 		{value: "POINTCASE", expected: false, err: nil},
 		{value: "point.case", expected: true, err: nil},
+		{value: "point12.case", expected: true, err: nil},
 		{value: "point.case.test", expected: true, err: nil},
+		{value: "point-case-test", expected: false, err: nil},
+		{value: "point_case_test", expected: false, err: nil},
 	}
 
 	var i = 0

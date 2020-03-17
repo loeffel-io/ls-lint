@@ -29,10 +29,10 @@ func (rule *RuleSnakeCase) SetParameters(params []string) error {
 }
 
 // Validate checks if string is sneak case
-// false if rune is no lowercase letter or _
+// false if rune is no lowercase letter, digit or _
 func (rule *RuleSnakeCase) Validate(value string) (bool, error) {
 	for _, c := range value {
-		if c == 95 { // _
+		if c == 95 || unicode.IsDigit(c) { // 95 => _
 			continue
 		}
 

@@ -13,7 +13,10 @@ func TestRuleSnakeCase(t *testing.T) {
 		{value: "SneakCase", expected: false, err: nil},
 		{value: "SNEAKCASE", expected: false, err: nil},
 		{value: "snake_case", expected: true, err: nil},
+		{value: "snake_123_case", expected: true, err: nil},
 		{value: "snake_case_test", expected: true, err: nil},
+		{value: "snake.case.test", expected: false, err: nil},
+		{value: "snake-case-test", expected: false, err: nil},
 	}
 
 	var i = 0

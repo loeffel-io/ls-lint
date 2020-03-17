@@ -122,9 +122,9 @@ docker run -t -v /path/to/files:/data lslintorg/ls-lint:1
 | lowercase  | -           | Checks if every letter is lower; Skip non letters                                  |
 | camelcase  | camelCase   | Checks if string is camel case; Only letters and digits allowed                    |
 | pascalcase | PascalCase  | Checks if string is pascal case; Only letters allowed                              |
-| snakecase  | snake_case  | Checks if string is snake case; Only letters and `_` allowed                       |
+| snakecase  | snake_case  | Checks if string is snake case; Only lowercase letters, digits and `_` allowed     | 
 | kebabcase  | kebab-case  | Checks if string is kebab case; Only lowercase letters, digits and `-` allowed     |
-| pointcase  | point.case  | Checks if string is "point case"; Only letters and `.` allowed                     |
+| pointcase  | point.case  | Checks if string is "point case"; Only lowercase letters, digits and `.` allowed   |
 
 ## Roadmap
 
