@@ -49,7 +49,7 @@ func (rule *RuleCamelCase) Validate(value string) (bool, error) {
 			}
 
 			// allow cases like ssrVFor.ts
-			if unicode.IsUpper(rune(value[i-1])) && unicode.IsLower(rune(value[i-2])) {
+			if i >= 2 && unicode.IsUpper(rune(value[i-1])) && unicode.IsLower(rune(value[i-2])) {
 				continue
 			}
 
