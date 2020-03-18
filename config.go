@@ -18,8 +18,6 @@ const (
 	root   = "."
 	dir    = ".dir"
 	or     = "|"
-
-	glob = '*'
 )
 
 type Config struct {
