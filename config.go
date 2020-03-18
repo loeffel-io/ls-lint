@@ -107,6 +107,10 @@ func (config *Config) walkIndex(index index, key string, list ls) error {
 	}
 
 	for k, v := range list {
+		if v == nil {
+			continue
+		}
+
 		if reflect.TypeOf(v).Kind() == reflect.Map {
 			if err := config.walkIndex(index, fmt.Sprintf("%s%s%s", key, sep, k.(string)), v.(ls)); err != nil {
 				return err
