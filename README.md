@@ -14,7 +14,7 @@ An extremely fast file and directory name linter
 - Docker support
 - Incredibly fast
 - Full unicode support
-- Almost zero third-party dependencies (only [go-yaml](https://github.com/go-yaml/yaml))
+- Almost zero third-party dependencies (only [go-yaml](https://github.com/go-yaml/yaml) and [doublestar](https://github.com/bmatcuk/doublestar))
 
 ## Demo
 
