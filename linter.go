@@ -134,13 +134,19 @@ func (linter *Linter) validateFile(config *Config, index index, entrypoint strin
 	return nil
 }
 
-func (linter *Linter) Run(config *Config) error {
+func (linter *Linter) Run(config *Config) (err error) {
+	var index index
 	var g = new(errgroup.Group)
 	var ls = config.getLs()
 	var ignoreIndex = config.getIgnoreIndex()
-	var index, err = config.getIndex(ls)
 
-	if err != nil {
+	// create index
+	if index, err = config.getIndex(ls); err != nil {
+		return err
+	}
+
+	// glob index
+	if err := config.globIndex(index); err != nil {
 		return err
 	}
 

@@ -14,7 +14,7 @@ An extremely fast file and directory name linter
 - Docker support
 - Incredibly fast
 - Full unicode support
-- Almost zero third-party dependencies (only [go-yaml](https://github.com/go-yaml/yaml))
+- Almost zero third-party dependencies (only [go-yaml](https://github.com/go-yaml/yaml) and [doublestar](https://github.com/bmatcuk/doublestar))
 
 ## Demo
 
@@ -32,16 +32,22 @@ An extremely fast file and directory name linter
 # .ls-lint.yml
 
 ls:
-  .js: kebab-case | camelCase
-  .ts: camelCase | PascalCase
+  .js: kebab-case
+  .ts: camelCase
   .d.ts: kebab-case
   .mock.ts: kebab-case
-  .spec.ts: camelCase | PascalCase
+  .spec.ts: camelCase
   .test-d.ts: kebab-case
   .config.js: kebab-case
   .umd.js: kebab-case
-  .spec.ts.snap: camelCase | PascalCase
-  .global.js: kebab-case
+  .spec.ts.snap: camelCase
+
+  scripts:
+    .js: camelCase
+
+  packages/**/{components,collections}:
+    .ts: PascalCase
+    .spec.ts: PascalCase
 
 ignore:
   - node_modules
@@ -58,19 +64,19 @@ ignore:
 ### MacOS
 
 ```bash
-curl -sL -o ls-lint https://github.com/loeffel-io/ls-lint/releases/download/v1.7.1/ls-lint-darwin && chmod +x ls-lint && ./ls-lint
+curl -sL -o ls-lint https://github.com/loeffel-io/ls-lint/releases/download/v1.8.0/ls-lint-darwin && chmod +x ls-lint && ./ls-lint
 ```
 
 ### Linux
 
 ```bash
-curl -sL -o ls-lint https://github.com/loeffel-io/ls-lint/releases/download/v1.7.1/ls-lint-linux && chmod +x ls-lint && ./ls-lint
+curl -sL -o ls-lint https://github.com/loeffel-io/ls-lint/releases/download/v1.8.0/ls-lint-linux && chmod +x ls-lint && ./ls-lint
 ```
 
 ### Windows
 
 ```bash
-# (!) First download the .exe from https://github.com/loeffel-io/ls-lint/releases/download/v1.7.1/ls-lint-windows.exe
+# (!) First download the .exe from https://github.com/loeffel-io/ls-lint/releases/download/v1.8.0/ls-lint-windows.exe
 ls-lint-windows.exe
 ```
 
@@ -127,6 +133,10 @@ docker run -t -v /path/to/files:/data lslintorg/ls-lint:1
 - [x] Add ignore directories and files
 
 ## Major changes
+
+**v1.8.0**
+
+- Added glob support like `packages/**` or `packages/*/src`
 
 **v1.7.0**
 
