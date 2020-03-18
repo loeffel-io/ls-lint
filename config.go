@@ -161,7 +161,7 @@ func (config *Config) globIndex(index index) (err error) {
 	for key, value := range index {
 		var matches []string
 
-		if !strings.ContainsRune(key, glob) {
+		if !strings.ContainsAny(key, "*{}") {
 			continue
 		}
 
