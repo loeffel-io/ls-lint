@@ -32,16 +32,22 @@ An extremely fast file and directory name linter
 # .ls-lint.yml
 
 ls:
-  .js: kebab-case | camelCase
-  .ts: camelCase | PascalCase
+  .js: kebab-case
+  .ts: camelCase
   .d.ts: kebab-case
   .mock.ts: kebab-case
-  .spec.ts: camelCase | PascalCase
+  .spec.ts: camelCase
   .test-d.ts: kebab-case
   .config.js: kebab-case
   .umd.js: kebab-case
-  .spec.ts.snap: camelCase | PascalCase
-  .global.js: kebab-case
+  .spec.ts.snap: camelCase
+
+  scripts:
+    .js: camelCase
+
+  packages/**/{components,collections}:
+    .ts: PascalCase
+    .spec.ts: PascalCase
 
 ignore:
   - node_modules
