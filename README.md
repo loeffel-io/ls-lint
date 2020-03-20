@@ -10,10 +10,11 @@ An extremely fast file and directory name linter
 <a href="https://www.npmjs.com/package/@ls-lint/ls-lint"><img src="https://img.shields.io/npm/l/@ls-lint/ls-lint.svg?sanitize=true" alt="License"></a>
 
 - Works for directory and file names (all extensions supported)
-- Linux, MacOS & Windows Support
-- Docker support
 - Incredibly fast
 - Full unicode support
+- Linux, MacOS & Windows Support
+- Docker support & Npm package support
+- Part of [Vue.js 3](https://github.com/vuejs/vue-next) 
 - Almost zero third-party dependencies (only [go-yaml](https://github.com/go-yaml/yaml) and [doublestar](https://github.com/bmatcuk/doublestar))
 
 ## Demo
