@@ -14,7 +14,7 @@ An extremely fast file and directory name linter
 - Full unicode support
 - Linux, MacOS & Windows Support
 - Docker support & Npm package support
-- Part of [Vue.js 3](https://github.com/vuejs/vue-next) and [Vant](https://github.com/youzan/vant)
+- Part of [Vue.js 3](https://github.com/vuejs/vue-next), [Nuxt.js](https://github.com/nuxt/nuxt.js) and [Vant](https://github.com/youzan/vant)
 - Almost zero third-party dependencies (only [go-yaml](https://github.com/go-yaml/yaml) and [doublestar](https://github.com/bmatcuk/doublestar))
 
 ## Demo
