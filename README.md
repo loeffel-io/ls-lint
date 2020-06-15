@@ -125,7 +125,7 @@ docker run -t -v /path/to/files:/data lslintorg/ls-lint:1
 
 ## Roadmap
 
-- [ ] Public and Private Registry to share configurations
+- [ ] Public and Private Registry to share configurations based on [go-saas](https://github.com/go-saas)
 - [x] Npm Windows package (one package for all os)
 - [x] Docker support
 - [x] Regex Rule
