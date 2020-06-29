@@ -16,12 +16,11 @@ const (
 	runeSep     = os.PathSeparator
 	runeUnixSep = '/'
 
-	sep     = string(runeSep)
-	unixSep = string(runeUnixSep)
-	extSep  = "."
-	root    = "."
-	dir     = ".dir"
-	or      = "|"
+	sep    = string(runeSep)
+	extSep = "."
+	root   = "."
+	dir    = ".dir"
+	or     = "|"
 )
 
 type Config struct {

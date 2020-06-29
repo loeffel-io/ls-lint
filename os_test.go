@@ -120,7 +120,7 @@ func TestNormalizeConfig(t *testing.T) {
 	for _, test := range tests {
 		res := normalizeConfig(test.bytes, test.unixSep, test.sep)
 
-		if bytes.Compare(res, test.expected) != 0 {
+		if !bytes.Equal(res, test.expected) {
 			t.Errorf("Test %d failed with unmatched return value - %+v", i, res)
 		}
 
