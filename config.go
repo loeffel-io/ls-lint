@@ -13,8 +13,11 @@ type ls map[interface{}]interface{}
 type index map[string]map[string][]Rule
 
 const (
-	sep     = string(os.PathSeparator)
-	unixSep = string('/')
+	runeSep     = os.PathSeparator
+	runeUnixSep = '/'
+
+	sep     = string(runeSep)
+	unixSep = string(runeUnixSep)
 	extSep  = "."
 	root    = "."
 	dir     = ".dir"
