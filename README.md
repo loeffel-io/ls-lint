@@ -137,7 +137,7 @@ docker run -t -v /path/to/files:/data lslintorg/ls-lint:1
 
 **v1.9.0**
 
-- Added path separator replacement: you can now use `/` on any os instead of e.g. using `\` for windows machines
+- Added path separator replacement: you can now use `/` on any os instead of e.g. using `\` for windows machines in your `ls-lint.yml` file
 
 **v1.8.0**
 
