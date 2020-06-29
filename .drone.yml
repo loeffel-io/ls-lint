@@ -50,7 +50,7 @@ steps:
       email: lucas@loeffel.io
       folder: npm
       access: public
-      tag: beta
+      # tag: beta
     when:
       event: tag
 
