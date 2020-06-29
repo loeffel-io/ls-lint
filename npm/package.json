@@ -1,6 +1,6 @@
 {
   "name": "@ls-lint/ls-lint",
-  "version": "1.9.0-beta.4",
+  "version": "1.9.0-beta.5",
   "description": "The 64-bit binary for ls-lint",
   "repository": "https://github.com/loeffel-io/ls-lint",
   "license": "MIT",
