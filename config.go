@@ -13,11 +13,12 @@ type ls map[interface{}]interface{}
 type index map[string]map[string][]Rule
 
 const (
-	sep    = string(os.PathSeparator)
-	extSep = "."
-	root   = "."
-	dir    = ".dir"
-	or     = "|"
+	sep     = string(os.PathSeparator)
+	unixSep = string('/')
+	extSep  = "."
+	root    = "."
+	dir     = ".dir"
+	or      = "|"
 )
 
 type Config struct {

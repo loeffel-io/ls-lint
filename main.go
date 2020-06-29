@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
@@ -48,7 +49,7 @@ func main() {
 	}
 
 	// to yaml
-	err = yaml.Unmarshal(configBytes, &config)
+	err = yaml.Unmarshal(bytes.ReplaceAll(configBytes, []byte(unixSep), []byte(sep)), &config)
 
 	if err != nil {
 		log.Fatal(err)
