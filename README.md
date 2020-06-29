@@ -109,7 +109,7 @@ npx @ls-lint/ls-lint
 ## Docker
 
 ```bash
-docker run -t -v /path/to/files:/data lslintorg/ls-lint:1
+docker run -t -v /path/to/files:/data lslintorg/ls-lint:v1.9.0
 ```
 
 ## Rules
