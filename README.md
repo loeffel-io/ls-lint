@@ -27,7 +27,7 @@ An extremely fast file and directory name linter
 - Multiple rules supported by `|` - They are logicly *OR* combined
 - `.dir` set rules for the current directory and their subdirectories
 - Rules for subdirectories will overwrite the rules for all their subdirectories
-- For Windows you must use backslashs `\` instead of slashs `/` 
+- For Windows you can use backslashs `\` or slashs `/` - slashs recommenced
 
 ```yaml
 # .ls-lint.yml
@@ -65,19 +65,19 @@ ignore:
 ### MacOS
 
 ```bash
-curl -sL -o ls-lint https://github.com/loeffel-io/ls-lint/releases/download/v1.8.1/ls-lint-darwin && chmod +x ls-lint && ./ls-lint
+curl -sL -o ls-lint https://github.com/loeffel-io/ls-lint/releases/download/v1.9.0/ls-lint-darwin && chmod +x ls-lint && ./ls-lint
 ```
 
 ### Linux
 
 ```bash
-curl -sL -o ls-lint https://github.com/loeffel-io/ls-lint/releases/download/v1.8.1/ls-lint-linux && chmod +x ls-lint && ./ls-lint
+curl -sL -o ls-lint https://github.com/loeffel-io/ls-lint/releases/download/v1.9.0/ls-lint-linux && chmod +x ls-lint && ./ls-lint
 ```
 
 ### Windows
 
 ```bash
-# (!) First download the .exe from https://github.com/loeffel-io/ls-lint/releases/download/v1.8.1/ls-lint-windows.exe
+# (!) First download the .exe from https://github.com/loeffel-io/ls-lint/releases/download/v1.9.0/ls-lint-windows.exe
 ls-lint-windows.exe
 ```
 
@@ -134,6 +134,10 @@ docker run -t -v /path/to/files:/data lslintorg/ls-lint:1
 - [x] Add ignore directories and files
 
 ## Major changes
+
+**v1.9.0**
+
+- Added path separator replacement: you can now use `/` on any os instead of e.g. using `\` for windows machines
 
 **v1.8.0**
 
