@@ -7,6 +7,7 @@ An extremely fast file and directory name linter
 [![Build Status](http://ci.loeffel.io/api/badges/loeffel-io/ls-lint/status.svg)](http://ci.loeffel.io/loeffel-io/ls-lint)
 [![Go Report Card](https://goreportcard.com/badge/github.com/loeffel-io/ls-lint)](https://goreportcard.com/report/github.com/loeffel-io/ls-lint)
 <a href="https://www.npmjs.com/package/@ls-lint/ls-lint"><img src="https://img.shields.io/npm/v/@ls-lint/ls-lint.svg?sanitize=true" alt="Version"></a>
+<a href="https://www.npmjs.com/package/@ls-lint/ls-lint"><img src="https://img.shields.io/npm/dm/@ls-lint/ls-lint?label=npm%20downloads" alt="NPM Downloads"></a>
 <a href="https://www.npmjs.com/package/@ls-lint/ls-lint"><img src="https://img.shields.io/npm/l/@ls-lint/ls-lint.svg?sanitize=true" alt="License"></a>
 
 - Works for directory and file names (all extensions supported)
@@ -27,7 +28,7 @@ An extremely fast file and directory name linter
 - Multiple rules supported by `|` - They are logicly *OR* combined
 - `.dir` set rules for the current directory and their subdirectories
 - Rules for subdirectories will overwrite the rules for all their subdirectories
-- For Windows you must use backslashs `\` instead of slashs `/` 
+- For Windows you can use backslashs `\` or slashs `/` - slashs recommenced
 
 ```yaml
 # .ls-lint.yml
@@ -65,19 +66,19 @@ ignore:
 ### MacOS
 
 ```bash
-curl -sL -o ls-lint https://github.com/loeffel-io/ls-lint/releases/download/v1.8.1/ls-lint-darwin && chmod +x ls-lint && ./ls-lint
+curl -sL -o ls-lint https://github.com/loeffel-io/ls-lint/releases/download/v1.9.0/ls-lint-darwin && chmod +x ls-lint && ./ls-lint
 ```
 
 ### Linux
 
 ```bash
-curl -sL -o ls-lint https://github.com/loeffel-io/ls-lint/releases/download/v1.8.1/ls-lint-linux && chmod +x ls-lint && ./ls-lint
+curl -sL -o ls-lint https://github.com/loeffel-io/ls-lint/releases/download/v1.9.0/ls-lint-linux && chmod +x ls-lint && ./ls-lint
 ```
 
 ### Windows
 
 ```bash
-# (!) First download the .exe from https://github.com/loeffel-io/ls-lint/releases/download/v1.8.1/ls-lint-windows.exe
+# (!) First download the .exe from https://github.com/loeffel-io/ls-lint/releases/download/v1.9.0/ls-lint-windows.exe
 ls-lint-windows.exe
 ```
 
@@ -108,7 +109,7 @@ npx @ls-lint/ls-lint
 ## Docker
 
 ```bash
-docker run -t -v /path/to/files:/data lslintorg/ls-lint:1
+docker run -t -v /path/to/files:/data lslintorg/ls-lint:v1.9.0
 ```
 
 ## Rules
@@ -134,6 +135,10 @@ docker run -t -v /path/to/files:/data lslintorg/ls-lint:1
 - [x] Add ignore directories and files
 
 ## Major changes
+
+**v1.9.0**
+
+- Added path separator replacement: you can now use `/` on any os instead of e.g. using `\` for windows machines in your `ls-lint.yml` file
 
 **v1.8.0**
 
