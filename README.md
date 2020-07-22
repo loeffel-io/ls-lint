@@ -34,6 +34,7 @@ The full documentation can be found at [ls-lint.org](https://ls-lint.org)
 ls: 
     .js: snake_case
     .ts: snake_case | camelCase
+    .html: regex:[a-z0-9]+
 
 ignore:
     - node_modules
