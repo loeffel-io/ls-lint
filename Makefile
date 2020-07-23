@@ -13,6 +13,7 @@ build:
 	GOOS=windows GOARCH=amd64 go build -o ls-lint-windows.exe
 
 build-npm:
+	cp README.md npm/README.md
 	make build-npm-darwin
 	make build-npm-linux
 	make build-npm-windows
