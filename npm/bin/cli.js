@@ -24,7 +24,12 @@ function getPlatformPath() {
     case 'darwin':
       return 'ls-lint-darwin';
     case 'linux':
-      return 'ls-lint-linux';
+      switch (process.arch) {
+	case 'x64':
+          return 'ls-lint-linux';
+        case 'arm64':
+	  return 'ls-lint-linux-arm64';
+      }
     case 'win32':
       return 'ls-lint-windows.exe';
     default:
