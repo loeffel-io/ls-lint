@@ -37,6 +37,7 @@ steps:
       files:
         - ls-lint-darwin
         - ls-lint-linux
+        - ls-lint-linux-arm64
         - ls-lint-windows.exe
     when:
       event: tag
