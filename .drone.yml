@@ -66,6 +66,9 @@ type: docker
 name: docker-linux-amd64
 depends_on:
   - main
+trigger:
+  ref:
+    - "refs/tags/**"
 
 platform:
   os: linux
@@ -86,8 +89,6 @@ steps:
       auto_tag: true
       auto_tag_suffix: linux-amd64
       repo: lslintorg/ls-lint
-    when:
-      event: tag
 
 ---
 kind: pipeline
@@ -95,6 +96,9 @@ type: docker
 name: docker-linux-arm64
 depends_on:
   - main
+trigger:
+  ref:
+    - "refs/tags/**"
 
 platform:
   os: linux
@@ -115,8 +119,6 @@ steps:
       auto_tag: true
       auto_tag_suffix: linux-arm64
       repo: lslintorg/ls-lint
-    when:
-      event: tag
 
 ---
 kind: pipeline
@@ -125,6 +127,9 @@ name: docker-manifest
 depends_on:
   - docker-linux-amd64
   - docker-linux-arm64
+trigger:
+  ref:
+    - "refs/tags/**"
 
 platform:
   os: linux
@@ -142,5 +147,3 @@ steps:
       username: loeffel
       password:
         from_secret: DOCKER_PASSWORD
-    when:
-      event: tag
