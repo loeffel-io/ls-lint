@@ -72,6 +72,10 @@ platform:
   arch: amd64
 
 steps:
+  - name: build
+    image: golang
+    commands:
+      - make build
   - name: docker hub
     image: plugins/docker:linux-amd64
     settings:
@@ -97,6 +101,10 @@ platform:
   arch: arm64
 
 steps:
+  - name: build
+    image: golang
+    commands:
+      - make build
   - name: docker hub
     image: plugins/docker:linux-arm64
     settings:
