@@ -1,6 +1,10 @@
 kind: pipeline
 type: docker
-name: docker
+name: main
+
+platform:
+  os: linux
+  arch: amd64
 
 steps:
   - name: install
@@ -55,14 +59,79 @@ steps:
     when:
       event: tag
 
-  - name: docker hub
-    image: plugins/docker
+---
+kind: pipeline
+type: docker
+name: docker-linux-amd64
+depends_on:
+  - main
+
+platform:
+  os: linux
+  arch: amd64
+
+steps:
+    - name: docker hub
+    image: plugins/docker:linux-amd64
     settings:
       username: loeffel
       password:
         from_secret: DOCKER_PASSWORD
       dockerfile: docker/Dockerfile
       auto_tag: true
+    auto_tag_suffix: linux-amd64
       repo: lslintorg/ls-lint
     when:
       event: tag
+
+---
+kind: pipeline
+type: docker
+name: docker-linux-arm64
+depends_on:
+  - main
+
+platform:
+  os: linux
+  arch: arm64
+
+steps:
+  - name: docker hub
+  image: plugins/docker:linux-arm64
+  settings:
+    username: loeffel
+    password:
+      from_secret: DOCKER_PASSWORD
+    dockerfile: docker/Dockerfile.arm64
+    auto_tag: true
+    auto_tag_suffix: linux-arm64
+    repo: lslintorg/ls-lint
+  when:
+    event: tag
+
+---
+kind: pipeline
+type: docker
+name: docker-manifest
+depends_on:
+  - docker-linux-amd64
+  - docker-linux-arm64
+
+platform:
+  os: linux
+  arch: amd64
+
+steps:
+  - name: manifest
+  pull: always
+  image: plugins/manifest
+  settings:
+    auto_tag: true
+    ignore_missing: true
+    spec: docker/manifest.tmpl
+    repo: lslintorg/ls-lint
+    username: loeffel
+    password:
+      from_secret: DOCKER_PASSWORD
+  when:
+    event: tag
