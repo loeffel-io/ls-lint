@@ -67,8 +67,8 @@ name: docker-linux-amd64
 depends_on:
   - main
 trigger:
-  ref:
-    - "refs/tags/**"
+  event:
+    - tag
 
 platform:
   os: linux
@@ -97,8 +97,8 @@ name: docker-linux-arm64
 depends_on:
   - main
 trigger:
-  ref:
-    - "refs/tags/**"
+  event:
+    - tag
 
 platform:
   os: linux
@@ -128,8 +128,8 @@ depends_on:
   - docker-linux-amd64
   - docker-linux-arm64
 trigger:
-  ref:
-    - "refs/tags/**"
+  event:
+    - tag
 
 platform:
   os: linux
