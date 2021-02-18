@@ -41,6 +41,7 @@ steps:
         from_secret: GITHUB_TOKEN
       files:
         - ls-lint-darwin
+        - ls-lint-darwin-arm64
         - ls-lint-linux
         - ls-lint-linux-arm64
         - ls-lint-windows.exe
