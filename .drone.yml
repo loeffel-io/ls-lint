@@ -9,7 +9,7 @@ platform:
 
 steps:
   - name: install
-    image: golang
+    image: golang:1.15
     commands:
       - make install
 
@@ -24,7 +24,7 @@ steps:
       - curl -sL -o ls-lint https://github.com/loeffel-io/ls-lint/releases/download/v1.9.2/ls-lint-linux && chmod +x ls-lint && ./ls-lint
 
   - name: test
-    image: golang
+    image: golang:1.15
     commands:
       - make test-coverage
 

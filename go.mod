@@ -1,6 +1,6 @@
 module github.com/loeffel-io/ls-lint
 
-go 1.14
+go 1.15
 
 require (
 	github.com/bmatcuk/doublestar v1.3.4
