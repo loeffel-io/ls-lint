@@ -1,6 +1,6 @@
 {
   "name": "@ls-lint/ls-lint",
-  "version": "1.9.2",
+  "version": "1.10.0-beta.1",
   "description": "The 64-bit binary for ls-lint",
   "repository": "https://github.com/loeffel-io/ls-lint",
   "license": "MIT",
@@ -14,7 +14,8 @@
     "win32"
   ],
   "cpu": [
-    "x64"
+    "x64",
+    "arm64"
   ],
   "keywords": [
     "linter",

@@ -1,0 +1,6 @@
+FROM gcr.io/distroless/base
+
+COPY ls-lint-linux-arm64 ls-lint
+VOLUME /data
+WORKDIR /data
+CMD ["/ls-lint"]

@@ -22,9 +22,26 @@ function spawnCommand(binaryExecutable) {
 function getPlatformPath() {
   switch (process.platform) {
     case 'darwin':
+      switch (process.arch) {
+        case 'x64':
+          return 'ls-lint-darwin';
+        case 'arm64':
+          return 'ls-lint-linux-arm64';
+        default:
+          console.log('ls-lint builds are not available on platform: ' + process.platform + ' arch: ' + process.arch);
+          process.exit(1);
+      }
       return 'ls-lint-darwin';
     case 'linux':
-      return 'ls-lint-linux';
+      switch (process.arch) {
+        case 'x64':
+          return 'ls-lint-linux';
+        case 'arm64':
+          return 'ls-lint-linux-arm64';
+        default:
+          console.log('ls-lint builds are not available on platform: ' + process.platform + ' arch: ' + process.arch);
+          process.exit(1);
+      }
     case 'win32':
       return 'ls-lint-windows.exe';
     default:
