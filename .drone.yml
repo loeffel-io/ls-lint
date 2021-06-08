@@ -142,7 +142,6 @@ steps:
     image: plugins/manifest
     settings:
       auto_tag: true
-      ignore_missing: true
       spec: docker/manifest.tmpl
       repo: lslintorg/ls-lint
       username: loeffel
