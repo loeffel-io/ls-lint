@@ -26,7 +26,7 @@ function getPlatformPath() {
         case 'x64':
           return 'ls-lint-darwin';
         case 'arm64':
-          return 'ls-lint-linux-arm64';
+          return 'ls-lint-darwin-arm64';
         default:
           console.log('ls-lint builds are not available on platform: ' + process.platform + ' arch: ' + process.arch);
           process.exit(1);
