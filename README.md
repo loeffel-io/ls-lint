@@ -15,6 +15,7 @@ An extremely fast directory and filename linter - Bring some structure to your p
 - Works for directory and file names - all extensions supported - full unicode support
 - Incredibly fast - lints thousands of files and directories in milliseconds
 - Support for Windows, MacOS and Linux + NPM Package & Docker Image
+- ARM support
 - Almost zero third-party dependencies (only [go-yaml](https://github.com/go-yaml/yaml) and [doublestar](https://github.com/bmatcuk/doublestar))
 
 ## Documentation
