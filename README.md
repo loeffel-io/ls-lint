@@ -55,7 +55,7 @@ ignore:
 
 ## Sponsors
 
-- [Makeless - Saas Ecosystem](https://github.com/makeless)
+- [Makeless - Saas Framework](https://github.com/makeless)
 
 ## Logo
 
