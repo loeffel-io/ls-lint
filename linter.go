@@ -145,7 +145,6 @@ func (linter *Linter) validateFile(config *Config, index index, path string) err
 
 func (linter *Linter) Run(filesystem fs.FS, config *Config, debug bool, statistics bool) (err error) {
 	var index index
-	var g = new(errgroup.Group)
 	var ls = config.getLs()
 	var ignoreIndex = config.getIgnoreIndex()
 
@@ -162,64 +161,56 @@ func (linter *Linter) Run(filesystem fs.FS, config *Config, debug bool, statisti
 	log.Printf("final index: %+v", index)
 	log.Printf("%+v", ls)
 
-	for entrypoint := range ls {
-		entrypoint := entrypoint
-		log.Printf("entrypoint: %+v", entrypoint)
-		g.Go(func() error {
-			return fs.WalkDir(filesystem, entrypoint.(string), func(path string, info fs.DirEntry, err error) error {
-				if config.shouldIgnore(ignoreIndex, path) {
-					if info.IsDir() {
-						if debug {
-							log.Printf("skip dir: %s", path)
-						}
-
-						if statistics {
-							defer linter.getStatistic().AddDirSkip()
-						}
-
-						return fs.SkipDir
-					}
-
-					if debug {
-						log.Printf("skip file: %s", path)
-					}
-
-					if statistics {
-						defer linter.getStatistic().AddFileSkip()
-					}
-
-					return nil
-				}
-
-				if info == nil {
-					log.Printf("asfasdfasd")
-					return fmt.Errorf("%s not found", entrypoint)
-				}
-
-				if info.IsDir() {
-					if debug {
-						log.Printf("lint dir: %s", path)
-					}
-
-					if statistics {
-						defer linter.getStatistic().AddDir()
-					}
-
-					return linter.validateDir(config, index, path)
-				}
-
+	return fs.WalkDir(filesystem, ".", func(path string, info fs.DirEntry, err error) error {
+		if config.shouldIgnore(ignoreIndex, path) {
+			if info.IsDir() {
 				if debug {
-					log.Printf("lint file: %s", path)
+					log.Printf("skip dir: %s", path)
 				}
 
 				if statistics {
-					defer linter.getStatistic().AddFile()
+					defer linter.getStatistic().AddDirSkip()
 				}
 
-				return linter.validateFile(config, index, path)
-			})
-		})
-	}
+				return fs.SkipDir
+			}
 
-	return g.Wait()
+			if debug {
+				log.Printf("skip file: %s", path)
+			}
+
+			if statistics {
+				defer linter.getStatistic().AddFileSkip()
+			}
+
+			return nil
+		}
+
+		if info == nil {
+			log.Printf("asfasdfasd")
+			return fmt.Errorf("%s not found", path)
+		}
+
+		if info.IsDir() {
+			if debug {
+				log.Printf("lint dir: %s", path)
+			}
+
+			if statistics {
+				defer linter.getStatistic().AddDir()
+			}
+
+			return linter.validateDir(config, index, path)
+		}
+
+		if debug {
+			log.Printf("lint file: %s", path)
+		}
+
+		if statistics {
+			defer linter.getStatistic().AddFile()
+		}
+
+		return linter.validateFile(config, index, path)
+	})
 }

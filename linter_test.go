@@ -24,49 +24,49 @@ func TestLinterRun(t *testing.T) {
 		expectedStatistic *Statistic
 		expectedErrors    []*Error
 	}{
-		//{
-		//	description: "success",
-		//	filesystem: fstest.MapFS{
-		//		"snake_case.png":              &fstest.MapFile{Mode: fs.ModePerm},
-		//		"kebab-case.png":              &fstest.MapFile{Mode: fs.ModePerm},
-		//		"node_modules":                &fstest.MapFile{Mode: fs.ModeDir},
-		//		"node_modules/snake_case.png": &fstest.MapFile{Mode: fs.ModePerm},
-		//		"test":                        &fstest.MapFile{Mode: fs.ModeDir},
-		//		"test/snake_case_123.png":     &fstest.MapFile{Mode: fs.ModePerm},
-		//	},
-		//	config: &Config{
-		//		Ls: ls{
-		//			".png": "snake_case",
-		//		},
-		//		Ignore: []string{
-		//			"node_modules",
-		//			"kebab-case.png",
-		//		},
-		//		RWMutex: new(sync.RWMutex),
-		//	},
-		//	linter: &Linter{
-		//		Statistic: &Statistic{
-		//			Start:     start,
-		//			Files:     0,
-		//			FileSkips: 0,
-		//			Dirs:      0,
-		//			DirSkips:  0,
-		//			RWMutex:   new(sync.RWMutex),
-		//		},
-		//		Errors:  []*Error{},
-		//		RWMutex: new(sync.RWMutex),
-		//	},
-		//	expectedErr: nil,
-		//	expectedStatistic: &Statistic{
-		//		Start:     start,
-		//		Files:     2,
-		//		FileSkips: 1,
-		//		Dirs:      2,
-		//		DirSkips:  1,
-		//		RWMutex:   new(sync.RWMutex),
-		//	},
-		//	expectedErrors: []*Error{},
-		//},
+		{
+			description: "success",
+			filesystem: fstest.MapFS{
+				"snake_case.png":              &fstest.MapFile{Mode: fs.ModePerm},
+				"kebab-case.png":              &fstest.MapFile{Mode: fs.ModePerm},
+				"node_modules":                &fstest.MapFile{Mode: fs.ModeDir},
+				"node_modules/snake_case.png": &fstest.MapFile{Mode: fs.ModePerm},
+				"test":                        &fstest.MapFile{Mode: fs.ModeDir},
+				"test/snake_case_123.png":     &fstest.MapFile{Mode: fs.ModePerm},
+			},
+			config: &Config{
+				Ls: ls{
+					".png": "snake_case",
+				},
+				Ignore: []string{
+					"node_modules",
+					"kebab-case.png",
+				},
+				RWMutex: new(sync.RWMutex),
+			},
+			linter: &Linter{
+				Statistic: &Statistic{
+					Start:     start,
+					Files:     0,
+					FileSkips: 0,
+					Dirs:      0,
+					DirSkips:  0,
+					RWMutex:   new(sync.RWMutex),
+				},
+				Errors:  []*Error{},
+				RWMutex: new(sync.RWMutex),
+			},
+			expectedErr: nil,
+			expectedStatistic: &Statistic{
+				Start:     start,
+				Files:     2,
+				FileSkips: 1,
+				Dirs:      2,
+				DirSkips:  1,
+				RWMutex:   new(sync.RWMutex),
+			},
+			expectedErrors: []*Error{},
+		},
 		//{
 		//	description: "fail",
 		//	filesystem: fstest.MapFS{
