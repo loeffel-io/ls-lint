@@ -10,7 +10,7 @@ import (
 	"sync"
 )
 
-type ls map[interface{}]interface{}
+type ls map[string]interface{}
 type index map[string]map[string][]Rule
 
 const (
@@ -117,7 +117,7 @@ func (config *Config) walkIndex(index index, key string, list ls) error {
 		}
 
 		if reflect.TypeOf(v).Kind() == reflect.Map {
-			if err := config.walkIndex(index, fmt.Sprintf("%s%s%s", key, sep, k.(string)), v.(ls)); err != nil {
+			if err := config.walkIndex(index, fmt.Sprintf("%s%s%s", key, sep, k), v.(ls)); err != nil {
 				return err
 			}
 
@@ -136,7 +136,7 @@ func (config *Config) walkIndex(index index, key string, list ls) error {
 					return fmt.Errorf("rule %s failed with %s", ruleName, err.Error())
 				}
 
-				index[key][k.(string)] = append(index[key][k.(string)], rule)
+				index[key][k] = append(index[key][k], rule)
 				continue
 			}
 
@@ -151,7 +151,7 @@ func (config *Config) getIndex(list ls) (index, error) {
 	var index = make(index)
 
 	for key, value := range list {
-		if err := config.walkIndex(index, key.(string), value.(ls)); err != nil {
+		if err := config.walkIndex(index, key, value.(ls)); err != nil {
 			return nil, err
 		}
 	}

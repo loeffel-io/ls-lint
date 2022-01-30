@@ -153,7 +153,7 @@ func (linter *Linter) Run(filesystem fs.FS, config *Config) (err error) {
 	for entrypoint := range ls {
 		entrypoint := entrypoint
 		g.Go(func() error {
-			return fs.WalkDir(filesystem, entrypoint.(string), func(path string, info fs.DirEntry, err error) error {
+			return fs.WalkDir(filesystem, entrypoint, func(path string, info fs.DirEntry, err error) error {
 				if config.shouldIgnore(ignoreIndex, path) {
 					return fs.SkipDir
 				}
