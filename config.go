@@ -2,7 +2,8 @@ package main
 
 import (
 	"fmt"
-	"github.com/bmatcuk/doublestar"
+	"github.com/bmatcuk/doublestar/v4"
+	"io/fs"
 	"os"
 	"reflect"
 	"strings"
@@ -158,7 +159,7 @@ func (config *Config) getIndex(list ls) (index, error) {
 	return index, nil
 }
 
-func (config *Config) globIndex(index index) (err error) {
+func (config *Config) globIndex(filesystem fs.FS, index index) (err error) {
 	for key, value := range index {
 		var matches []string
 
@@ -166,7 +167,7 @@ func (config *Config) globIndex(index index) (err error) {
 			continue
 		}
 
-		if matches, err = doublestar.Glob(key); err != nil {
+		if matches, err = doublestar.Glob(filesystem, key); err != nil {
 			return err
 		}
 

@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"golang.org/x/sync/errgroup"
-	"os"
+	"io/fs"
 	"path/filepath"
 	"strings"
 	"sync"
@@ -80,7 +80,7 @@ func (linter *Linter) validateDir(config *Config, index index, path string) erro
 	return nil
 }
 
-func (linter *Linter) validateFile(config *Config, index index, entrypoint string, path string) error {
+func (linter *Linter) validateFile(config *Config, index index, path string) error {
 	var ext string
 	var g = new(errgroup.Group)
 	var rulesError = 0
@@ -134,7 +134,7 @@ func (linter *Linter) validateFile(config *Config, index index, entrypoint strin
 	return nil
 }
 
-func (linter *Linter) Run(config *Config) (err error) {
+func (linter *Linter) Run(filesystem fs.FS, config *Config) (err error) {
 	var index index
 	var g = new(errgroup.Group)
 	var ls = config.getLs()
@@ -146,16 +146,16 @@ func (linter *Linter) Run(config *Config) (err error) {
 	}
 
 	// glob index
-	if err := config.globIndex(index); err != nil {
+	if err := config.globIndex(filesystem, index); err != nil {
 		return err
 	}
 
 	for entrypoint := range ls {
 		entrypoint := entrypoint
 		g.Go(func() error {
-			return filepath.Walk(entrypoint.(string), func(path string, info os.FileInfo, err error) error {
+			return fs.WalkDir(filesystem, entrypoint.(string), func(path string, info fs.DirEntry, err error) error {
 				if config.shouldIgnore(ignoreIndex, path) {
-					return nil
+					return fs.SkipDir
 				}
 
 				path = getFullPath(path)
@@ -168,7 +168,7 @@ func (linter *Linter) Run(config *Config) (err error) {
 					return linter.validateDir(config, index, path)
 				}
 
-				return linter.validateFile(config, index, entrypoint.(string), path)
+				return linter.validateFile(config, index, path)
 			})
 		})
 	}

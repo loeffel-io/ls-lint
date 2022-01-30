@@ -5,7 +5,7 @@ linter:
 	golangci-lint run
 
 test-coverage:
-	go test -v -race -coverprofile=coverage.txt -covermode=atomic ./...
+	CGO_ENABLED=1 go test -v -race -coverprofile=coverage.txt -covermode=atomic ./...
 
 build:
 	GOOS=darwin GOARCH=amd64 go build -o ls-lint-darwin

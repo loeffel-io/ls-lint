@@ -15,6 +15,8 @@ func getFullPath(path string) string {
 }
 
 func main() {
+	var filesystem = os.DirFS(root)
+
 	var config = &Config{
 		RWMutex: new(sync.RWMutex),
 	}
@@ -55,7 +57,7 @@ func main() {
 	}
 
 	// runner
-	if err := linter.Run(config); err != nil {
+	if err := linter.Run(filesystem, config); err != nil {
 		log.Fatal(err)
 	}
 
