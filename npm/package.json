@@ -1,7 +1,7 @@
 {
   "name": "@ls-lint/ls-lint",
   "version": "1.10.0",
-  "description": "The 64-bit binary for ls-lint",
+  "description": "An extremely fast directory and filename linter",
   "repository": "https://github.com/loeffel-io/ls-lint",
   "license": "MIT",
   "main": "./bin/cli.js",
