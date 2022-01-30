@@ -7,9 +7,12 @@ import (
 	"sync"
 	"testing"
 	"testing/fstest"
+	"time"
 )
 
 func TestLinterRun(t *testing.T) {
+	var start = time.Now()
+
 	var tests = []*struct {
 		filesystem        fs.FS
 		config            *Config
@@ -33,6 +36,7 @@ func TestLinterRun(t *testing.T) {
 			},
 			linter: &Linter{
 				Statistic: &Statistic{
+					Start:     start,
 					Files:     0,
 					FileSkips: 0,
 					Dirs:      0,
@@ -44,6 +48,7 @@ func TestLinterRun(t *testing.T) {
 			},
 			expectedErr: nil,
 			expectedStatistic: &Statistic{
+				Start:     start,
 				Files:     1,
 				FileSkips: 0,
 				Dirs:      1,

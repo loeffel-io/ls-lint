@@ -1,8 +1,12 @@
 package main
 
-import "sync"
+import (
+	"sync"
+	"time"
+)
 
 type Statistic struct {
+	Start     time.Time
 	Files     int64
 	FileSkips int64
 	Dirs      int64

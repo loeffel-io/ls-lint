@@ -170,7 +170,7 @@ func (linter *Linter) Run(filesystem fs.FS, config *Config, debug bool, statisti
 						}
 
 						if statistics {
-							linter.getStatistic().AddDirSkip()
+							defer linter.getStatistic().AddDirSkip()
 						}
 
 						return fs.SkipDir
@@ -181,7 +181,7 @@ func (linter *Linter) Run(filesystem fs.FS, config *Config, debug bool, statisti
 					}
 
 					if statistics {
-						linter.getStatistic().AddFileSkip()
+						defer linter.getStatistic().AddFileSkip()
 					}
 
 					return nil
@@ -199,7 +199,7 @@ func (linter *Linter) Run(filesystem fs.FS, config *Config, debug bool, statisti
 					}
 
 					if statistics {
-						linter.getStatistic().AddDir()
+						defer linter.getStatistic().AddDir()
 					}
 
 					return linter.validateDir(config, index, path)
@@ -210,7 +210,7 @@ func (linter *Linter) Run(filesystem fs.FS, config *Config, debug bool, statisti
 				}
 
 				if statistics {
-					linter.getStatistic().AddFile()
+					defer linter.getStatistic().AddFile()
 				}
 
 				return linter.validateFile(config, index, path)
