@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"golang.org/x/sync/errgroup"
 	"io/fs"
+	"log"
 	"path/filepath"
 	"strings"
 	"sync"
@@ -142,7 +143,7 @@ func (linter *Linter) validateFile(config *Config, index index, path string) err
 	return nil
 }
 
-func (linter *Linter) Run(filesystem fs.FS, statistics bool, config *Config) (err error) {
+func (linter *Linter) Run(filesystem fs.FS, config *Config, debug bool, statistics bool) (err error) {
 	var index index
 	var g = new(errgroup.Group)
 	var ls = config.getLs()
@@ -164,11 +165,19 @@ func (linter *Linter) Run(filesystem fs.FS, statistics bool, config *Config) (er
 			return fs.WalkDir(filesystem, entrypoint, func(path string, info fs.DirEntry, err error) error {
 				if config.shouldIgnore(ignoreIndex, path) {
 					if info.IsDir() {
+						if debug {
+							log.Printf("skip dir: %s", path)
+						}
+
 						if statistics {
 							linter.getStatistic().AddDirSkip()
 						}
 
 						return fs.SkipDir
+					}
+
+					if debug {
+						log.Printf("skip file: %s", path)
 					}
 
 					if statistics {
@@ -185,11 +194,19 @@ func (linter *Linter) Run(filesystem fs.FS, statistics bool, config *Config) (er
 				}
 
 				if info.IsDir() {
+					if debug {
+						log.Printf("lint dir: %s", path)
+					}
+
 					if statistics {
 						linter.getStatistic().AddDir()
 					}
 
 					return linter.validateDir(config, index, path)
+				}
+
+				if debug {
+					log.Printf("lint file: %s", path)
 				}
 
 				if statistics {

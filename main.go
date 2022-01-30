@@ -68,7 +68,7 @@ func main() {
 	}
 
 	// runner
-	if err := linter.Run(filesystem, false, config); err != nil {
+	if err := linter.Run(filesystem, config, false, false); err != nil {
 		log.Fatal(err)
 	}
 
