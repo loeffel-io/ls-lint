@@ -10,8 +10,16 @@ import (
 )
 
 type Linter struct {
-	Errors []*Error
+	Statistic *Statistic
+	Errors    []*Error
 	*sync.RWMutex
+}
+
+func (linter *Linter) getStatistic() *Statistic {
+	linter.RLock()
+	defer linter.RUnlock()
+
+	return linter.Statistic
 }
 
 func (linter *Linter) getErrors() []*Error {
@@ -134,7 +142,7 @@ func (linter *Linter) validateFile(config *Config, index index, path string) err
 	return nil
 }
 
-func (linter *Linter) Run(filesystem fs.FS, config *Config) (err error) {
+func (linter *Linter) Run(filesystem fs.FS, statistics bool, config *Config) (err error) {
 	var index index
 	var g = new(errgroup.Group)
 	var ls = config.getLs()
@@ -155,7 +163,19 @@ func (linter *Linter) Run(filesystem fs.FS, config *Config) (err error) {
 		g.Go(func() error {
 			return fs.WalkDir(filesystem, entrypoint, func(path string, info fs.DirEntry, err error) error {
 				if config.shouldIgnore(ignoreIndex, path) {
-					return fs.SkipDir
+					if info.IsDir() {
+						if statistics {
+							linter.getStatistic().AddDirSkip()
+						}
+
+						return fs.SkipDir
+					}
+
+					if statistics {
+						linter.getStatistic().AddFileSkip()
+					}
+
+					return nil
 				}
 
 				path = getFullPath(path)
@@ -165,7 +185,15 @@ func (linter *Linter) Run(filesystem fs.FS, config *Config) (err error) {
 				}
 
 				if info.IsDir() {
+					if statistics {
+						linter.getStatistic().AddDir()
+					}
+
 					return linter.validateDir(config, index, path)
+				}
+
+				if statistics {
+					linter.getStatistic().AddFile()
 				}
 
 				return linter.validateFile(config, index, path)

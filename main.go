@@ -32,8 +32,9 @@ func main() {
 	}
 
 	var linter = &Linter{
-		Errors:  make([]*Error, 0),
-		RWMutex: new(sync.RWMutex),
+		Statistic: nil,
+		Errors:    make([]*Error, 0),
+		RWMutex:   new(sync.RWMutex),
 	}
 
 	// open config file
@@ -67,7 +68,7 @@ func main() {
 	}
 
 	// runner
-	if err := linter.Run(filesystem, config); err != nil {
+	if err := linter.Run(filesystem, false, config); err != nil {
 		log.Fatal(err)
 	}
 
