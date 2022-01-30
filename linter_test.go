@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"fmt"
 	"io/fs"
 	"reflect"
 	"sync"
@@ -14,6 +15,7 @@ func TestLinterRun(t *testing.T) {
 	var start = time.Now()
 
 	var tests = []*struct {
+		description       string
 		filesystem        fs.FS
 		config            *Config
 		linter            *Linter
@@ -22,6 +24,7 @@ func TestLinterRun(t *testing.T) {
 		expectedErrors    []*Error
 	}{
 		{
+			description: "success",
 			filesystem: fstest.MapFS{
 				"snake_case.png":              &fstest.MapFile{Mode: fs.ModePerm},
 				"kebab-case.png":              &fstest.MapFile{Mode: fs.ModePerm},
@@ -63,6 +66,49 @@ func TestLinterRun(t *testing.T) {
 			},
 			expectedErrors: []*Error{},
 		},
+		{
+			description: "fail",
+			filesystem: fstest.MapFS{
+				"not-snake-case.png": &fstest.MapFile{Mode: fs.ModePerm},
+			},
+			config: &Config{
+				Ls: map[string]interface{}{
+					".png": "snake_case",
+				},
+				Ignore:  []string{},
+				RWMutex: new(sync.RWMutex),
+			},
+			linter: &Linter{
+				Statistic: &Statistic{
+					Start:     start,
+					Files:     0,
+					FileSkips: 0,
+					Dirs:      0,
+					DirSkips:  0,
+					RWMutex:   new(sync.RWMutex),
+				},
+				Errors:  []*Error{},
+				RWMutex: new(sync.RWMutex),
+			},
+			expectedErr: nil,
+			expectedStatistic: &Statistic{
+				Start:     start,
+				Files:     1,
+				FileSkips: 0,
+				Dirs:      1,
+				DirSkips:  0,
+				RWMutex:   new(sync.RWMutex),
+			},
+			expectedErrors: []*Error{
+				{
+					Path: "not-snake-case.png",
+					Rules: []Rule{
+						definitions["snakecase"],
+					},
+					RWMutex: new(sync.RWMutex),
+				},
+			},
+		},
 	}
 
 	var i = 0
@@ -70,15 +116,24 @@ func TestLinterRun(t *testing.T) {
 		err := test.linter.Run(test.filesystem, test.config, true, true)
 
 		if !errors.Is(err, test.expectedErr) {
-			t.Errorf("Test %d failed with unmatched error value - %v", i, err)
+			t.Errorf("Test %d (%s) failed with unmatched error value - %v", i, test.description, err)
 		}
 
 		if !reflect.DeepEqual(test.linter.getStatistic(), test.expectedStatistic) {
-			t.Errorf("Test %d failed with unmatched linter statistic values\nexpected: %+v\nactual: %+v", i, test.expectedStatistic, test.linter.getStatistic())
+			t.Errorf("Test %d (%s) failed with unmatched linter statistic values\nexpected: %+v\nactual: %+v", i, test.description, test.expectedStatistic, test.linter.getStatistic())
 		}
 
-		if !reflect.DeepEqual(test.linter.getErrors(), test.expectedErrors) {
-			t.Errorf("Test %d failed with unmatched linter errors value\nexpected: %+v\nactual: %+v", i, test.expectedErrors, test.linter.getErrors())
+		var equalErrorsErr = fmt.Errorf("Test %d (%s) failed with unmatched linter errors value\nexpected: %+v\nactual: %+v", i, test.description, test.expectedErrors, test.linter.getErrors())
+		for i, tmpError := range test.linter.getErrors() {
+			if tmpError.getPath() != test.linter.getErrors()[i].Path {
+				t.Error(equalErrorsErr)
+			}
+
+			for j, tmpRule := range tmpError.getRules() {
+				if tmpRule.GetName() != test.linter.getErrors()[i].getRules()[j].GetName() {
+					t.Error(equalErrorsErr)
+				}
+			}
 		}
 
 		i++
