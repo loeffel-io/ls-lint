@@ -101,9 +101,9 @@ func TestLinterRun(t *testing.T) {
 			},
 			expectedErrors: []*Error{
 				{
-					Path: "not-snake-case.png",
+					Path: "./not-snake-case.png",
 					Rules: []Rule{
-						definitions["snakecase"],
+						new(RuleSnakeCase).Init(),
 					},
 					RWMutex: new(sync.RWMutex),
 				},
@@ -117,21 +117,25 @@ func TestLinterRun(t *testing.T) {
 
 		if !errors.Is(err, test.expectedErr) {
 			t.Errorf("Test %d (%s) failed with unmatched error value - %v", i, test.description, err)
+			return
 		}
 
 		if !reflect.DeepEqual(test.linter.getStatistic(), test.expectedStatistic) {
 			t.Errorf("Test %d (%s) failed with unmatched linter statistic values\nexpected: %+v\nactual: %+v", i, test.description, test.expectedStatistic, test.linter.getStatistic())
+			return
 		}
 
 		var equalErrorsErr = fmt.Errorf("Test %d (%s) failed with unmatched linter errors value\nexpected: %+v\nactual: %+v", i, test.description, test.expectedErrors, test.linter.getErrors())
 		for i, tmpError := range test.linter.getErrors() {
-			if tmpError.getPath() != test.linter.getErrors()[i].Path {
+			if tmpError.getPath() != test.expectedErrors[i].getPath() {
 				t.Error(equalErrorsErr)
+				return
 			}
 
 			for j, tmpRule := range tmpError.getRules() {
-				if tmpRule.GetName() != test.linter.getErrors()[i].getRules()[j].GetName() {
+				if tmpRule.GetName() != test.expectedErrors[i].getRules()[j].GetName() {
 					t.Error(equalErrorsErr)
+					return
 				}
 			}
 		}

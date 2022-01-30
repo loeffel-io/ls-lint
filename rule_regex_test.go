@@ -25,6 +25,7 @@ func TestRuleRegex(t *testing.T) {
 
 		if err != nil && err != test.err {
 			t.Errorf("Test %d failed with unmatched error - %s", i, err.Error())
+			return
 		}
 
 		// validate
@@ -32,10 +33,12 @@ func TestRuleRegex(t *testing.T) {
 
 		if err != nil && err != test.err {
 			t.Errorf("Test %d failed with unmatched error - %s", i, err.Error())
+			return
 		}
 
 		if res != test.expected {
 			t.Errorf("Test %d failed with unmatched return value - %+v", i, res)
+			return
 		}
 
 		i++

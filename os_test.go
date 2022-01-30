@@ -122,6 +122,7 @@ func TestNormalizeConfig(t *testing.T) {
 
 		if !bytes.Equal(res, test.expected) {
 			t.Errorf("Test %d failed with unmatched return value - %+v", i, res)
+			return
 		}
 
 		i++
