@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
+	"github.com/davecgh/go-spew/spew"
 	"io/fs"
 	"reflect"
 	"sync"
@@ -23,23 +24,116 @@ func TestLinterRun(t *testing.T) {
 		expectedStatistic *Statistic
 		expectedErrors    []*Error
 	}{
+		//{
+		//	description: "success",
+		//	filesystem: fstest.MapFS{
+		//		"snake_case.png":              &fstest.MapFile{Mode: fs.ModePerm},
+		//		"kebab-case.png":              &fstest.MapFile{Mode: fs.ModePerm},
+		//		"node_modules":                &fstest.MapFile{Mode: fs.ModeDir},
+		//		"node_modules/snake_case.png": &fstest.MapFile{Mode: fs.ModePerm},
+		//		"test":                        &fstest.MapFile{Mode: fs.ModeDir},
+		//		"test/snake_case_123.png":     &fstest.MapFile{Mode: fs.ModePerm},
+		//	},
+		//	config: &Config{
+		//		Ls: ls{
+		//			".png": "snake_case",
+		//		},
+		//		Ignore: []string{
+		//			"node_modules",
+		//			"kebab-case.png",
+		//		},
+		//		RWMutex: new(sync.RWMutex),
+		//	},
+		//	linter: &Linter{
+		//		Statistic: &Statistic{
+		//			Start:     start,
+		//			Files:     0,
+		//			FileSkips: 0,
+		//			Dirs:      0,
+		//			DirSkips:  0,
+		//			RWMutex:   new(sync.RWMutex),
+		//		},
+		//		Errors:  []*Error{},
+		//		RWMutex: new(sync.RWMutex),
+		//	},
+		//	expectedErr: nil,
+		//	expectedStatistic: &Statistic{
+		//		Start:     start,
+		//		Files:     2,
+		//		FileSkips: 1,
+		//		Dirs:      2,
+		//		DirSkips:  1,
+		//		RWMutex:   new(sync.RWMutex),
+		//	},
+		//	expectedErrors: []*Error{},
+		//},
+		//{
+		//	description: "fail",
+		//	filesystem: fstest.MapFS{
+		//		"not-snake-case.png": &fstest.MapFile{Mode: fs.ModePerm},
+		//	},
+		//	config: &Config{
+		//		Ls: ls{
+		//			".png": "snake_case",
+		//		},
+		//		Ignore:  []string{},
+		//		RWMutex: new(sync.RWMutex),
+		//	},
+		//	linter: &Linter{
+		//		Statistic: &Statistic{
+		//			Start:     start,
+		//			Files:     0,
+		//			FileSkips: 0,
+		//			Dirs:      0,
+		//			DirSkips:  0,
+		//			RWMutex:   new(sync.RWMutex),
+		//		},
+		//		Errors:  []*Error{},
+		//		RWMutex: new(sync.RWMutex),
+		//	},
+		//	expectedErr: nil,
+		//	expectedStatistic: &Statistic{
+		//		Start:     start,
+		//		Files:     1,
+		//		FileSkips: 0,
+		//		Dirs:      1,
+		//		DirSkips:  0,
+		//		RWMutex:   new(sync.RWMutex),
+		//	},
+		//	expectedErrors: []*Error{
+		//		{
+		//			Path: "./not-snake-case.png",
+		//			Rules: []Rule{
+		//				new(RuleSnakeCase).Init(),
+		//			},
+		//			RWMutex: new(sync.RWMutex),
+		//		},
+		//	},
+		//},
 		{
-			description: "success",
+			description: "glob",
 			filesystem: fstest.MapFS{
-				"snake_case.png":              &fstest.MapFile{Mode: fs.ModePerm},
-				"kebab-case.png":              &fstest.MapFile{Mode: fs.ModePerm},
-				"node_modules":                &fstest.MapFile{Mode: fs.ModeDir},
-				"node_modules/snake_case.png": &fstest.MapFile{Mode: fs.ModePerm},
-				"test":                        &fstest.MapFile{Mode: fs.ModeDir},
-				"test/snake_case_123.png":     &fstest.MapFile{Mode: fs.ModePerm},
+				"snake_case.png":         &fstest.MapFile{Mode: fs.ModePerm},
+				"src/a/a":                &fstest.MapFile{Mode: fs.ModeDir},
+				"src/a/a/kebab-case.png": &fstest.MapFile{Mode: fs.ModePerm},
+				"src/b/b":                &fstest.MapFile{Mode: fs.ModeDir},
+				"src/b/b/kebab-case.png": &fstest.MapFile{Mode: fs.ModePerm},
+				"src/c/c":                &fstest.MapFile{Mode: fs.ModeDir},
+				"src/c/c/PascalCase.png": &fstest.MapFile{Mode: fs.ModePerm},
+				"src/c/c/ignore.png":     &fstest.MapFile{Mode: fs.ModePerm},
 			},
 			config: &Config{
-				Ls: map[string]interface{}{
+				Ls: ls{
 					".png": "snake_case",
+					"src/**/c": ls{
+						".png": "PascalCase",
+					},
+					"src/{a,b}/*": ls{
+						".png": "kebab-case",
+					},
 				},
 				Ignore: []string{
-					"node_modules",
-					"kebab-case.png",
+					"src/c/c/ignore.png",
 				},
 				RWMutex: new(sync.RWMutex),
 			},
@@ -58,56 +152,13 @@ func TestLinterRun(t *testing.T) {
 			expectedErr: nil,
 			expectedStatistic: &Statistic{
 				Start:     start,
-				Files:     2,
+				Files:     4,
 				FileSkips: 1,
-				Dirs:      2,
-				DirSkips:  1,
-				RWMutex:   new(sync.RWMutex),
-			},
-			expectedErrors: []*Error{},
-		},
-		{
-			description: "fail",
-			filesystem: fstest.MapFS{
-				"not-snake-case.png": &fstest.MapFile{Mode: fs.ModePerm},
-			},
-			config: &Config{
-				Ls: map[string]interface{}{
-					".png": "snake_case",
-				},
-				Ignore:  []string{},
-				RWMutex: new(sync.RWMutex),
-			},
-			linter: &Linter{
-				Statistic: &Statistic{
-					Start:     start,
-					Files:     0,
-					FileSkips: 0,
-					Dirs:      0,
-					DirSkips:  0,
-					RWMutex:   new(sync.RWMutex),
-				},
-				Errors:  []*Error{},
-				RWMutex: new(sync.RWMutex),
-			},
-			expectedErr: nil,
-			expectedStatistic: &Statistic{
-				Start:     start,
-				Files:     1,
-				FileSkips: 0,
-				Dirs:      1,
+				Dirs:      8,
 				DirSkips:  0,
 				RWMutex:   new(sync.RWMutex),
 			},
-			expectedErrors: []*Error{
-				{
-					Path: "./not-snake-case.png",
-					Rules: []Rule{
-						new(RuleSnakeCase).Init(),
-					},
-					RWMutex: new(sync.RWMutex),
-				},
-			},
+			expectedErrors: []*Error{},
 		},
 	}
 
@@ -126,8 +177,21 @@ func TestLinterRun(t *testing.T) {
 		}
 
 		var equalErrorsErr = fmt.Errorf("Test %d (%s) failed with unmatched linter errors value\nexpected: %+v\nactual: %+v", i, test.description, test.expectedErrors, test.linter.getErrors())
+
+		spew.Dump(test.linter.getErrors())
+
+		if len(test.linter.getErrors()) != len(test.expectedErrors) {
+			t.Error(equalErrorsErr)
+			return
+		}
+
 		for i, tmpError := range test.linter.getErrors() {
 			if tmpError.getPath() != test.expectedErrors[i].getPath() {
+				t.Error(equalErrorsErr)
+				return
+			}
+
+			if len(tmpError.getRules()) != len(test.expectedErrors[i].getRules()) {
 				t.Error(equalErrorsErr)
 				return
 			}

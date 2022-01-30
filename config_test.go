@@ -89,15 +89,6 @@ func TestShouldIgnore(t *testing.T) {
 			path:     "src/test/test.js",
 			expected: true,
 		},
-		{
-			config: config,
-			linter: linter,
-			ignoreIndex: map[string]bool{
-				"./src": true,
-			},
-			path:     "src/test/test.js",
-			expected: true,
-		},
 	}
 
 	var i = 0

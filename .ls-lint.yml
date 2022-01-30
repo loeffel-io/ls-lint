@@ -2,6 +2,9 @@ ls:
   .dir: kebab-case
   .go: snake_case
 
+  npm/*:
+    .js: kebab-case
+
 ignore:
   - .idea
   - .github

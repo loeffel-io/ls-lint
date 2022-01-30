@@ -11,10 +11,6 @@ import (
 	"sync"
 )
 
-func getFullPath(path string) string {
-	return fmt.Sprintf("%s%s%s", root, sep, path)
-}
-
 func main() {
 	var exitCode = 1
 	var writer = os.Stderr

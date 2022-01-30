@@ -159,10 +159,14 @@ func (linter *Linter) Run(filesystem fs.FS, config *Config, debug bool, statisti
 		return err
 	}
 
+	log.Printf("final index: %+v", index)
+	log.Printf("%+v", ls)
+
 	for entrypoint := range ls {
 		entrypoint := entrypoint
+		log.Printf("entrypoint: %+v", entrypoint)
 		g.Go(func() error {
-			return fs.WalkDir(filesystem, entrypoint, func(path string, info fs.DirEntry, err error) error {
+			return fs.WalkDir(filesystem, entrypoint.(string), func(path string, info fs.DirEntry, err error) error {
 				if config.shouldIgnore(ignoreIndex, path) {
 					if info.IsDir() {
 						if debug {
@@ -187,9 +191,8 @@ func (linter *Linter) Run(filesystem fs.FS, config *Config, debug bool, statisti
 					return nil
 				}
 
-				path = getFullPath(path)
-
 				if info == nil {
+					log.Printf("asfasdfasd")
 					return fmt.Errorf("%s not found", entrypoint)
 				}
 
