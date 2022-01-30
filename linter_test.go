@@ -27,6 +27,8 @@ func TestLinterRun(t *testing.T) {
 				"kebab-case.png":              &fstest.MapFile{Mode: fs.ModePerm},
 				"node_modules":                &fstest.MapFile{Mode: fs.ModeDir},
 				"node_modules/snake_case.png": &fstest.MapFile{Mode: fs.ModePerm},
+				"test":                        &fstest.MapFile{Mode: fs.ModeDir},
+				"test/snake_case_123.png":     &fstest.MapFile{Mode: fs.ModePerm},
 			},
 			config: &Config{
 				Ls: map[string]interface{}{
@@ -53,9 +55,9 @@ func TestLinterRun(t *testing.T) {
 			expectedErr: nil,
 			expectedStatistic: &Statistic{
 				Start:     start,
-				Files:     1,
+				Files:     2,
 				FileSkips: 1,
-				Dirs:      1,
+				Dirs:      2,
 				DirSkips:  1,
 				RWMutex:   new(sync.RWMutex),
 			},
