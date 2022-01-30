@@ -1,13 +1,15 @@
 package main
 
 import (
+	"flag"
 	"fmt"
-	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"log"
 	"os"
 	"strings"
 	"sync"
+
+	"gopkg.in/yaml.v2"
 )
 
 func getFullPath(path string) string {
@@ -15,6 +17,11 @@ func getFullPath(path string) string {
 }
 
 func main() {
+	flags := flag.NewFlagSet(os.Args[0], flag.ExitOnError)
+	warn := flags.Bool("warn", false, "treat lint errors as warnings; write output to stdout and return exit code = 0")
+	if err := flags.Parse(os.Args[1:]); err != nil {
+		log.Fatal(err)
+	}
 	var config = &Config{
 		RWMutex: new(sync.RWMutex),
 	}
@@ -67,6 +74,15 @@ func main() {
 		os.Exit(0)
 	}
 
+	exitCode := 1
+	w := os.Stderr
+	if *warn {
+		w = os.Stdout
+		exitCode = 0
+	}
+
+	logger := log.New(w, "", log.LstdFlags)
+
 	// with errors
 	for _, err := range linter.getErrors() {
 		var ruleMessages []string
@@ -75,8 +91,8 @@ func main() {
 			ruleMessages = append(ruleMessages, rule.GetErrorMessage())
 		}
 
-		log.Printf("%s failed for rules: %s", err.getPath(), strings.Join(ruleMessages, fmt.Sprintf(" %s ", or)))
+		logger.Printf("%s failed for rules: %s", err.getPath(), strings.Join(ruleMessages, fmt.Sprintf(" %s ", or)))
 	}
 
-	os.Exit(1)
+	os.Exit(exitCode)
 }
