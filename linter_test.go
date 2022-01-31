@@ -3,7 +3,6 @@ package main
 import (
 	"errors"
 	"fmt"
-	"github.com/davecgh/go-spew/spew"
 	"io/fs"
 	"reflect"
 	"sync"
@@ -67,49 +66,49 @@ func TestLinterRun(t *testing.T) {
 			},
 			expectedErrors: []*Error{},
 		},
-		//{
-		//	description: "fail",
-		//	filesystem: fstest.MapFS{
-		//		"not-snake-case.png": &fstest.MapFile{Mode: fs.ModePerm},
-		//	},
-		//	config: &Config{
-		//		Ls: ls{
-		//			".png": "snake_case",
-		//		},
-		//		Ignore:  []string{},
-		//		RWMutex: new(sync.RWMutex),
-		//	},
-		//	linter: &Linter{
-		//		Statistic: &Statistic{
-		//			Start:     start,
-		//			Files:     0,
-		//			FileSkips: 0,
-		//			Dirs:      0,
-		//			DirSkips:  0,
-		//			RWMutex:   new(sync.RWMutex),
-		//		},
-		//		Errors:  []*Error{},
-		//		RWMutex: new(sync.RWMutex),
-		//	},
-		//	expectedErr: nil,
-		//	expectedStatistic: &Statistic{
-		//		Start:     start,
-		//		Files:     1,
-		//		FileSkips: 0,
-		//		Dirs:      1,
-		//		DirSkips:  0,
-		//		RWMutex:   new(sync.RWMutex),
-		//	},
-		//	expectedErrors: []*Error{
-		//		{
-		//			Path: "./not-snake-case.png",
-		//			Rules: []Rule{
-		//				new(RuleSnakeCase).Init(),
-		//			},
-		//			RWMutex: new(sync.RWMutex),
-		//		},
-		//	},
-		//},
+		{
+			description: "fail",
+			filesystem: fstest.MapFS{
+				"not-snake-case.png": &fstest.MapFile{Mode: fs.ModePerm},
+			},
+			config: &Config{
+				Ls: ls{
+					".png": "snake_case",
+				},
+				Ignore:  []string{},
+				RWMutex: new(sync.RWMutex),
+			},
+			linter: &Linter{
+				Statistic: &Statistic{
+					Start:     start,
+					Files:     0,
+					FileSkips: 0,
+					Dirs:      0,
+					DirSkips:  0,
+					RWMutex:   new(sync.RWMutex),
+				},
+				Errors:  []*Error{},
+				RWMutex: new(sync.RWMutex),
+			},
+			expectedErr: nil,
+			expectedStatistic: &Statistic{
+				Start:     start,
+				Files:     1,
+				FileSkips: 0,
+				Dirs:      1,
+				DirSkips:  0,
+				RWMutex:   new(sync.RWMutex),
+			},
+			expectedErrors: []*Error{
+				{
+					Path: "not-snake-case.png",
+					Rules: []Rule{
+						new(RuleSnakeCase).Init(),
+					},
+					RWMutex: new(sync.RWMutex),
+				},
+			},
+		},
 		{
 			description: "glob",
 			filesystem: fstest.MapFS{
@@ -177,9 +176,6 @@ func TestLinterRun(t *testing.T) {
 		}
 
 		var equalErrorsErr = fmt.Errorf("Test %d (%s) failed with unmatched linter errors value\nexpected: %+v\nactual: %+v", i, test.description, test.expectedErrors, test.linter.getErrors())
-
-		spew.Dump(test.linter.getErrors())
-
 		if len(test.linter.getErrors()) != len(test.expectedErrors) {
 			t.Error(equalErrorsErr)
 			return

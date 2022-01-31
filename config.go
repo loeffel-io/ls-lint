@@ -163,8 +163,6 @@ func (config *Config) globIndex(filesystem fs.FS, index index) (err error) {
 			return err
 		}
 
-		log.Printf("matches: %+v", matches)
-
 		if len(matches) == 0 {
 			delete(index, key)
 			continue

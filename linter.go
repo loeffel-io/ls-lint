@@ -158,9 +158,6 @@ func (linter *Linter) Run(filesystem fs.FS, config *Config, debug bool, statisti
 		return err
 	}
 
-	log.Printf("final index: %+v", index)
-	log.Printf("%+v", ls)
-
 	return fs.WalkDir(filesystem, ".", func(path string, info fs.DirEntry, err error) error {
 		if config.shouldIgnore(ignoreIndex, path) {
 			if info.IsDir() {
@@ -187,7 +184,6 @@ func (linter *Linter) Run(filesystem fs.FS, config *Config, debug bool, statisti
 		}
 
 		if info == nil {
-			log.Printf("asfasdfasd")
 			return fmt.Errorf("%s not found", path)
 		}
 
