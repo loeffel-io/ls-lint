@@ -10,7 +10,6 @@ An extremely fast directory and filename linter - Bring some structure to your p
 [![codecov](https://codecov.io/gh/loeffel-io/ls-lint/branch/master/graph/badge.svg?token=76N7CNQT2G)](https://codecov.io/gh/loeffel-io/ls-lint)
 <a href="https://www.npmjs.com/package/@ls-lint/ls-lint"><img src="https://img.shields.io/npm/dm/@ls-lint/ls-lint?label=npm%20downloads" alt="NPM Downloads"></a>
 <a href="https://www.npmjs.com/package/@ls-lint/ls-lint"><img src="https://img.shields.io/npm/l/@ls-lint/ls-lint.svg?sanitize=true" alt="License"></a>
-<a href="https://app.fossa.com/projects/git%2Bgithub.com%2Floeffel-io%2Fls-lint?ref=badge_shield" alt="FOSSA Status"><img src="https://app.fossa.com/api/projects/git%2Bgithub.com%2Floeffel-io%2Fls-lint.svg?type=shield"/></a>
 
 - Minimal setup with simple rules managed in one single `.ls-lint.yml` file
 - Works for directory and file names - all extensions supported - full unicode support
@@ -70,5 +69,3 @@ Logo created by [Anastasia Marx](https://www.behance.net/AnastasiaMarx)
 ## License
 
 ls-lint is open-source software licensed under the MIT license.
-
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Floeffel-io%2Fls-lint.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Floeffel-io%2Fls-lint?ref=badge_large)
