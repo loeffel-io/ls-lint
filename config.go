@@ -11,7 +11,7 @@ import (
 	"sync"
 )
 
-type ls map[interface{}]interface{}
+type ls map[string]interface{}
 type index map[string]map[string][]Rule
 
 const (
@@ -130,7 +130,7 @@ func (config *Config) walkIndex(index index, key string, list ls) error {
 					return fmt.Errorf("rule %s failed with %s", ruleName, err.Error())
 				}
 
-				index[key][k.(string)] = append(index[key][k.(string)], rule)
+				index[key][k] = append(index[key][k], rule)
 				continue
 			}
 

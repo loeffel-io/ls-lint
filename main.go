@@ -12,8 +12,8 @@ import (
 )
 
 func main() {
-	var exitCode = 1
-	var writer = os.Stderr
+	var exitCode = 0
+	var writer = os.Stdout
 	var flags = flag.NewFlagSet(os.Args[0], flag.ExitOnError)
 	var warn = flags.Bool("warn", false, "treat lint errors as warnings; write output to stdout and return exit code 0")
 	var debug = flags.Bool("debug", false, "write debug informations to stdout")
@@ -77,9 +77,9 @@ func main() {
 		os.Exit(exitCode)
 	}
 
-	if *warn {
-		writer = os.Stdout
-		exitCode = 0
+	if !*warn {
+		writer = os.Stderr
+		exitCode = 1
 	}
 
 	logger := log.New(writer, "", log.LstdFlags)
