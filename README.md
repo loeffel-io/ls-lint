@@ -9,6 +9,7 @@ An extremely fast directory and filename linter - Bring some structure to your p
 <a href="https://www.npmjs.com/package/@ls-lint/ls-lint"><img src="https://img.shields.io/npm/v/@ls-lint/ls-lint.svg?sanitize=true" alt="Version"></a>
 [![codecov](https://codecov.io/gh/loeffel-io/ls-lint/branch/master/graph/badge.svg?token=76N7CNQT2G)](https://codecov.io/gh/loeffel-io/ls-lint)
 <a href="https://www.npmjs.com/package/@ls-lint/ls-lint"><img src="https://img.shields.io/npm/dm/@ls-lint/ls-lint?label=npm%20downloads" alt="NPM Downloads"></a>
+![npm](https://img.shields.io/npm/dt/@ls-lint/ls-lint?label=npm%20downloads%20total)
 <a href="https://www.npmjs.com/package/@ls-lint/ls-lint"><img src="https://img.shields.io/npm/l/@ls-lint/ls-lint.svg?sanitize=true" alt="License"></a>
 
 - Minimal setup with simple rules managed in one single `.ls-lint.yml` file
