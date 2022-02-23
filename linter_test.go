@@ -163,6 +163,8 @@ func TestLinterRun(t *testing.T) {
 
 	var i = 0
 	for _, test := range tests {
+		fmt.Printf("Run test %d (%s)\n", i, test.description)
+
 		err := test.linter.Run(test.filesystem, test.config, true, true)
 
 		if !errors.Is(err, test.expectedErr) {

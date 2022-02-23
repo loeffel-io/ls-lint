@@ -28,6 +28,12 @@ steps:
     commands:
       - make test-coverage
 
+  - name: codecov
+    image: plugins/codecov
+    settings:
+      token:
+        from_secret: CODECOV_TOKEN
+
   - name: build
     image: golang
     commands:
