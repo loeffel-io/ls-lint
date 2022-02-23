@@ -50,9 +50,9 @@ ignore:
 
 ## Benchmarks ([hyperfine](https://github.com/sharkdp/hyperfine))
 
-| Package                                          | v1.10.x: Mean [s]  | v1.11.x: Mean [s]  | File                                                                                                       | 
-|--------------------------------------------------|--------------------|--------------------|------------------------------------------------------------------------------------------------------------|
-| [nuxt/nuxt.js](https://github.com/nuxt/nuxt.js)  | 627.2 ms ± 19.0 ms | 51.9 ms ± 3.2 ms   | [examples/vuejs-vue](https://github.com/loeffel-io/ls-lint/tree/master/examples/nuxt-nuxt-js/.ls-lint.yml) |
+| Package                                          | v1.10.x: Mean [s]  | v1.11.x: Mean [s]  | File                                                                                                          | 
+|--------------------------------------------------|--------------------|--------------------|---------------------------------------------------------------------------------------------------------------|
+| [nuxt/nuxt.js](https://github.com/nuxt/nuxt.js)  | 627.2 ms ± 19.0 ms | 51.9 ms ± 3.2 ms   | [examples/nuxt-nuxt-js](https://github.com/loeffel-io/ls-lint/tree/master/examples/nuxt-nuxt-js/.ls-lint.yml) |
 
 ## Discord
 
