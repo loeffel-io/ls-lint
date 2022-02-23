@@ -164,6 +164,69 @@ func TestLinterRun(t *testing.T) {
 			},
 			expectedErrors: []*Error{},
 		},
+		{
+			description: "glob (fail)",
+			filesystem: fstest.MapFS{
+				"snake_case.png":                      &fstest.MapFile{Mode: fs.ModePerm},
+				"src/a/a":                             &fstest.MapFile{Mode: fs.ModeDir},
+				"src/a/a/kebab-case.png":              &fstest.MapFile{Mode: fs.ModePerm},
+				"src/b/b":                             &fstest.MapFile{Mode: fs.ModeDir},
+				"src/b/b/kebab-case.png":              &fstest.MapFile{Mode: fs.ModePerm},
+				"src/c/c":                             &fstest.MapFile{Mode: fs.ModeDir},
+				"src/c/c/PascalCase.png":              &fstest.MapFile{Mode: fs.ModePerm},
+				"src/c/c/ignore.png":                  &fstest.MapFile{Mode: fs.ModePerm},
+				"src/c/c/packages":                    &fstest.MapFile{Mode: fs.ModeDir},
+				"src/c/c/packages/not-snake-case.png": &fstest.MapFile{Mode: fs.ModePerm},
+			},
+			config: &Config{
+				Ls: ls{
+					".png": "snake_case",
+					"src/**/c": ls{
+						".png": "PascalCase",
+						"packages": ls{
+							".png": "snake_case",
+						},
+					},
+					"src/{a,b}/*": ls{
+						".png": "kebab-case",
+					},
+				},
+				Ignore: []string{
+					"src/c/c/ignore.png",
+				},
+				RWMutex: new(sync.RWMutex),
+			},
+			linter: &Linter{
+				Statistic: &Statistic{
+					Start:     start,
+					Files:     0,
+					FileSkips: 0,
+					Dirs:      0,
+					DirSkips:  0,
+					RWMutex:   new(sync.RWMutex),
+				},
+				Errors:  []*Error{},
+				RWMutex: new(sync.RWMutex),
+			},
+			expectedErr: nil,
+			expectedStatistic: &Statistic{
+				Start:     start,
+				Files:     5,
+				FileSkips: 1,
+				Dirs:      9,
+				DirSkips:  0,
+				RWMutex:   new(sync.RWMutex),
+			},
+			expectedErrors: []*Error{
+				{
+					Path: "src/c/c/packages/not-snake-case.png",
+					Rules: []Rule{
+						new(RuleSnakeCase).Init(),
+					},
+					RWMutex: new(sync.RWMutex),
+				},
+			},
+		},
 	}
 
 	var i = 0
