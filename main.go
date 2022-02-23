@@ -58,7 +58,7 @@ func main() {
 	}
 
 	// to yaml
-	err = yaml.Unmarshal(normalizeConfig(configBytes, byte(runeUnixSep), byte(runeSep)), &config)
+	err = yaml.Unmarshal(configBytes, &config)
 
 	if err != nil {
 		log.Fatal(err)

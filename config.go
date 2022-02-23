@@ -5,7 +5,6 @@ import (
 	"github.com/bmatcuk/doublestar/v4"
 	"io/fs"
 	"log"
-	"os"
 	"reflect"
 	"strings"
 	"sync"
@@ -15,10 +14,7 @@ type ls map[string]interface{}
 type index map[string]map[string][]Rule
 
 const (
-	runeSep     = os.PathSeparator
-	runeUnixSep = '/'
-
-	sep    = string(runeSep)
+	sep    = string('/')
 	extSep = "."
 	root   = "."
 	dir    = ".dir"
