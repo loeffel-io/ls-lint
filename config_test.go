@@ -53,6 +53,7 @@ func TestGetConfig(t *testing.T) {
 
 		if !reflect.DeepEqual(res, test.expected) {
 			t.Errorf("Test %d failed with unmatched return value - %+v", i, res)
+			return
 		}
 
 		i++
@@ -88,15 +89,6 @@ func TestShouldIgnore(t *testing.T) {
 			path:     "src/test/test.js",
 			expected: true,
 		},
-		{
-			config: config,
-			linter: linter,
-			ignoreIndex: map[string]bool{
-				"./src": true,
-			},
-			path:     "src/test/test.js",
-			expected: true,
-		},
 	}
 
 	var i = 0
@@ -105,6 +97,7 @@ func TestShouldIgnore(t *testing.T) {
 
 		if res != test.expected {
 			t.Errorf("Test %d failed with unmatched return value - %+v", i, res)
+			return
 		}
 
 		i++

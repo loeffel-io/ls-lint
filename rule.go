@@ -4,11 +4,12 @@ var definitions = map[string]Rule{
 	"lowercase": new(RuleLowercase).Init(),
 	"regex":     new(RuleRegex).Init(),
 
-	"camelcase":  new(RuleCamelCase).Init(),
-	"pascalcase": new(RulePascalCase).Init(),
-	"snakecase":  new(RuleSnakeCase).Init(),
-	"kebabcase":  new(RuleKebabCase).Init(),
-	"pointcase":  new(RulePointCase).Init(),
+	"camelcase":          new(RuleCamelCase).Init(),
+	"pascalcase":         new(RulePascalCase).Init(),
+	"snakecase":          new(RuleSnakeCase).Init(),
+	"screamingsnakecase": new(RuleScreamingSnakeCase).Init(),
+	"kebabcase":          new(RuleKebabCase).Init(),
+	"pointcase":          new(RulePointCase).Init(),
 }
 
 var rules = map[string]Rule{
@@ -23,6 +24,9 @@ var rules = map[string]Rule{
 
 	"snakecase":  definitions["snakecase"],
 	"snake_case": definitions["snakecase"],
+
+	"screamingsnakecase":   definitions["screamingsnakecase"],
+	"SCREAMING_SNAKE_CASE": definitions["screamingsnakecase"],
 
 	"kebabcase":  definitions["kebabcase"],
 	"kebab-case": definitions["kebabcase"],

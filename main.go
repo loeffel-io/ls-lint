@@ -3,32 +3,35 @@ package main
 import (
 	"flag"
 	"fmt"
+	"gopkg.in/yaml.v3"
 	"io/ioutil"
 	"log"
 	"os"
 	"strings"
 	"sync"
-
-	"gopkg.in/yaml.v2"
 )
 
-func getFullPath(path string) string {
-	return fmt.Sprintf("%s%s%s", root, sep, path)
-}
-
 func main() {
-	flags := flag.NewFlagSet(os.Args[0], flag.ExitOnError)
-	warn := flags.Bool("warn", false, "treat lint errors as warnings; write output to stdout and return exit code = 0")
+	var exitCode = 0
+	var writer = os.Stdout
+	var flags = flag.NewFlagSet(os.Args[0], flag.ExitOnError)
+	var warn = flags.Bool("warn", false, "treat lint errors as warnings; write output to stdout and return exit code 0")
+	var debug = flags.Bool("debug", false, "write debug informations to stdout")
+
 	if err := flags.Parse(os.Args[1:]); err != nil {
 		log.Fatal(err)
 	}
+
+	var filesystem = os.DirFS(root)
+
 	var config = &Config{
 		RWMutex: new(sync.RWMutex),
 	}
 
 	var linter = &Linter{
-		Errors:  make([]*Error, 0),
-		RWMutex: new(sync.RWMutex),
+		Statistic: nil,
+		Errors:    make([]*Error, 0),
+		RWMutex:   new(sync.RWMutex),
 	}
 
 	// open config file
@@ -55,14 +58,14 @@ func main() {
 	}
 
 	// to yaml
-	err = yaml.Unmarshal(normalizeConfig(configBytes, byte(runeUnixSep), byte(runeSep)), &config)
+	err = yaml.Unmarshal(configBytes, &config)
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	// runner
-	if err := linter.Run(config); err != nil {
+	if err := linter.Run(filesystem, config, *debug, false); err != nil {
 		log.Fatal(err)
 	}
 
@@ -71,17 +74,15 @@ func main() {
 
 	// no errors
 	if len(errors) == 0 {
-		os.Exit(0)
+		os.Exit(exitCode)
 	}
 
-	exitCode := 1
-	w := os.Stderr
-	if *warn {
-		w = os.Stdout
-		exitCode = 0
+	if !*warn {
+		writer = os.Stderr
+		exitCode = 1
 	}
 
-	logger := log.New(w, "", log.LstdFlags)
+	logger := log.New(writer, "", log.LstdFlags)
 
 	// with errors
 	for _, err := range linter.getErrors() {

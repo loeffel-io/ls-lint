@@ -2,21 +2,18 @@ package main
 
 import (
 	"fmt"
-	"github.com/bmatcuk/doublestar"
-	"os"
+	"github.com/bmatcuk/doublestar/v4"
+	"io/fs"
 	"reflect"
 	"strings"
 	"sync"
 )
 
-type ls map[interface{}]interface{}
+type ls map[string]interface{}
 type index map[string]map[string][]Rule
 
 const (
-	runeSep     = os.PathSeparator
-	runeUnixSep = '/'
-
-	sep    = string(runeSep)
+	sep    = string('/')
 	extSep = "."
 	root   = "."
 	dir    = ".dir"
@@ -33,14 +30,7 @@ func (config *Config) getLs() ls {
 	config.RLock()
 	defer config.RUnlock()
 
-	return config.shiftLs(config.Ls)
-}
-
-func (config *Config) shiftLs(list ls) ls {
-	var shift = make(ls)
-	shift[root] = list
-
-	return shift
+	return config.Ls
 }
 
 func (config *Config) getIgnore() []string {
@@ -55,7 +45,6 @@ func (config *Config) getIgnoreIndex() map[string]bool {
 
 	for _, path := range config.getIgnore() {
 		ignoreIndex[path] = true
-		ignoreIndex[fmt.Sprintf("%s%s%s", root, sep, path)] = true
 	}
 
 	return ignoreIndex
@@ -66,17 +55,9 @@ func (config *Config) shouldIgnore(ignoreIndex map[string]bool, path string) boo
 		return ignore
 	}
 
-	if ignore, exists := ignoreIndex[getFullPath(path)]; exists {
-		return ignore
-	}
-
 	dirs := strings.Split(path, sep)
 	for i := 0; i < len(dirs); i++ {
 		if ignore, exists := ignoreIndex[strings.Join(dirs[:i], sep)]; exists {
-			return ignore
-		}
-
-		if ignore, exists := ignoreIndex[getFullPath(strings.Join(dirs[:i], sep))]; exists {
 			return ignore
 		}
 	}
@@ -116,8 +97,16 @@ func (config *Config) walkIndex(index index, key string, list ls) error {
 		}
 
 		if reflect.TypeOf(v).Kind() == reflect.Map {
-			if err := config.walkIndex(index, fmt.Sprintf("%s%s%s", key, sep, k.(string)), v.(ls)); err != nil {
-				return err
+			switch key == "" {
+			case true:
+				if err := config.walkIndex(index, k, v.(ls)); err != nil {
+					return err
+				}
+			case false:
+				var keyCombination = fmt.Sprintf("%s%s%s", key, sep, k)
+				if err := config.walkIndex(index, keyCombination, v.(ls)); err != nil {
+					return err
+				}
 			}
 
 			continue
@@ -135,7 +124,7 @@ func (config *Config) walkIndex(index index, key string, list ls) error {
 					return fmt.Errorf("rule %s failed with %s", ruleName, err.Error())
 				}
 
-				index[key][k.(string)] = append(index[key][k.(string)], rule)
+				index[key][k] = append(index[key][k], rule)
 				continue
 			}
 
@@ -149,16 +138,14 @@ func (config *Config) walkIndex(index index, key string, list ls) error {
 func (config *Config) getIndex(list ls) (index, error) {
 	var index = make(index)
 
-	for key, value := range list {
-		if err := config.walkIndex(index, key.(string), value.(ls)); err != nil {
-			return nil, err
-		}
+	if err := config.walkIndex(index, "", list); err != nil {
+		return nil, err
 	}
 
 	return index, nil
 }
 
-func (config *Config) globIndex(index index) (err error) {
+func (config *Config) globIndex(filesystem fs.FS, index index) (err error) {
 	for key, value := range index {
 		var matches []string
 
@@ -166,7 +153,7 @@ func (config *Config) globIndex(index index) (err error) {
 			continue
 		}
 
-		if matches, err = doublestar.Glob(key); err != nil {
+		if matches, err = doublestar.Glob(filesystem, key); err != nil {
 			return err
 		}
 
@@ -176,10 +163,9 @@ func (config *Config) globIndex(index index) (err error) {
 		}
 
 		for _, match := range matches {
-			var matchInfo os.FileInfo
-			match = getFullPath(match)
+			var matchInfo fs.FileInfo
 
-			if matchInfo, err = os.Stat(match); err != nil {
+			if matchInfo, err = fs.Stat(filesystem, match); err != nil {
 				return err
 			}
 

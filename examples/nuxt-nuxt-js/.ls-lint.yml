@@ -1,0 +1,9 @@
+ls:
+  packages/*/{src,bin}:
+    .dir: kebab-case
+    .js: kebab-case
+
+ignore:
+  - node_modules
+  - packages/config/src/config/_app.js
+  - packages/config/src/config/_common.js

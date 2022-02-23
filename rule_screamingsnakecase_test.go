@@ -1,22 +1,26 @@
 package main
 
-import "testing"
+import (
+	"testing"
+)
 
-func TestRuleSnakeCase(t *testing.T) {
-	var rule = new(RuleSnakeCase).Init()
+func TestRuleScreamingSnakeCase(t *testing.T) {
+	var rule = new(RuleScreamingSnakeCase).Init()
 
 	var tests = []*ruleTest{
-		{value: "sneak", expected: true, err: nil},
-		{value: "sneakcase", expected: true, err: nil},
-		{value: "sneakCase", expected: false, err: nil},
+		{value: "SNEAK", expected: true, err: nil},
+		{value: "SNEAKCASE", expected: true, err: nil},
+		{value: "SNEAKCase", expected: false, err: nil},
 		{value: "Sneakcase", expected: false, err: nil},
 		{value: "SneakCase", expected: false, err: nil},
-		{value: "SNEAKCASE", expected: false, err: nil},
-		{value: "snake_case", expected: true, err: nil},
-		{value: "snake_123_case", expected: true, err: nil},
-		{value: "snake_case_test", expected: true, err: nil},
+		{value: "SNEAKCASE", expected: true, err: nil},
+		{value: "SNAKE_CASE", expected: true, err: nil},
+		{value: "SNAKE_123_CASE", expected: true, err: nil},
+		{value: "SNAKE_CASE_TEST", expected: true, err: nil},
 		{value: "snake.case.test", expected: false, err: nil},
+		{value: "SNAKE.CASE.TEST", expected: false, err: nil},
 		{value: "snake-case-test", expected: false, err: nil},
+		{value: "SNAKE-CASE-TEST", expected: false, err: nil},
 	}
 
 	var i = 0

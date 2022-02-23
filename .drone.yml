@@ -9,7 +9,7 @@ platform:
 
 steps:
   - name: install
-    image: golang:1.15
+    image: golang:1.17
     commands:
       - make install
 
@@ -21,12 +21,18 @@ steps:
   - name: ls-lint
     image: byrnedo/alpine-curl
     commands:
-      - curl -sL -o ls-lint https://github.com/loeffel-io/ls-lint/releases/download/v1.9.2/ls-lint-linux && chmod +x ls-lint && ./ls-lint
+      - curl -sL -o ls-lint https://github.com/loeffel-io/ls-lint/releases/download/v1.10.0/ls-lint-linux && chmod +x ls-lint && ./ls-lint
 
   - name: test
-    image: golang:1.15
+    image: golang:1.17
     commands:
       - make test-coverage
+
+  - name: codecov
+    image: plugins/codecov
+    settings:
+      token:
+        from_secret: CODECOV_TOKEN
 
   - name: build
     image: golang
