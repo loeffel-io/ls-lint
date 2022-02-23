@@ -16,7 +16,7 @@ func main() {
 	var writer = os.Stderr
 	var flags = flag.NewFlagSet(os.Args[0], flag.ExitOnError)
 	var warn = flags.Bool("warn", false, "treat lint errors as warnings; write output to stdout and return exit code 0")
-	var debug = flags.Bool("debug", false, "print debug informations")
+	var debug = flags.Bool("debug", false, "write debug informations to stdout")
 
 	if err := flags.Parse(os.Args[1:]); err != nil {
 		log.Fatal(err)
