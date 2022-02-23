@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/bmatcuk/doublestar/v4"
 	"io/fs"
-	"log"
 	"reflect"
 	"strings"
 	"sync"
@@ -97,16 +96,15 @@ func (config *Config) walkIndex(index index, key string, list ls) error {
 			continue
 		}
 
-		// TODO: Clean up
 		if reflect.TypeOf(v).Kind() == reflect.Map {
 			switch key == "" {
 			case true:
-				if err := config.walkIndex(index, fmt.Sprintf("%s", k), v.(ls)); err != nil {
+				if err := config.walkIndex(index, k, v.(ls)); err != nil {
 					return err
 				}
 			case false:
-				log.Printf("key combination found")
-				if err := config.walkIndex(index, fmt.Sprintf("%s%s%s", key, sep, k), v.(ls)); err != nil {
+				var keyCombination = fmt.Sprintf("%s%s%s", key, sep, k)
+				if err := config.walkIndex(index, keyCombination, v.(ls)); err != nil {
 					return err
 				}
 			}

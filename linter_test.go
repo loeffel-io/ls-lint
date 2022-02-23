@@ -112,20 +112,25 @@ func TestLinterRun(t *testing.T) {
 		{
 			description: "glob",
 			filesystem: fstest.MapFS{
-				"snake_case.png":         &fstest.MapFile{Mode: fs.ModePerm},
-				"src/a/a":                &fstest.MapFile{Mode: fs.ModeDir},
-				"src/a/a/kebab-case.png": &fstest.MapFile{Mode: fs.ModePerm},
-				"src/b/b":                &fstest.MapFile{Mode: fs.ModeDir},
-				"src/b/b/kebab-case.png": &fstest.MapFile{Mode: fs.ModePerm},
-				"src/c/c":                &fstest.MapFile{Mode: fs.ModeDir},
-				"src/c/c/PascalCase.png": &fstest.MapFile{Mode: fs.ModePerm},
-				"src/c/c/ignore.png":     &fstest.MapFile{Mode: fs.ModePerm},
+				"snake_case.png":                  &fstest.MapFile{Mode: fs.ModePerm},
+				"src/a/a":                         &fstest.MapFile{Mode: fs.ModeDir},
+				"src/a/a/kebab-case.png":          &fstest.MapFile{Mode: fs.ModePerm},
+				"src/b/b":                         &fstest.MapFile{Mode: fs.ModeDir},
+				"src/b/b/kebab-case.png":          &fstest.MapFile{Mode: fs.ModePerm},
+				"src/c/c":                         &fstest.MapFile{Mode: fs.ModeDir},
+				"src/c/c/PascalCase.png":          &fstest.MapFile{Mode: fs.ModePerm},
+				"src/c/c/ignore.png":              &fstest.MapFile{Mode: fs.ModePerm},
+				"src/c/c/packages":                &fstest.MapFile{Mode: fs.ModeDir},
+				"src/c/c/packages/snake_case.png": &fstest.MapFile{Mode: fs.ModePerm},
 			},
 			config: &Config{
 				Ls: ls{
 					".png": "snake_case",
 					"src/**/c": ls{
 						".png": "PascalCase",
+						"packages": ls{
+							".png": "snake_case",
+						},
 					},
 					"src/{a,b}/*": ls{
 						".png": "kebab-case",
@@ -151,9 +156,9 @@ func TestLinterRun(t *testing.T) {
 			expectedErr: nil,
 			expectedStatistic: &Statistic{
 				Start:     start,
-				Files:     4,
+				Files:     5,
 				FileSkips: 1,
-				Dirs:      8,
+				Dirs:      9,
 				DirSkips:  0,
 				RWMutex:   new(sync.RWMutex),
 			},
