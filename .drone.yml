@@ -58,8 +58,8 @@ steps:
     image: plugins/npm
     settings:
       username: loeffel-io
-      password:
-        from_secret: NPM_PASSWORD
+      token:
+        from_secret: NPM_TOKEN
       email: lucas@loeffel.io
       folder: npm
       access: public
