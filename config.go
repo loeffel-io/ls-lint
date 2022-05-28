@@ -181,7 +181,7 @@ func (config *Config) globIndex(filesystem fs.FS, index index) (err error) {
 	return nil
 }
 
-func globIgnoreIndex(config *Config, filesystem fs.FS, index map[string]bool) (err error) {
+func globIgnoreIndex[V bool | map[string][]Rule](config *Config, filesystem fs.FS, index map[string]V) (err error) {
 	for key, value := range index {
 		var matches []string
 
