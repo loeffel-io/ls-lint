@@ -153,12 +153,11 @@ func (linter *Linter) Run(filesystem fs.FS, config *Config, debug bool, statisti
 		return err
 	}
 
-	// glob index
-	if err := config.globIndex(filesystem, index); err != nil {
+	if err := globIndex(config, filesystem, index); err != nil {
 		return err
 	}
 
-	if err := globIgnoreIndex(config, filesystem, ignoreIndex); err != nil {
+	if err := globIndex(config, filesystem, ignoreIndex); err != nil {
 		return err
 	}
 
