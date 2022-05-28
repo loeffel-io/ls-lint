@@ -242,7 +242,7 @@ func TestLinterRun(t *testing.T) {
 					".png": "snake_case",
 				},
 				Ignore: []string{
-					"**/c/**",
+					"*/c",
 				},
 				RWMutex: new(sync.RWMutex),
 			},
