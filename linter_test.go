@@ -269,6 +269,46 @@ func TestLinterRun(t *testing.T) {
 			},
 			expectedErrors: []*Error{},
 		},
+		{
+			description: "No violations with alternatives in ignores",
+			filesystem: fstest.MapFS{
+				"a/c":                    &fstest.MapFile{Mode: fs.ModeDir},
+				"b/c":                    &fstest.MapFile{Mode: fs.ModeDir},
+				"a/c/not-snake-case.png": &fstest.MapFile{Mode: fs.ModePerm},
+				"b/c/not-snake-case.png": &fstest.MapFile{Mode: fs.ModePerm},
+			},
+			config: &Config{
+				Ls: ls{
+					".png": "snake_case",
+				},
+				Ignore: []string{
+					"{a,b}/c",
+				},
+				RWMutex: new(sync.RWMutex),
+			},
+			linter: &Linter{
+				Statistic: &Statistic{
+					Start:     start,
+					Files:     0,
+					FileSkips: 0,
+					Dirs:      0,
+					DirSkips:  0,
+					RWMutex:   new(sync.RWMutex),
+				},
+				Errors:  []*Error{},
+				RWMutex: new(sync.RWMutex),
+			},
+			expectedErr: nil,
+			expectedStatistic: &Statistic{
+				Start:     start,
+				Files:     0,
+				FileSkips: 0,
+				Dirs:      3,
+				DirSkips:  2,
+				RWMutex:   new(sync.RWMutex),
+			},
+			expectedErrors: []*Error{},
+		},
 	}
 
 	var i = 0
