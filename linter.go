@@ -158,7 +158,7 @@ func (linter *Linter) Run(filesystem fs.FS, config *Config, debug bool, statisti
 		return err
 	}
 
-	if err := config.globIgnoreIndex(filesystem, ignoreIndex); err != nil {
+	if err := globIgnoreIndex(config, filesystem, ignoreIndex); err != nil {
 		return err
 	}
 
