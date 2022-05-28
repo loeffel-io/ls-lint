@@ -241,11 +241,14 @@ func TestLinterRun(t *testing.T) {
 		}
 
 		if !reflect.DeepEqual(test.linter.getStatistic(), test.expectedStatistic) {
-			t.Errorf("Test %d (%s) failed with unmatched linter statistic values\nexpected: %+v\nactual: %+v", i, test.description, test.expectedStatistic, test.linter.getStatistic())
+			t.Errorf("Test %d (%s) failed with unmatched linter statistic values\nexpected: %+v\nactual: %+v",
+				i, test.description, test.expectedStatistic, test.linter.getStatistic())
 			return
 		}
 
-		var equalErrorsErr = fmt.Errorf("Test %d (%s) failed with unmatched linter errors value\nexpected: %+v\nactual: %+v", i, test.description, test.expectedErrors, test.linter.getErrors())
+		var equalErrorsErr = fmt.Errorf("Test %d (%s) failed with unmatched linter errors value\nexpected: %+v\nactual: %+v",
+			i, test.description, test.expectedErrors, test.linter.getErrors())
+
 		if len(test.linter.getErrors()) != len(test.expectedErrors) {
 			t.Error(equalErrorsErr)
 			return
