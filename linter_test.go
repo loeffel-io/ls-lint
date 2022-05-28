@@ -24,7 +24,7 @@ func TestLinterRun(t *testing.T) {
 		expectedErrors    []*Error
 	}{
 		{
-			description: "success",
+			description: "No violations detected",
 			filesystem: fstest.MapFS{
 				"snake_case.png":              &fstest.MapFile{Mode: fs.ModePerm},
 				"kebab-case.png":              &fstest.MapFile{Mode: fs.ModePerm},
@@ -67,7 +67,7 @@ func TestLinterRun(t *testing.T) {
 			expectedErrors: []*Error{},
 		},
 		{
-			description: "fail",
+			description: "Single file violation",
 			filesystem: fstest.MapFS{
 				"not-snake-case.png": &fstest.MapFile{Mode: fs.ModePerm},
 			},
@@ -110,7 +110,7 @@ func TestLinterRun(t *testing.T) {
 			},
 		},
 		{
-			description: "glob",
+			description: "No violations with globs in config",
 			filesystem: fstest.MapFS{
 				"snake_case.png":                  &fstest.MapFile{Mode: fs.ModePerm},
 				"src/a/a":                         &fstest.MapFile{Mode: fs.ModeDir},
@@ -165,7 +165,7 @@ func TestLinterRun(t *testing.T) {
 			expectedErrors: []*Error{},
 		},
 		{
-			description: "glob (fail)",
+			description: "Violations with glob in config",
 			filesystem: fstest.MapFS{
 				"snake_case.png":                      &fstest.MapFile{Mode: fs.ModePerm},
 				"src/a/a":                             &fstest.MapFile{Mode: fs.ModeDir},
