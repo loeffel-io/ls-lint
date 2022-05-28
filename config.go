@@ -145,7 +145,7 @@ func (config *Config) getIndex(list ls) (index, error) {
 	return index, nil
 }
 
-func globIndex[V bool | map[string][]Rule](config *Config, filesystem fs.FS, index map[string]V) (err error) {
+func globIndex[V bool | map[string][]Rule](filesystem fs.FS, index map[string]V) (err error) {
 	for key, value := range index {
 		var matches []string
 
