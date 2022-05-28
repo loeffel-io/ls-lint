@@ -180,3 +180,39 @@ func (config *Config) globIndex(filesystem fs.FS, index index) (err error) {
 
 	return nil
 }
+
+func (config *Config) globIgnoreIndex(filesystem fs.FS, index map[string]bool) (err error) {
+	for key, value := range index {
+		var matches []string
+
+		if !strings.ContainsAny(key, "*{}") {
+			continue
+		}
+
+		if matches, err = doublestar.Glob(filesystem, key); err != nil {
+			return err
+		}
+
+		if len(matches) == 0 {
+			delete(index, key)
+			continue
+		}
+
+		for _, match := range matches {
+			var matchInfo fs.FileInfo
+
+			if matchInfo, err = fs.Stat(filesystem, match); err != nil {
+				return err
+			}
+
+			if !matchInfo.IsDir() {
+				continue
+			}
+
+			index[match] = value
+			delete(index, key)
+		}
+	}
+
+	return nil
+}

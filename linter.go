@@ -158,6 +158,10 @@ func (linter *Linter) Run(filesystem fs.FS, config *Config, debug bool, statisti
 		return err
 	}
 
+	if err := config.globIgnoreIndex(filesystem, ignoreIndex); err != nil {
+		return err
+	}
+
 	return fs.WalkDir(filesystem, ".", func(path string, info fs.DirEntry, err error) error {
 		if config.shouldIgnore(ignoreIndex, path) {
 			if info.IsDir() {
