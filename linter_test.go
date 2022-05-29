@@ -229,6 +229,41 @@ func TestLinterRun(t *testing.T) {
 			},
 		},
 		{
+			description: "Invalid glob in config",
+			filesystem:  fstest.MapFS{},
+			config: &Config{
+				Ls: ls{
+					"src/{a,b/*": ls{
+						".png": "kebab-case",
+					},
+				},
+				Ignore:  []string{},
+				RWMutex: new(sync.RWMutex),
+			},
+			linter: &Linter{
+				Statistic: &Statistic{
+					Start:     start,
+					Files:     0,
+					FileSkips: 0,
+					Dirs:      0,
+					DirSkips:  0,
+					RWMutex:   new(sync.RWMutex),
+				},
+				Errors:  []*Error{},
+				RWMutex: new(sync.RWMutex),
+			},
+			expectedErr: doublestar.ErrBadPattern,
+			expectedStatistic: &Statistic{
+				Start:     start,
+				Files:     0,
+				FileSkips: 0,
+				Dirs:      0,
+				DirSkips:  0,
+				RWMutex:   new(sync.RWMutex),
+			},
+			expectedErrors: []*Error{},
+		},
+		{
 			description: "No violations with glob in ignores",
 			filesystem: fstest.MapFS{
 				"a/c":                         &fstest.MapFile{Mode: fs.ModeDir},
