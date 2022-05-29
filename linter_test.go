@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
+	"github.com/bmatcuk/doublestar/v4"
 	"io/fs"
 	"reflect"
 	"sync"
@@ -305,6 +306,41 @@ func TestLinterRun(t *testing.T) {
 				FileSkips: 0,
 				Dirs:      3,
 				DirSkips:  2,
+				RWMutex:   new(sync.RWMutex),
+			},
+			expectedErrors: []*Error{},
+		},
+		{
+			description: "Invalid glob in ignore",
+			filesystem:  fstest.MapFS{},
+			config: &Config{
+				Ls: ls{
+					".png": "snake_case",
+				},
+				Ignore: []string{
+					"{a/c",
+				},
+				RWMutex: new(sync.RWMutex),
+			},
+			linter: &Linter{
+				Statistic: &Statistic{
+					Start:     start,
+					Files:     0,
+					FileSkips: 0,
+					Dirs:      0,
+					DirSkips:  0,
+					RWMutex:   new(sync.RWMutex),
+				},
+				Errors:  []*Error{},
+				RWMutex: new(sync.RWMutex),
+			},
+			expectedErr: doublestar.ErrBadPattern,
+			expectedStatistic: &Statistic{
+				Start:     start,
+				Files:     0,
+				FileSkips: 0,
+				Dirs:      0,
+				DirSkips:  0,
 				RWMutex:   new(sync.RWMutex),
 			},
 			expectedErrors: []*Error{},
