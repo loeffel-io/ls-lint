@@ -12,6 +12,17 @@ import (
 	"time"
 )
 
+func emptyStatistics(start time.Time) *Statistic {
+	return &Statistic{
+		Start:     start,
+		Files:     0,
+		FileSkips: 0,
+		Dirs:      0,
+		DirSkips:  0,
+		RWMutex:   new(sync.RWMutex),
+	}
+}
+
 func TestLinterRun(t *testing.T) {
 	var start = time.Now()
 
@@ -45,16 +56,9 @@ func TestLinterRun(t *testing.T) {
 				RWMutex: new(sync.RWMutex),
 			},
 			linter: &Linter{
-				Statistic: &Statistic{
-					Start:     start,
-					Files:     0,
-					FileSkips: 0,
-					Dirs:      0,
-					DirSkips:  0,
-					RWMutex:   new(sync.RWMutex),
-				},
-				Errors:  []*Error{},
-				RWMutex: new(sync.RWMutex),
+				Statistic: emptyStatistics(start),
+				Errors:    []*Error{},
+				RWMutex:   new(sync.RWMutex),
 			},
 			expectedErr: nil,
 			expectedStatistic: &Statistic{
@@ -80,16 +84,9 @@ func TestLinterRun(t *testing.T) {
 				RWMutex: new(sync.RWMutex),
 			},
 			linter: &Linter{
-				Statistic: &Statistic{
-					Start:     start,
-					Files:     0,
-					FileSkips: 0,
-					Dirs:      0,
-					DirSkips:  0,
-					RWMutex:   new(sync.RWMutex),
-				},
-				Errors:  []*Error{},
-				RWMutex: new(sync.RWMutex),
+				Statistic: emptyStatistics(start),
+				Errors:    []*Error{},
+				RWMutex:   new(sync.RWMutex),
 			},
 			expectedErr: nil,
 			expectedStatistic: &Statistic{
@@ -143,16 +140,9 @@ func TestLinterRun(t *testing.T) {
 				RWMutex: new(sync.RWMutex),
 			},
 			linter: &Linter{
-				Statistic: &Statistic{
-					Start:     start,
-					Files:     0,
-					FileSkips: 0,
-					Dirs:      0,
-					DirSkips:  0,
-					RWMutex:   new(sync.RWMutex),
-				},
-				Errors:  []*Error{},
-				RWMutex: new(sync.RWMutex),
+				Statistic: emptyStatistics(start),
+				Errors:    []*Error{},
+				RWMutex:   new(sync.RWMutex),
 			},
 			expectedErr: nil,
 			expectedStatistic: &Statistic{
@@ -198,16 +188,9 @@ func TestLinterRun(t *testing.T) {
 				RWMutex: new(sync.RWMutex),
 			},
 			linter: &Linter{
-				Statistic: &Statistic{
-					Start:     start,
-					Files:     0,
-					FileSkips: 0,
-					Dirs:      0,
-					DirSkips:  0,
-					RWMutex:   new(sync.RWMutex),
-				},
-				Errors:  []*Error{},
-				RWMutex: new(sync.RWMutex),
+				Statistic: emptyStatistics(start),
+				Errors:    []*Error{},
+				RWMutex:   new(sync.RWMutex),
 			},
 			expectedErr: nil,
 			expectedStatistic: &Statistic{
@@ -241,27 +224,13 @@ func TestLinterRun(t *testing.T) {
 				RWMutex: new(sync.RWMutex),
 			},
 			linter: &Linter{
-				Statistic: &Statistic{
-					Start:     start,
-					Files:     0,
-					FileSkips: 0,
-					Dirs:      0,
-					DirSkips:  0,
-					RWMutex:   new(sync.RWMutex),
-				},
-				Errors:  []*Error{},
-				RWMutex: new(sync.RWMutex),
-			},
-			expectedErr: doublestar.ErrBadPattern,
-			expectedStatistic: &Statistic{
-				Start:     start,
-				Files:     0,
-				FileSkips: 0,
-				Dirs:      0,
-				DirSkips:  0,
+				Statistic: emptyStatistics(start),
+				Errors:    []*Error{},
 				RWMutex:   new(sync.RWMutex),
 			},
-			expectedErrors: []*Error{},
+			expectedErr:       doublestar.ErrBadPattern,
+			expectedStatistic: emptyStatistics(start),
+			expectedErrors:    []*Error{},
 		},
 		{
 			description: "No violations with glob in ignores",
@@ -283,16 +252,9 @@ func TestLinterRun(t *testing.T) {
 				RWMutex: new(sync.RWMutex),
 			},
 			linter: &Linter{
-				Statistic: &Statistic{
-					Start:     start,
-					Files:     0,
-					FileSkips: 0,
-					Dirs:      0,
-					DirSkips:  0,
-					RWMutex:   new(sync.RWMutex),
-				},
-				Errors:  []*Error{},
-				RWMutex: new(sync.RWMutex),
+				Statistic: emptyStatistics(start),
+				Errors:    []*Error{},
+				RWMutex:   new(sync.RWMutex),
 			},
 			expectedErr: nil,
 			expectedStatistic: &Statistic{
@@ -323,16 +285,9 @@ func TestLinterRun(t *testing.T) {
 				RWMutex: new(sync.RWMutex),
 			},
 			linter: &Linter{
-				Statistic: &Statistic{
-					Start:     start,
-					Files:     0,
-					FileSkips: 0,
-					Dirs:      0,
-					DirSkips:  0,
-					RWMutex:   new(sync.RWMutex),
-				},
-				Errors:  []*Error{},
-				RWMutex: new(sync.RWMutex),
+				Statistic: emptyStatistics(start),
+				Errors:    []*Error{},
+				RWMutex:   new(sync.RWMutex),
 			},
 			expectedErr: nil,
 			expectedStatistic: &Statistic{
@@ -358,27 +313,13 @@ func TestLinterRun(t *testing.T) {
 				RWMutex: new(sync.RWMutex),
 			},
 			linter: &Linter{
-				Statistic: &Statistic{
-					Start:     start,
-					Files:     0,
-					FileSkips: 0,
-					Dirs:      0,
-					DirSkips:  0,
-					RWMutex:   new(sync.RWMutex),
-				},
-				Errors:  []*Error{},
-				RWMutex: new(sync.RWMutex),
-			},
-			expectedErr: doublestar.ErrBadPattern,
-			expectedStatistic: &Statistic{
-				Start:     start,
-				Files:     0,
-				FileSkips: 0,
-				Dirs:      0,
-				DirSkips:  0,
+				Statistic: emptyStatistics(start),
+				Errors:    []*Error{},
 				RWMutex:   new(sync.RWMutex),
 			},
-			expectedErrors: []*Error{},
+			expectedErr:       doublestar.ErrBadPattern,
+			expectedStatistic: emptyStatistics(start),
+			expectedErrors:    []*Error{},
 		},
 	}
 
