@@ -69,3 +69,5 @@ Logo created by [Anastasia Marx](https://www.behance.net/AnastasiaMarx)
 ## License
 
 ls-lint is open-source software licensed under the MIT license.
+
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Floeffel-io%2Fls-lint.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Floeffel-io%2Fls-lint?ref=badge_large)
