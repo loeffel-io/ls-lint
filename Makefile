@@ -41,3 +41,9 @@ build-npm-linux-arm64:
 build-npm-windows:
 	cp ls-lint-windows.exe npm/bin/ls-lint-windows.exe
 	chmod +x npm/bin/ls-lint-windows.exe
+
+docker-build:
+	docker build -f docker/Dockerfile -t ls-lint-dev:latest .
+
+docker-run:
+	docker run --rm -v ${PWD}:/data ls-lint-dev:latest
