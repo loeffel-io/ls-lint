@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"gopkg.in/yaml.v3"
 	"io"
 	"log"
@@ -8,19 +9,19 @@ import (
 	"path"
 )
 
-func read_config_file(cwd string, config_file string, config *Config) {
+func read_config_file(cwd string, config_file string, config *Config) error {
 
-	// if config_file is default, see if there's an `.ls-lint.yaml` file instead
-	if config_file == ".ls-lint.yml" {
+	// if config_file is empty, check for both `.ls-lint.yml` and `.ls-lint.yaml`
+	if config_file == "" {
 		files, err := os.ReadDir(cwd)
 		if err != nil {
-			log.Fatal(err)
+			return err
 		}
 	
 		for _, file := range files {
 			match, match_err := path.Match(".ls-lint.y*ml", file.Name())
 			if match_err != nil {
-				log.Fatal(match_err)
+				return match_err
 			}
 			if match {
 				config_file = file.Name()
@@ -28,11 +29,14 @@ func read_config_file(cwd string, config_file string, config *Config) {
 			}
 		}
 	}
+	if config_file == "" {
+		return errors.New("no config file (.ls-lint.yml or .ls-lint.yaml) was found")
+	}
 	// open config file
 	file, err := os.Open(config_file)
 
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	// close file
@@ -48,13 +52,11 @@ func read_config_file(cwd string, config_file string, config *Config) {
 	configBytes, err := io.ReadAll(file)
 
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	// to yaml
 	err = yaml.Unmarshal(configBytes, &config)
 
-	if err != nil {
-		log.Fatal(err)
-	}
+	return err
 }

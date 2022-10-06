@@ -16,7 +16,7 @@ func main() {
 	var flags = flag.NewFlagSet(os.Args[0], flag.ExitOnError)
 	var warn = flags.Bool("warn", false, "treat lint errors as warnings; write output to stdout and return exit code 0")
 	var debug = flags.Bool("debug", false, "write debug informations to stdout")
-	var config_file = flags.String("config", ".ls-lint.yml", "relative path to a config file, its directory is the new root")
+	var config_file = flags.String("config", "", "relative path to a config file, its directory is the new root")
 
 	if err := flags.Parse(os.Args[1:]); err != nil {
 		log.Fatal(err)
@@ -38,7 +38,9 @@ func main() {
 		RWMutex:   new(sync.RWMutex),
 	}
 	
-	read_config_file(cwd, *config_file, config)
+	if err := read_config_file(cwd, *config_file, config); err != nil {
+		log.Fatal(err)
+	}
 
 	// runner
 	if err := linter.Run(filesystem, config, *debug, false); err != nil {
