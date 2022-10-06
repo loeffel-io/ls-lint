@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"path"
 	"strings"
 	"sync"
 )
@@ -17,12 +18,17 @@ func main() {
 	var flags = flag.NewFlagSet(os.Args[0], flag.ExitOnError)
 	var warn = flags.Bool("warn", false, "treat lint errors as warnings; write output to stdout and return exit code 0")
 	var debug = flags.Bool("debug", false, "write debug informations to stdout")
+	var config_file = flags.String("config", ".ls-lint.yml", "relative path to a config file, its directory is the new root")
 
 	if err := flags.Parse(os.Args[1:]); err != nil {
 		log.Fatal(err)
 	}
+	cwd, err := os.Getwd()
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	var filesystem = os.DirFS(root)
+	var filesystem = os.DirFS(path.Join(cwd, path.Dir(*config_file)))
 
 	var config = &Config{
 		RWMutex: new(sync.RWMutex),
@@ -33,9 +39,26 @@ func main() {
 		Errors:    make([]*Error, 0),
 		RWMutex:   new(sync.RWMutex),
 	}
-
+	// if config_file is default, see if there's an `.ls-lint.yaml` file instead
+	if *config_file == ".ls-lint.yml" {
+		files, err := os.ReadDir(cwd)
+		if err != nil {
+			log.Fatal(err)
+		}
+	
+		for _, file := range files {
+			match, match_err := path.Match(".ls-lint.y*ml", file.Name())
+			if match_err != nil {
+				log.Fatal(match_err)
+			}
+			if match {
+				*config_file = file.Name()
+				break
+			}
+		}
+	}
 	// open config file
-	file, err := os.Open(".ls-lint.yml")
+	file, err := os.Open(*config_file)
 
 	if err != nil {
 		log.Fatal(err)
