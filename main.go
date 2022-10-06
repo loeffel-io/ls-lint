@@ -4,7 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"gopkg.in/yaml.v3"
-	"io/ioutil"
+	"io"
 	"log"
 	"os"
 	"path"
@@ -74,7 +74,7 @@ func main() {
 	}()
 
 	// read file
-	configBytes, err := ioutil.ReadAll(file)
+	configBytes, err := io.ReadAll(file)
 
 	if err != nil {
 		log.Fatal(err)
