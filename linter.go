@@ -2,12 +2,15 @@ package main
 
 import (
 	"fmt"
-	"golang.org/x/sync/errgroup"
+	"io"
 	"io/fs"
 	"log"
+	"path"
 	"path/filepath"
 	"strings"
 	"sync"
+
+	"golang.org/x/sync/errgroup"
 )
 
 type Linter struct {
@@ -28,6 +31,22 @@ func (linter *Linter) getErrors() []*Error {
 	defer linter.RUnlock()
 
 	return linter.Errors
+}
+
+func (linter *Linter) printErrors(writer io.Writer, cwd string, pwd string) {
+	logger := log.New(writer, "", log.LstdFlags)
+
+	// with errors
+	for _, err := range linter.getErrors() {
+		var ruleMessages []string
+
+		for _, rule := range err.getRules() {
+			ruleMessages = append(ruleMessages, rule.GetErrorMessage())
+		}
+		absErrorPath := path.Join(pwd, err.getPath())
+		relErrorPath := strings.Replace(absErrorPath, cwd, ".", 1)
+		logger.Printf("%s failed for rules: %s", relErrorPath, strings.Join(ruleMessages, fmt.Sprintf(" %s ", or)))
+	}
 }
 
 func (linter *Linter) addError(error *Error) {

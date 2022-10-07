@@ -9,11 +9,11 @@ import (
 	"path"
 )
 
-func read_config_file(cwd string, config_file string, config *Config) error {
+func read_config_file(pwd string, config_file string, config *Config) error {
 
 	// if config_file is empty, check for both `.ls-lint.yml` and `.ls-lint.yaml`
 	if config_file == "" {
-		files, err := os.ReadDir(cwd)
+		files, err := os.ReadDir(pwd)
 		if err != nil {
 			return err
 		}

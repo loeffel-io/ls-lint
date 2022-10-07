@@ -2,21 +2,21 @@ package main
 
 import (
 	"flag"
-	"fmt"
+	"io"
 	"log"
 	"os"
 	"path"
-	"strings"
 	"sync"
 )
 
 func main() {
 	var exitCode = 0
-	var writer = os.Stdout
+	var writer io.Writer = os.Stdout
 	var flags = flag.NewFlagSet(os.Args[0], flag.ExitOnError)
 	var warn = flags.Bool("warn", false, "treat lint errors as warnings; write output to stdout and return exit code 0")
 	var debug = flags.Bool("debug", false, "write debug informations to stdout")
-	var config_file = flags.String("config", "", "relative path to a config file, its directory is the new root")
+	var pwd = flags.String("pwd", "", "relative path to the desired working directory")
+	var config_file = flags.String("config", "", "relative path to a config file")
 
 	if err := flags.Parse(os.Args[1:]); err != nil {
 		log.Fatal(err)
@@ -25,8 +25,13 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	if *pwd == "" {
+		*pwd = cwd
+	} else {
+		*pwd = path.Join(cwd, *pwd)
+	}
 
-	var filesystem = os.DirFS(path.Join(cwd, path.Dir(*config_file)))
+	var filesystem = os.DirFS(*pwd)
 
 	var config = &Config{
 		RWMutex: new(sync.RWMutex),
@@ -37,8 +42,8 @@ func main() {
 		Errors:    make([]*Error, 0),
 		RWMutex:   new(sync.RWMutex),
 	}
-	
-	if err := read_config_file(cwd, *config_file, config); err != nil {
+
+	if err := read_config_file(*pwd, *config_file, config); err != nil {
 		log.Fatal(err)
 	}
 
@@ -60,18 +65,7 @@ func main() {
 		exitCode = 1
 	}
 
-	logger := log.New(writer, "", log.LstdFlags)
-
-	// with errors
-	for _, err := range linter.getErrors() {
-		var ruleMessages []string
-
-		for _, rule := range err.getRules() {
-			ruleMessages = append(ruleMessages, rule.GetErrorMessage())
-		}
-
-		logger.Printf("%s failed for rules: %s", err.getPath(), strings.Join(ruleMessages, fmt.Sprintf(" %s ", or)))
-	}
+	linter.printErrors(writer, cwd, *pwd)
 
 	os.Exit(exitCode)
 }

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"errors"
 	"fmt"
 	"io/fs"
@@ -271,5 +272,47 @@ func TestLinterRun(t *testing.T) {
 		}
 
 		i++
+	}
+}
+
+func TestLinterPrintErrors(t *testing.T) {
+	var start = time.Now()
+	testSuite := []struct {
+		description string
+		linter      *Linter
+		cwd         string
+		pwd         string
+		expect      string
+	}{
+		{
+			description: "Empty",
+			linter: &Linter{
+				Statistic: &Statistic{
+					Start:     start,
+					Files:     0,
+					FileSkips: 0,
+					Dirs:      0,
+					DirSkips:  0,
+					RWMutex:   new(sync.RWMutex),
+				},
+				Errors: []*Error{
+					{"packages/", []Rule{new(RuleCamelCase).Init()}, new(sync.RWMutex)},
+				},
+				RWMutex: new(sync.RWMutex),
+			},
+			cwd:    "/usr/local/someDir",
+			pwd:    "/usr/local/someDir",
+			expect: fmt.Sprintf("%s ./packages failed for rules: camelcase\n", start.Format("2006/01/02 15:04:05")),
+		},
+	}
+
+	for _, testCase := range testSuite {
+		t.Run(testCase.description, func(t *testing.T) {
+			var output bytes.Buffer
+			testCase.linter.printErrors(&output, testCase.cwd, testCase.pwd)
+			if testCase.expect != output.String() {
+				t.Errorf("got %s but expected %s", output.String(), testCase.expect)
+			}
+		})
 	}
 }
