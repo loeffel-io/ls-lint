@@ -10,17 +10,22 @@ import (
 )
 
 func main() {
+	os.Exit(Run(os.Stdout, os.Args))
+}
+
+func Run(writer io.Writer, args []string) int {
 	var exitCode = 0
-	var writer io.Writer = os.Stdout
-	var flags = flag.NewFlagSet(os.Args[0], flag.ExitOnError)
+	var flags = flag.NewFlagSet(args[0], flag.ExitOnError)
+	flag.CommandLine.SetOutput(writer)
 	var warn = flags.Bool("warn", false, "treat lint errors as warnings; write output to stdout and return exit code 0")
 	var debug = flags.Bool("debug", false, "write debug informations to stdout")
 	var pwd = flags.String("pwd", "", "relative path to the desired working directory")
 	var config_file = flags.String("config", "", "relative path to a config file")
 
-	if err := flags.Parse(os.Args[1:]); err != nil {
+	if err := flags.Parse(args[1:]); err != nil {
 		log.Fatal(err)
 	}
+
 	cwd, err := os.Getwd()
 	if err != nil {
 		log.Fatal(err)
@@ -57,7 +62,7 @@ func main() {
 
 	// no errors
 	if len(errors) == 0 {
-		os.Exit(exitCode)
+		return exitCode
 	}
 
 	if !*warn {
@@ -67,5 +72,5 @@ func main() {
 
 	linter.printErrors(writer, cwd, *pwd)
 
-	os.Exit(exitCode)
+	return exitCode
 }
