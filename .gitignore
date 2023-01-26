@@ -21,6 +21,8 @@ ls-lint-darwin
 ls-lint-darwin-arm64
 ls-lint-linux
 ls-lint-linux-arm64
+ls-lint-linux-ppc64le
+ls-lint-linux-s390x
 ls-lint-windows.exe
 /coverage.txt
 !npm

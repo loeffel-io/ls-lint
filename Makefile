@@ -12,6 +12,8 @@ build:
 	GOOS=darwin GOARCH=arm64 go build -o ls-lint-darwin-arm64
 	GOOS=linux GOARCH=amd64 go build -o ls-lint-linux
 	GOOS=linux GOARCH=arm64 go build -o ls-lint-linux-arm64
+	GOOS=linux GOARCH=ppc64le go build -o ls-lint-linux-ppc64le
+	GOOS=linux GOARCH=s390x go build -o ls-lint-linux-s390x
 	GOOS=windows GOARCH=amd64 go build -o ls-lint-windows.exe
 
 build-npm:
@@ -20,6 +22,8 @@ build-npm:
 	make build-npm-darwin-arm64
 	make build-npm-linux
 	make build-npm-linux-arm64
+	make build-npm-linux-ppc64le
+	make build-npm-linux-s390x
 	make build-npm-windows
 
 build-npm-darwin:
@@ -37,6 +41,14 @@ build-npm-linux:
 build-npm-linux-arm64:
 	cp ls-lint-linux-arm64 npm/bin/ls-lint-linux-arm64
 	chmod +x npm/bin/ls-lint-linux-arm64
+
+build-npm-linux-ppc64le:
+	cp ls-lint-linux-ppc64le npm/bin/ls-lint-linux-ppc64le
+	chmod +x npm/bin/ls-lint-linux-ppc64le
+
+build-npm-linux-s390x:
+	cp ls-lint-linux-s390x npm/bin/ls-lint-linux-s390x
+	chmod +x npm/bin/ls-lint-linux-s390x
 
 build-npm-windows:
 	cp ls-lint-windows.exe npm/bin/ls-lint-windows.exe

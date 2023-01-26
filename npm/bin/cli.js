@@ -38,6 +38,10 @@ function getPlatformPath() {
           return 'ls-lint-linux';
         case 'arm64':
           return 'ls-lint-linux-arm64';
+        case 'ppc64le':
+          return 'ls-lint-linux-ppc64le';
+        case 's390x':
+          return 'ls-lint-linux-s390x';
         default:
           console.log('ls-lint builds are not available on platform: ' + process.platform + ' arch: ' + process.arch);
           process.exit(1);
