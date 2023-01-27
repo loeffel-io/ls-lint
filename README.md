@@ -64,7 +64,7 @@ ignore:
 
 ## Logo
 
-Logo created by [Anastasia Marx](https://www.behance.net/AnastasiaMarx)
+Logo created by [Studio Ajot](https://www.studio-ajot.de/)
 
 ## License
 
