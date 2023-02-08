@@ -58,10 +58,6 @@ ignore:
 
 [Join the ls-lint discord server](https://discord.gg/bsf9q7f2Rh)
 
-## Sponsors
-
-- [Makeless - Saas Framework](https://github.com/makeless)
-
 ## Logo
 
 Logo created by [Studio Ajot](https://www.studio-ajot.de/)
