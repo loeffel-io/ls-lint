@@ -8,7 +8,7 @@ jobs:
       env:
         GITHUB_WORKSPACE: /home/ubuntu
     steps:
-      - run: printenv
+      - run: mkdir -p ${GITHUB_WORKSPACE} && mkdir -p ${GITHUB_PATH}
       - uses: actions/checkout@v3
         with:
           path: app
