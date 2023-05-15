@@ -9,6 +9,8 @@ jobs:
         - ${{ github.workspace }}:/app
     steps:
       - uses: actions/checkout@v3
+        with:
+          path: /home/ubuntu/app
       - run: set -eu
       - run: ls -al
       - run: bazel --output_user_root=/home/ubuntu test //...
