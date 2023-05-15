@@ -5,12 +5,12 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: gcr.io/bazel-public/bazel@sha256:7318b89458263c20e9b98ac7864769ba68bb86ff2dd33980b42ee33a1591df17 # v6.2.0
-      volumes:
-        - ${{ github.workspace }}:/app
+      env:
+        GITHUB_WORKSPACE: /home/ubuntu
     steps:
       - uses: actions/checkout@v3
         with:
-          path: test
+          path: app
       - run: set -eu && ls -al
       - run: bazel --output_user_root=/home/ubuntu test //...
       - run: bazel --output_user_root=/home/ubuntu build //...
