@@ -8,6 +8,7 @@ jobs:
       # options: --user 1001
     steps:
       - run: whoami && id -u ubuntu
+      - run: id -u root
       - run: set -eu
       - run: printenv
       - run: echo ${GITHUB_WORKSPACE}
