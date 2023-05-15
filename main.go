@@ -2,9 +2,10 @@ package main
 
 import (
 	"flag"
-	"fmt"
+	"github.com/loeffel-io/ls-lint/v2/internal/config"
+	"github.com/loeffel-io/ls-lint/v2/internal/linter"
+	"github.com/loeffel-io/ls-lint/v2/internal/rule"
 	"gopkg.in/yaml.v3"
-	"io/ioutil"
 	"log"
 	"os"
 	"strings"
@@ -15,84 +16,72 @@ func main() {
 	var exitCode = 0
 	var writer = os.Stdout
 	var flags = flag.NewFlagSet(os.Args[0], flag.ExitOnError)
-	var warn = flags.Bool("warn", false, "treat lint errors as warnings; write output to stdout and return exit code 0")
-	var debug = flags.Bool("debug", false, "write debug informations to stdout")
+	var flagConfig = flags.String("config", ".ls-lint.yml", "ls-lint config file path")
+	var flagChdir = flags.String("chdir", ".", "Switch to a different working directory before executing the given subcommand")
+	var flagWarn = flags.Bool("warn", false, "treat lint ruleErrors as warnings; write output to stdout and return exit code 0")
+	var flagDebug = flags.Bool("debug", false, "write debug informations to stdout")
 
 	if err := flags.Parse(os.Args[1:]); err != nil {
 		log.Fatal(err)
 	}
 
-	var filesystem = os.DirFS(root)
+	var filesystem = os.DirFS(*flagChdir)
 
-	var config = &Config{
+	var lslintConfig = &config.Config{
 		RWMutex: new(sync.RWMutex),
 	}
 
-	var linter = &Linter{
-		Statistic: nil,
-		Errors:    make([]*Error, 0),
-		RWMutex:   new(sync.RWMutex),
-	}
-
-	// open config file
-	file, err := os.Open(".ls-lint.yml")
-
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	// close file
-	defer func() {
-		err = file.Close()
-
-		if err != nil {
-			log.Fatal(err)
-		}
-	}()
-
 	// read file
-	configBytes, err := ioutil.ReadAll(file)
+	configBytes, err := os.ReadFile(*flagConfig)
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	// to yaml
-	err = yaml.Unmarshal(configBytes, &config)
+	err = yaml.Unmarshal(configBytes, &lslintConfig)
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
+	// linter
+	var lslintLinter = linter.NewLinter(
+		*flagChdir,
+		lslintConfig,
+		nil,
+		make([]*rule.Error, 0),
+	)
+
 	// runner
-	if err := linter.Run(filesystem, config, *debug, false); err != nil {
+	if err = lslintLinter.Run(filesystem, *flagDebug, false); err != nil {
 		log.Fatal(err)
 	}
 
-	// errors
-	errors := linter.getErrors()
+	// rule errors
+	ruleErrors := lslintLinter.GetErrors()
 
-	// no errors
-	if len(errors) == 0 {
+	// no ruleErrors
+	if len(ruleErrors) == 0 {
 		os.Exit(exitCode)
 	}
 
-	if !*warn {
+	if !*flagWarn {
 		writer = os.Stderr
 		exitCode = 1
 	}
 
 	logger := log.New(writer, "", log.LstdFlags)
 
-	// with errors
-	for _, err := range linter.getErrors() {
+	// with rule errors
+	for _, ruleErr := range lslintLinter.GetErrors() {
 		var ruleMessages []string
 
-		for _, rule := range err.getRules() {
-			ruleMessages = append(ruleMessages, rule.GetErrorMessage())
+		for _, errRule := range ruleErr.GetRules() {
+			ruleMessages = append(ruleMessages, errRule.GetErrorMessage())
 		}
 
-		logger.Printf("%s failed for rules: %s", err.getPath(), strings.Join(ruleMessages, fmt.Sprintf(" %s ", or)))
+		logger.Printf("%s failed for rules: %s", ruleErr.GetPath(), strings.Join(ruleMessages, "|"))
 	}
 
 	os.Exit(exitCode)

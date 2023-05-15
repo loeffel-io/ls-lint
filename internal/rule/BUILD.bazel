@@ -1,0 +1,35 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "rule",
+    srcs = [
+        "camelcase.go",
+        "error.go",
+        "kebabcase.go",
+        "lowercase.go",
+        "pascalcase.go",
+        "pointcase.go",
+        "regex.go",
+        "rule.go",
+        "screamingsnakecase.go",
+        "snakecase.go",
+    ],
+    importpath = "github.com/loeffel-io/ls-lint/v2/internal/rule",
+    visibility = ["//:__subpackages__"],
+)
+
+go_test(
+    name = "rule_test",
+    srcs = [
+        "camelcase_test.go",
+        "kebabcase_test.go",
+        "lowercase_test.go",
+        "pascalcase_test.go",
+        "pointcase_test.go",
+        "regex_test.go",
+        "rule_test.go",
+        "screamingsnakecase_test.go",
+        "snakecase_test.go",
+    ],
+    embed = [":rule"],
+)

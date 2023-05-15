@@ -1,0 +1,31 @@
+load("@bazel_gazelle//:def.bzl", "gazelle")
+load("@io_bazel_rules_go//go:def.bzl", "TOOLS_NOGO", "go_binary", "go_library", "nogo")
+
+# gazelle:prefix github.com/loeffel-io/ls-lint/v2
+gazelle(name = "gazelle")
+
+nogo(
+    name = "nogo",
+    config = ":nogo.json",
+    visibility = ["//visibility:public"],
+    deps = TOOLS_NOGO + [],
+)
+
+go_library(
+    name = "ls-lint_lib",
+    srcs = ["main.go"],
+    importpath = "github.com/loeffel-io/ls-lint/v2",
+    visibility = ["//visibility:private"],
+    deps = [
+        "//internal/config",
+        "//internal/linter",
+        "//internal/rule",
+        "@in_gopkg_yaml_v3//:yaml_v3",
+    ],
+)
+
+go_binary(
+    name = "ls-lint",
+    embed = [":ls-lint_lib"],
+    visibility = ["//visibility:public"],
+)
