@@ -1,11 +1,6 @@
 name: CI
 on: [ push ]
 jobs:
-  checkout:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-
   build:
     runs-on: ubuntu-latest
     container:
@@ -13,6 +8,9 @@ jobs:
       volumes:
         - ${{ github.workspace }}:/app
     steps:
+      - uses: actions/checkout@v3
+        with:
+          path: test
       - run: set -eu && ls -al
       - run: bazel --output_user_root=/home/ubuntu test //...
       - run: bazel --output_user_root=/home/ubuntu build //...
