@@ -8,7 +8,7 @@ jobs:
       volumes:
         - ${{ github.workspace }}:/app
     steps:
-      - run: actions/checkout@v2
+      - uses: actions/checkout@v2
       - run: set -eu
       - run: ls -al
       - run: bazel --output_user_root=/home/ubuntu test //...
