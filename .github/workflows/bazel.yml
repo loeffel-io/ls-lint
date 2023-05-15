@@ -7,6 +7,6 @@ jobs:
       image: gcr.io/bazel-public/bazel@sha256:7318b89458263c20e9b98ac7864769ba68bb86ff2dd33980b42ee33a1591df17 # v6.2.0
     steps:
       - run: set -eu
-      - run: ls -al
+      - run: pwd && ls -al /root
       - run: bazel --output_user_root=/root test //...
       - run: bazel --output_user_root=/root build //...
