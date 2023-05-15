@@ -13,5 +13,6 @@ jobs:
       - run: echo ${GITHUB_WORKSPACE}
       - uses: actions/checkout@v3
       - run: set -eu && ls -al
+      - run: ls -al /home/ubuntu
       - run: USER=ubuntu bazel --output_user_root=/home/ubuntu test //...
       - run: bazel --output_user_root=/home/ubuntu build //...
