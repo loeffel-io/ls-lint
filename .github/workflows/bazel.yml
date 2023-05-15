@@ -1,0 +1,10 @@
+name: CI
+on: [ push ]
+jobs:
+  bazel:
+    runs-on: ubuntu-latest
+    container: gcr.io/bazel-public/bazel@sha256:7318b89458263c20e9b98ac7864769ba68bb86ff2dd33980b42ee33a1591df17 # v6.2.0
+    steps:
+      - run: set -eu
+      - run: bazel test //...
+      - run: bazel build //...
