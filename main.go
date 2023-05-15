@@ -18,7 +18,7 @@ func main() {
 	var flags = flag.NewFlagSet(os.Args[0], flag.ExitOnError)
 	var flagConfig = flags.String("config", ".ls-lint.yml", "ls-lint config file path")
 	var flagChdir = flags.String("chdir", ".", "switch to a different working directory before executing the given subcommand")
-	var flagWarn = flags.Bool("warn", false, "treat lint ruleErrors as warnings; write output to stdout and return exit code 0")
+	var flagWarn = flags.Bool("warn", false, "treat lint errors as warnings; write output to stdout and return exit code 0")
 	var flagDebug = flags.Bool("debug", false, "write debug informations to stdout")
 
 	if err := flags.Parse(os.Args[1:]); err != nil {
