@@ -1,0 +1,1 @@
+build --stamp --workspace_status_command="bash scripts/bazel/workspace_status.sh"

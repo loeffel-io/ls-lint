@@ -1,7 +1,6 @@
 package config
 
 import (
-	"github.com/loeffel-io/ls-lint/v2/internal/linter"
 	"github.com/loeffel-io/ls-lint/v2/internal/rule"
 	"reflect"
 	"testing"
@@ -17,7 +16,7 @@ func TestGetConfig(t *testing.T) {
 			".dir": []rule.Rule{rule.RulesIndex["camelcase"]},
 		},
 	}
-	var indexMockEmpty = map[string]map[string][]rule.Rule{}
+	var indexMockEmpty = make(RuleIndex)
 
 	var tests = []*struct {
 		config   *Config
@@ -63,19 +62,14 @@ func TestGetConfig(t *testing.T) {
 }
 
 func TestShouldIgnore(t *testing.T) {
-	var config = new(Config)
-	var lslintLinter = new(linter.Linter)
-
 	tests := []struct {
-		config       *Config
-		lslintLinter *linter.Linter
+		lslintConfig *Config
 		ignoreIndex  map[string]bool
 		path         string
 		expected     bool
 	}{
 		{
-			config:       config,
-			lslintLinter: lslintLinter,
+			lslintConfig: NewConfig(nil, nil),
 			ignoreIndex: map[string]bool{
 				".git": true,
 			},
@@ -83,8 +77,7 @@ func TestShouldIgnore(t *testing.T) {
 			expected: true,
 		},
 		{
-			config:       config,
-			lslintLinter: lslintLinter,
+			lslintConfig: NewConfig(nil, nil),
 			ignoreIndex: map[string]bool{
 				"src": true,
 			},
@@ -95,7 +88,7 @@ func TestShouldIgnore(t *testing.T) {
 
 	var i = 0
 	for _, test := range tests {
-		res := test.config.ShouldIgnore(test.ignoreIndex, test.path)
+		res := test.lslintConfig.ShouldIgnore(test.ignoreIndex, test.path)
 
 		if res != test.expected {
 			t.Errorf("Test %d failed with unmatched return value - %+v", i, res)

@@ -14,6 +14,12 @@ type Statistic struct {
 	*sync.RWMutex
 }
 
+func NewStatistic() *Statistic {
+	return &Statistic{
+		RWMutex: new(sync.RWMutex),
+	}
+}
+
 func (statistic *Statistic) AddFile() {
 	statistic.Lock()
 	defer statistic.Unlock()

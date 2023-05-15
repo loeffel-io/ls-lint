@@ -15,8 +15,5 @@ go_test(
     name = "config_test",
     srcs = ["config_test.go"],
     embed = [":config"],
-    deps = [
-        "//internal/linter",
-        "//internal/rule",
-    ],
+    deps = ["//internal/rule"],
 )

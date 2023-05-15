@@ -2,54 +2,58 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"github.com/loeffel-io/ls-lint/v2/internal/config"
+	"github.com/loeffel-io/ls-lint/v2/internal/debug"
 	"github.com/loeffel-io/ls-lint/v2/internal/linter"
 	"github.com/loeffel-io/ls-lint/v2/internal/rule"
 	"gopkg.in/yaml.v3"
 	"log"
 	"os"
 	"strings"
-	"sync"
 )
 
+var Version = "dev"
+
 func main() {
+	var err error
 	var exitCode = 0
 	var writer = os.Stdout
 	var flags = flag.NewFlagSet(os.Args[0], flag.ExitOnError)
 	var flagConfig = flags.String("config", ".ls-lint.yml", "ls-lint config file path")
-	var flagChdir = flags.String("chdir", ".", "switch to a different working directory before executing the given subcommand")
+	var flagWorkdir = flags.String("workdir", ".", "switch to a different working directory before executing the given subcommand")
 	var flagWarn = flags.Bool("warn", false, "treat lint errors as warnings; write output to stdout and return exit code 0")
 	var flagDebug = flags.Bool("debug", false, "write debug informations to stdout")
+	var flagVersion = flags.Bool("version", false, "prints version information for ls-lint")
 
-	if err := flags.Parse(os.Args[1:]); err != nil {
+	if err = flags.Parse(os.Args[1:]); err != nil {
 		log.Fatal(err)
 	}
 
-	var filesystem = os.DirFS(*flagChdir)
-
-	var lslintConfig = &config.Config{
-		RWMutex: new(sync.RWMutex),
+	if *flagVersion {
+		fmt.Printf("ls-lint %s\n", Version)
+		os.Exit(0)
 	}
 
-	// read file
-	configBytes, err := os.ReadFile(*flagConfig)
+	var filesystem = os.DirFS(*flagWorkdir)
+	var lslintConfig = config.NewConfig(nil, nil)
+	var configBytes []byte
 
-	if err != nil {
+	// read file
+	if configBytes, err = os.ReadFile(*flagConfig); err != nil {
 		log.Fatal(err)
 	}
 
 	// to yaml
-	err = yaml.Unmarshal(configBytes, &lslintConfig)
-
-	if err != nil {
+	if err = yaml.Unmarshal(configBytes, lslintConfig); err != nil {
 		log.Fatal(err)
 	}
 
 	// linter
 	var lslintLinter = linter.NewLinter(
-		*flagChdir,
+		".",
 		lslintConfig,
-		nil,
+		debug.NewStatistic(),
 		make([]*rule.Error, 0),
 	)
 

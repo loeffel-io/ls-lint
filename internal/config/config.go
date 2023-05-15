@@ -19,23 +19,31 @@ const (
 )
 
 type Config struct {
-	ls     Ls       `yaml:"ls"`
-	ignore []string `yaml:"ignore"`
+	Ls     Ls       `yaml:"ls"`
+	Ignore []string `yaml:"ignore"`
 	*sync.RWMutex
+}
+
+func NewConfig(ls Ls, ignore []string) *Config {
+	return &Config{
+		Ls:      ls,
+		Ignore:  ignore,
+		RWMutex: new(sync.RWMutex),
+	}
 }
 
 func (config *Config) GetLs() Ls {
 	config.RLock()
 	defer config.RUnlock()
 
-	return config.ls
+	return config.Ls
 }
 
 func (config *Config) GetIgnore() []string {
 	config.RLock()
 	defer config.RUnlock()
 
-	return config.ignore
+	return config.Ignore
 }
 
 func (config *Config) GetIgnoreIndex() map[string]bool {

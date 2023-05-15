@@ -10,5 +10,4 @@ ls:
 ignore:
   - .git
   - .idea
-  - .github
   - genhtml
