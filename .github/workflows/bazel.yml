@@ -6,8 +6,9 @@ jobs:
     container:
       image: gcr.io/bazel-public/bazel@sha256:7318b89458263c20e9b98ac7864769ba68bb86ff2dd33980b42ee33a1591df17 # v6.2.0
     steps:
-      - run: set -euox
-      - run: mkdir -p ${GITHUB_WORKSPACE}
+      - run: set -eu
+      - run: printenv
+      - run: echo ${GITHUB_WORKSPACE} && mkdir -p ${GITHUB_WORKSPACE}
       - uses: actions/checkout@v3
         with:
           path: app
