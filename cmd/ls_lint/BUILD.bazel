@@ -1,4 +1,5 @@
 load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library")
+load("@rules_pkg//pkg:tar.bzl", "pkg_tar")
 
 go_library(
     name = "ls_lint_lib",
@@ -22,72 +23,54 @@ go_binary(
     x_defs = {"Version": "{STABLE_GIT_TAG}"},
 )
 
-go_binary(
-    name = "ls-lint-darwin-arm64",
-    embed = [":ls_lint_lib"],
-    goarch = "arm64",
-    goos = "darwin",
-    pure = "on",
-    visibility = ["//visibility:public"],
-    x_defs = {"Version": "{STABLE_GIT_TAG}"},
-)
+# linux ppc64le not supported yet: https://github.com/bazelbuild/platforms/pull/64
+targets = [
+    [
+        "darwin",
+        "arm64",
+    ],
+    [
+        "darwin",
+        "amd64",
+    ],
+    [
+        "linux",
+        "arm64",
+    ],
+    [
+        "linux",
+        "amd64",
+    ],
+    [
+        "linux",
+        "s390x",
+    ],
+    [
+        "windows",
+        "amd64",
+    ],
+]
 
-go_binary(
-    name = "ls-lint-darwin-amd64",
-    embed = [":ls_lint_lib"],
-    goarch = "amd64",
-    goos = "darwin",
-    pure = "on",
-    visibility = ["//visibility:public"],
-    x_defs = {"Version": "{STABLE_GIT_TAG}"},
-)
+[
+    go_binary(
+        name = "ls-lint-" + goos + "-" + goarch,
+        embed = [":ls_lint_lib"],
+        goarch = goarch,
+        goos = goos,
+        pure = "on",
+        visibility = ["//visibility:public"],
+        x_defs = {"Version": "{STABLE_GIT_TAG}"},
+    )
+    for goos, goarch in targets
+]
 
-go_binary(
-    name = "ls-lint-linux-arm64",
-    embed = [":ls_lint_lib"],
-    goarch = "arm64",
-    goos = "linux",
-    pure = "on",
-    visibility = ["//visibility:public"],
-    x_defs = {"Version": "{STABLE_GIT_TAG}"},
-)
-
-go_binary(
-    name = "ls-lint-linux-amd64",
-    embed = [":ls_lint_lib"],
-    goarch = "amd64",
-    goos = "linux",
-    pure = "on",
-    visibility = ["//visibility:public"],
-    x_defs = {"Version": "{STABLE_GIT_TAG}"},
-)
-
-go_binary(
-    name = "ls-lint-linux-s390x",
-    embed = [":ls_lint_lib"],
-    goarch = "s390x",
-    goos = "linux",
-    pure = "on",
-    visibility = ["//visibility:public"],
-    x_defs = {"Version": "{STABLE_GIT_TAG}"},
-)
-
-go_binary(
-    name = "ls-lint-linux-ppc64le",
-    embed = [":ls_lint_lib"],
-    goarch = "ppc64le",
-    goos = "linux",
-    pure = "on",
-    visibility = ["//visibility:public"],
-    x_defs = {"Version": "{STABLE_GIT_TAG}"},
-)
-
-go_binary(
-    name = "ls-lint-windows-amd64",
-    embed = [":ls_lint_lib"],
-    goarch = "amd64",
-    goos = "windows",
-    pure = "on",
-    visibility = ["//visibility:public"],
-    x_defs = {"Version": "{STABLE_GIT_TAG}"},
-)
+[
+    pkg_tar(
+        name = "ls-lint-" + goos + "-" + goarch + "-pkg",
+        srcs = [
+            ":ls-lint-" + goos + "-" + goarch,
+        ],
+        package_file_name = "ls-lint-" + goos + "-" + goarch + ".tar",
+    )
+    for goos, goarch in targets
+]
