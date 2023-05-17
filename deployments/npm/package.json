@@ -1,8 +1,9 @@
 {
   "name": "@ls-lint/ls-lint",
-  "version": "1.11.2",
+  "version": "2.0.0-beta.0",
   "description": "An extremely fast directory and filename linter",
   "repository": "https://github.com/loeffel-io/ls-lint",
+  "author": "Lucas Löffel <lucas@loeffel.io>",
   "license": "MIT",
   "main": "./bin/cli.js",
   "bin": {
@@ -15,7 +16,8 @@
   ],
   "cpu": [
     "x64",
-    "arm64"
+    "arm64",
+    "s390x"
   ],
   "keywords": [
     "linter",

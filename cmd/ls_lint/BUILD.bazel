@@ -1,5 +1,6 @@
 load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library")
 load("@rules_pkg//pkg:tar.bzl", "pkg_tar")
+load(":target.bzl", "targets")
 
 go_library(
     name = "ls_lint_lib",
@@ -23,34 +24,6 @@ go_binary(
     x_defs = {"Version": "{STABLE_GIT_TAG}"},
 )
 
-# linux ppc64le not supported yet: https://github.com/bazelbuild/platforms/pull/64
-targets = [
-    [
-        "darwin",
-        "arm64",
-    ],
-    [
-        "darwin",
-        "amd64",
-    ],
-    [
-        "linux",
-        "arm64",
-    ],
-    [
-        "linux",
-        "amd64",
-    ],
-    [
-        "linux",
-        "s390x",
-    ],
-    [
-        "windows",
-        "amd64",
-    ],
-]
-
 [
     go_binary(
         name = "ls-lint-" + goos + "-" + goarch,
@@ -69,8 +42,10 @@ targets = [
         name = "ls-lint-" + goos + "-" + goarch + "-pkg",
         srcs = [
             ":ls-lint-" + goos + "-" + goarch,
+            "//:LICENSE",
         ],
         package_file_name = "ls-lint-" + goos + "-" + goarch + ".tar",
+        visibility = ["//visibility:public"],
     )
     for goos, goarch in targets
 ]

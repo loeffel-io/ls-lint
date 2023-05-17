@@ -4,9 +4,31 @@ load("@io_bazel_rules_go//go:def.bzl", "TOOLS_NOGO", "nogo")
 # gazelle:prefix github.com/loeffel-io/ls-lint/v2
 gazelle(name = "gazelle")
 
+config_setting(
+    name = "darwin_arm64",
+    constraint_values = [
+        "@platforms//os:osx",
+        "@platforms//cpu:arm64",
+    ],
+)
+
 nogo(
     name = "nogo",
     config = ":nogo.json",
     visibility = ["//visibility:public"],
     deps = TOOLS_NOGO + [],
+)
+
+exports_files(
+    srcs = ["LICENSE"],
+    visibility = ["//visibility:public"],
+)
+
+alias(
+    name = "gh",
+    actual = select({
+        ":darwin_arm64": "@com_github_cli_cli_darwin_arm64//:bin/gh",
+        "//conditions:default": "@com_github_cli_cli_linux_amd64//:bin/gh",
+    }),
+    visibility = ["//visibility:public"],
 )

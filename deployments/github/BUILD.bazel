@@ -1,0 +1,21 @@
+load("@aspect_bazel_lib//lib:copy_to_directory.bzl", "copy_to_directory")
+load("//cmd/ls_lint:target.bzl", "targets")
+
+copy_to_directory(
+    name = "github_files",
+    srcs = [
+        "//cmd/ls_lint:ls-lint-" + goos + "-" + goarch
+        for goos, goarch in targets
+    ] + [
+        "//cmd/ls_lint:ls-lint-" + goos + "-" + goarch + "-pkg"
+        for goos, goarch in targets
+    ],
+    out = "github",
+    root_paths = [
+        "cmd/ls_lint/ls-lint-" + goos + "-" + goarch + "_"
+        for goos, goarch in targets
+    ] + [
+        "cmd/ls_lint"
+        for goos, goarch in targets
+    ],
+)

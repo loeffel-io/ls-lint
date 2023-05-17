@@ -1,0 +1,32 @@
+load("@aspect_bazel_lib//lib:copy_to_directory.bzl", "copy_to_directory")
+load("@aspect_rules_js//npm:defs.bzl", "npm_package")
+load("//cmd/ls_lint:target.bzl", "targets")
+
+filegroup(
+    name = "package_files",
+    srcs = [
+        ":package.json",
+        ":pnpm-lock.yaml",
+    ],
+)
+
+copy_to_directory(
+    name = "package_files_bin",
+    srcs = ["bin/cli.js"] + [
+        "//cmd/ls_lint:ls-lint-" + goos + "-" + goarch
+        for goos, goarch in targets
+    ],
+    out = "bin",
+    root_paths = ["deployments/npm/bin"] + [
+        "cmd/ls_lint/ls-lint-" + goos + "-" + goarch + "_"
+        for goos, goarch in targets
+    ],
+)
+
+npm_package(
+    name = "ls_lint",
+    srcs = [
+        ":package_files",
+        ":package_files_bin",
+    ],
+)
