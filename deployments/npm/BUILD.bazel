@@ -51,15 +51,14 @@ npm_package(
 
 sh_binary(
     name = "ls_lint_publish",
-    srcs = ["@pnpm"],
+    srcs = [":pnpm.sh"],
     args = [
-        "publish",
-        "--no-git-checks",
-        "--dir $(location :ls_lint)",
-        "--tag beta",
+        "$(location @pnpm)",
+        "$(location :ls_lint)",
     ],
     data = [
         ":.npmrc",
         ":ls_lint",
+        "@pnpm",
     ],
 )
