@@ -44,7 +44,7 @@ go_binary(
             ":ls-lint-" + goos + "-" + goarch,
             "//:LICENSE",
         ],
-        package_file_name = "ls-lint-" + goos + "-" + goarch + ".tar",
+        package_file_name = "ls-lint-" + goos + "-" + goarch + ".tar.gz",
         visibility = ["//visibility:public"],
     )
     for goos, goarch in targets
