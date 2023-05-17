@@ -23,7 +23,9 @@ jobs:
     env:
       GH_TOKEN: ${{ github.token }}
       STABLE_GIT_TAG: ${{ github.ref_name }}
+      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
     steps:
       - run: set -eu && printenv
       - uses: actions/checkout@v3
-      # - run: bazel run //deployments/github:ls_lint_publish
+      - run: bazel run //deployments/github:ls_lint_publish
+      - run: STABLE_GIT_TAG=${STABLE_GIT_TAG:1} bazel run //deployments/npm:ls_lint_publish

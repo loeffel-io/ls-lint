@@ -59,6 +59,7 @@ sh_binary(
         "--tag beta",
     ],
     data = [
+        ":.npmrc",
         ":ls_lint",
     ],
 )
