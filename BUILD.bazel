@@ -32,3 +32,12 @@ alias(
     }),
     visibility = ["//visibility:public"],
 )
+
+alias(
+    name = "coreutils",
+    actual = select({
+        ":darwin_arm64": "@com_github_uutils_coreutils_darwin_arm64//:coreutils",
+        "//conditions:default": "@com_github_uutils_coreutils_linux_amd64//:coreutils",
+    }),
+    visibility = ["//visibility:public"],
+)

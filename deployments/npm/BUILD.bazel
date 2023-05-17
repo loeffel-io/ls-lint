@@ -12,12 +12,18 @@ filegroup(
 
 copy_to_directory(
     name = "package_files_bin",
-    srcs = ["bin/cli.js"] + [
+    srcs = [
+        "bin/cli.js",
+        "//cmd/ls_lint:checksums.txt",
+    ] + [
         "//cmd/ls_lint:ls-lint-" + goos + "-" + goarch
         for goos, goarch in targets
     ],
     out = "bin",
-    root_paths = ["deployments/npm/bin"] + [
+    root_paths = [
+        "deployments/npm/bin",
+        "cmd/ls_lint",
+    ] + [
         "cmd/ls_lint/ls-lint-" + goos + "-" + goarch + "_"
         for goos, goarch in targets
     ],

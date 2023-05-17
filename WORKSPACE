@@ -123,3 +123,27 @@ http_archive(
         "https://github.com/cli/cli/releases/download/v2.29.0/gh_2.29.0_linux_amd64.tar.gz",
     ],
 )
+
+############################################################
+# coreutils (sha256) #######################################
+############################################################
+
+http_archive(
+    name = "com_github_uutils_coreutils_darwin_arm64",
+    build_file_content = """exports_files(["coreutils"])""",
+    sha256 = "17f7b6ef619104498860a8b3835e72bf044f0e788d3032a7b723635875047f6c",
+    strip_prefix = "coreutils-0.0.18-x86_64-apple-darwin",
+    urls = [
+        "https://github.com/uutils/coreutils/releases/download/0.0.18/coreutils-0.0.18-x86_64-apple-darwin.tar.gz",  # only amd64
+    ],
+)
+
+http_archive(
+    name = "com_github_uutils_coreutils_linux_amd64",
+    build_file_content = """exports_files(["coreutils"])""",
+    sha256 = "eecf076c2012bdc81a8e375efc2abc45b13e57127a2ed6028cef6aa404d7215f",
+    strip_prefix = "coreutils-0.0.18-x86_64-unknown-linux-gnu",
+    urls = [
+        "https://github.com/uutils/coreutils/releases/download/0.0.18/coreutils-0.0.18-x86_64-unknown-linux-gnu.tar.gz",
+    ],
+)

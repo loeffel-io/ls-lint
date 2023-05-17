@@ -3,7 +3,7 @@ load("//cmd/ls_lint:target.bzl", "targets")
 
 copy_to_directory(
     name = "github_files",
-    srcs = [
+    srcs = ["//cmd/ls_lint:checksums.txt"] + [
         "//cmd/ls_lint:ls-lint-" + goos + "-" + goarch
         for goos, goarch in targets
     ] + [

@@ -49,3 +49,18 @@ go_binary(
     )
     for goos, goarch in targets
 ]
+
+genrule(
+    name = "ls_lint_checksums",
+    srcs = [
+        "//cmd/ls_lint:ls-lint-" + goos + "-" + goarch
+        for goos, goarch in targets
+    ] + [
+        "//cmd/ls_lint:ls-lint-" + goos + "-" + goarch + "-pkg"
+        for goos, goarch in targets
+    ],
+    outs = ["checksums.txt"],
+    cmd = "$(location //:coreutils) sha256sum $(SRCS) > $(OUTS)",
+    tools = ["//:coreutils"],
+    visibility = ["//visibility:public"],
+)
