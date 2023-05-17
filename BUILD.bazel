@@ -20,7 +20,10 @@ nogo(
 )
 
 exports_files(
-    srcs = ["LICENSE"],
+    srcs = [
+        "LICENSE",
+        "README.md",
+    ],
     visibility = ["//visibility:public"],
 )
 

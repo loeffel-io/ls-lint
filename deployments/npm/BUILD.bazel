@@ -7,6 +7,8 @@ filegroup(
     srcs = [
         ":package.json",
         ":pnpm-lock.yaml",
+        "//:LICENSE",
+        "//:README.md",
     ],
 )
 
@@ -34,5 +36,10 @@ npm_package(
     srcs = [
         ":package_files",
         ":package_files_bin",
+    ],
+    hardlink = "off",
+    include_srcs_packages = [
+        "deployments/npm/**",
+        "**",  # LICENSE + README.md
     ],
 )
