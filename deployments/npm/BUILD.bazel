@@ -48,17 +48,3 @@ npm_package(
         "**",  # LICENSE + README.md
     ],
 )
-
-sh_binary(
-    name = "ls_lint_publish",
-    srcs = [":pnpm.sh"],
-    args = [
-        "$(location @pnpm)",
-        "$(location :ls_lint)",
-    ],
-    data = [
-        ":.npmrc",
-        ":ls_lint",
-        "@pnpm",
-    ],
-)

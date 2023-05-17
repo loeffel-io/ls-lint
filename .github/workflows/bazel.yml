@@ -37,5 +37,5 @@ jobs:
       - uses: google-github-actions/auth@v1
         with:
           credentials_json: ${{ secrets.GOOGLE_CREDENTIALS }}
-      - run: bazel run --remote_cache=$GOOGLE_BUCKET --google_default_credentials //deployments/npm:ls_lint
+      - run: bazel build --remote_cache=$GOOGLE_BUCKET --google_default_credentials //deployments/npm:ls_lint
       - run: (cd bazel-bin/deployments/npm/ls_lint && npm publish --dry-run --tag beta --no-git-checks)
