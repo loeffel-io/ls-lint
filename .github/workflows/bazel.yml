@@ -12,3 +12,18 @@ jobs:
       - run: bazel test //...
       - run: bazel build //...
       - run: bazel run //cmd/ls_lint:ls-lint -- --config ${PWD}/.ls-lint.yml --workdir ${PWD}
+
+  release:
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    container:
+      image: gcr.io/bazel-public/bazel@sha256:7318b89458263c20e9b98ac7864769ba68bb86ff2dd33980b42ee33a1591df17 # v6.2.0
+      options: --user root # ref: https://docs.github.com/en/actions/creating-actions/dockerfile-support-for-github-actions#user
+    env:
+      GH_TOKEN: ${{ github.token }}
+      STABLE_GIT_TAG: ${{ github.ref_name }}
+    steps:
+      - run: set -eu && printenv
+      - uses: actions/checkout@v3
+      # - run: bazel run //deployments/github:ls_lint_publish
