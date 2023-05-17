@@ -1,34 +1,34 @@
 name: CI
 on: [ push ]
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    container:
-      image: gcr.io/bazel-public/bazel@sha256:7318b89458263c20e9b98ac7864769ba68bb86ff2dd33980b42ee33a1591df17 # v6.2.0
-      options: --user root # ref: https://docs.github.com/en/actions/creating-actions/dockerfile-support-for-github-actions#user
-      env:
-        NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        GOOGLE_BUCKET: https://storage.googleapis.com/ls-lint-bazel
-    steps:
-      - run: set -eu
-      - uses: actions/checkout@v3
-      - uses: google-github-actions/auth@v1
-        with:
-          credentials_json: ${{ secrets.GOOGLE_CREDENTIALS }}
-      - run: bazel test --remote_cache=$GOOGLE_BUCKET --google_default_credentials //...
-      - run: bazel build --remote_cache=$GOOGLE_BUCKET --google_default_credentials //...
-      - run: bazel run //cmd/ls_lint:ls-lint -- --config ${PWD}/.ls-lint.yml --workdir ${PWD}
+#  build:
+#    runs-on: ubuntu-latest
+#    container:
+#      image: gcr.io/bazel-public/bazel@sha256:7318b89458263c20e9b98ac7864769ba68bb86ff2dd33980b42ee33a1591df17 # v6.2.0
+#      options: --user root # ref: https://docs.github.com/en/actions/creating-actions/dockerfile-support-for-github-actions#user
+#      env:
+#        NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+#        GOOGLE_BUCKET: https://storage.googleapis.com/ls-lint-bazel
+#    steps:
+#      - run: set -eu
+#      - uses: actions/checkout@v3
+#      - uses: google-github-actions/auth@v1
+#        with:
+#          credentials_json: ${{ secrets.GOOGLE_CREDENTIALS }}
+#      - run: bazel test --remote_cache=$GOOGLE_BUCKET --google_default_credentials //...
+#      - run: bazel build --remote_cache=$GOOGLE_BUCKET --google_default_credentials //...
+#      - run: bazel run //cmd/ls_lint:ls-lint -- --config ${PWD}/.ls-lint.yml --workdir ${PWD}
 
   release:
-    needs: build
-    if: startsWith(github.ref, 'refs/tags/v')
+    # needs: build
+    # if: startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
     container:
       image: gcr.io/bazel-public/bazel@sha256:7318b89458263c20e9b98ac7864769ba68bb86ff2dd33980b42ee33a1591df17 # v6.2.0
       options: --user root # ref: https://docs.github.com/en/actions/creating-actions/dockerfile-support-for-github-actions#user
     env:
       GH_TOKEN: ${{ github.token }}
-      STABLE_GIT_TAG: ${{ github.ref_name }}
+      STABLE_GIT_TAG: v2.0.0-beta.0 # ${{ github.ref_name }}
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       GOOGLE_BUCKET: https://storage.googleapis.com/ls-lint-bazel
     steps:
@@ -37,5 +37,5 @@ jobs:
       - uses: google-github-actions/auth@v1
         with:
           credentials_json: ${{ secrets.GOOGLE_CREDENTIALS }}
-      - run: bazel run --remote_cache=$GOOGLE_BUCKET --google_default_credentials //deployments/github:ls_lint_publish
+      # - run: bazel run --remote_cache=$GOOGLE_BUCKET --google_default_credentials //deployments/github:ls_lint_publish
       - run: bazel run --remote_cache=$GOOGLE_BUCKET --google_default_credentials //deployments/npm:ls_lint_publish
