@@ -22,3 +22,4 @@ bazel-ls-lint
 bazel-out
 bazel-testlogs
 genhtml
+gha-creds-*.json
