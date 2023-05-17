@@ -32,11 +32,12 @@ jobs:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       GOOGLE_BUCKET: https://storage.googleapis.com/ls-lint-bazel
     steps:
-      - run: set -eu && printenv
+      - run: set -eu
       - uses: actions/checkout@v3
       - uses: google-github-actions/auth@v1
         with:
           credentials_json: ${{ secrets.GOOGLE_CREDENTIALS }}
       # - run: bazel run --remote_cache=$GOOGLE_BUCKET --google_default_credentials //deployments/github:ls_lint_publish
-      - run: curl -fsSL https://get.pnpm.io/install.sh | bash -
-      - run: bazel run --remote_cache=$GOOGLE_BUCKET --google_default_credentials //deployments/npm:ls_lint_publish
+      # workaround: https://bazelbuild.slack.com/archives/CEZUUKQ6P/p1667995025343689
+      - run: curl -fsSL https://get.pnpm.io/install.sh | bash - && source /github/home/.bashrc
+      - run: bazel build --remote_cache=$GOOGLE_BUCKET --google_default_credentials //deployments/npm:ls_lint && (cd bazel-bin/deployments/npm/ls_lint && pnpm publish --no-git-checks --tag beta)
