@@ -53,8 +53,10 @@ sh_binary(
     name = "ls_lint_publish",
     srcs = ["@pnpm"],
     args = [
-        "install",
+        "publish",
+        "--no-git-checks",
         "--dir $(location :ls_lint)",
+        "--tag beta",
     ],
     data = [
         ":.npmrc",
