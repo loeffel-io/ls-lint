@@ -100,6 +100,10 @@ npm_repositories()
 
 pnpm_repository(name = "pnpm")
 
+load("@aspect_bazel_lib//lib:repositories.bzl", "register_jq_toolchains")
+
+register_jq_toolchains()
+
 ############################################################
 # github cli ###############################################
 ############################################################
