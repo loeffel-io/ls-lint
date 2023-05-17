@@ -38,5 +38,6 @@ jobs:
         with:
           credentials_json: ${{ secrets.GOOGLE_CREDENTIALS }}
       - run: curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && apt-get install -y nodejs
+      - run: which node && which npm
       # - run: bazel run --remote_cache=$GOOGLE_BUCKET --google_default_credentials //deployments/github:ls_lint_publish
       - run: bazel run --remote_cache=$GOOGLE_BUCKET --google_default_credentials //deployments/npm:ls_lint_publish
