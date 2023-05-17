@@ -1,6 +1,6 @@
 {
   "name": "@ls-lint/ls-lint",
-  "version": "2.0.0-beta.0",
+  "version": "0.0.0",
   "description": "An extremely fast directory and filename linter",
   "repository": "https://github.com/loeffel-io/ls-lint",
   "author": "Lucas Löffel <lucas@loeffel.io>",
