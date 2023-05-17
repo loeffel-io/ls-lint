@@ -1,11 +1,11 @@
 ls:
   .dir: snake_case
-  .tf: snake_case
   .bzl: snake_case
   .sh: snake_case
   .bazel: SCREAMING_SNAKE_CASE
   .go: snake_case
   .yaml: snake_case
+  .js: snake_case
 
 ignore:
   - .git
