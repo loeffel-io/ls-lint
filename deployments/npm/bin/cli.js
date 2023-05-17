@@ -3,6 +3,7 @@
 const spawn = require('child_process').spawn;
 const path = require('path');
 const command_args = process.argv.slice(2);
+console.log(command_args);
 
 function spawnCommand(binaryExecutable) {
     const child = spawn(
