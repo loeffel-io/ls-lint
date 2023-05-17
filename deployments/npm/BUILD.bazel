@@ -43,3 +43,17 @@ npm_package(
         "**",  # LICENSE + README.md
     ],
 )
+
+sh_binary(
+    name = "ls_lint_publish",
+    srcs = ["@pnpm"],
+    args = [
+        "publish",
+        "--no-git-checks",
+        "--dir $(location :ls_lint)",
+        "--tag beta",
+    ],
+    data = [
+        ":ls_lint",
+    ],
+)

@@ -12,3 +12,8 @@ ignore:
   - .idea
   - .github
   - genhtml
+  - bazel-bin
+  - bazel-out
+  - bazel-ls-lint
+  - bazel-testlogs
+  - deployments/npm/pnpm-lock.yaml

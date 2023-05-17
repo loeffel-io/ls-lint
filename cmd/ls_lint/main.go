@@ -10,6 +10,7 @@ import (
 	"gopkg.in/yaml.v3"
 	"log"
 	"os"
+	"runtime"
 	"strings"
 )
 
@@ -31,7 +32,7 @@ func main() {
 	}
 
 	if *flagVersion {
-		fmt.Printf("ls-lint %s\n", Version)
+		fmt.Printf("ls-lint %s\ngo %s\n", Version, runtime.Version())
 		os.Exit(0)
 	}
 

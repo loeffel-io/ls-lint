@@ -19,3 +19,16 @@ copy_to_directory(
         for goos, goarch in targets
     ],
 )
+
+sh_binary(
+    name = "ls_lint_publish",
+    srcs = [":github.sh"],
+    args = [
+        "$(location //:gh)",
+        "$(location :github_files)/*",
+    ],
+    data = [
+        ":github_files",
+        "//:gh",
+    ],
+)
