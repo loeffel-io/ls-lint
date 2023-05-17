@@ -91,6 +91,7 @@ load("@aspect_rules_js//npm:repositories.bzl", "npm_translate_lock", "pnpm_repos
 
 npm_translate_lock(
     name = "npm",
+    npmrc = "//deployments/npm:.npmrc",
     pnpm_lock = "//deployments/npm:pnpm-lock.yaml",
 )
 
