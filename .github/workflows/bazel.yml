@@ -39,5 +39,5 @@ jobs:
           credentials_json: ${{ secrets.GOOGLE_CREDENTIALS }}
       # - run: bazel run --remote_cache=$GOOGLE_BUCKET --google_default_credentials //deployments/github:ls_lint_publish
       # workaround: https://bazelbuild.slack.com/archives/CEZUUKQ6P/p1667995025343689
-      - run: curl -fsSL https://get.pnpm.io/install.sh | bash -
+      - run: curl -fsSL https://get.pnpm.io/install.sh | bash - && . /github/home/.bashrc
       - run: bazel build --remote_cache=$GOOGLE_BUCKET --google_default_credentials //deployments/npm:ls_lint && (cd bazel-bin/deployments/npm/ls_lint && pnpm publish --no-git-checks --tag beta)
