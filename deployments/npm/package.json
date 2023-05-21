@@ -25,5 +25,8 @@
     "filename linter",
     "javascript",
     "typescript"
-  ]
+  ],
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  }
 }
