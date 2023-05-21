@@ -1,8 +1,8 @@
-<img width="100" src="https://raw.githubusercontent.com/loeffel-io/ls-lint/master/ls-lint.png" alt="logo">
+<img width="100" src="https://raw.githubusercontent.com/loeffel-io/ls-lint/master/assets/ls-lint.png" alt="logo">
 
 # ls-lint
 
-An extremely fast directory and filename linter - Bring some structure to your project directories
+An extremely fast directory and filename linter - Bring some structure to your project filesystem
 
 [![CI](https://github.com/loeffel-io/ls-lint/actions/workflows/bazel.yml/badge.svg?branch=master)](https://github.com/loeffel-io/ls-lint/actions/workflows/bazel.yml)
 [![Go Report Card](https://goreportcard.com/badge/github.com/loeffel-io/ls-lint)](https://goreportcard.com/report/github.com/loeffel-io/ls-lint)
@@ -22,10 +22,10 @@ An extremely fast directory and filename linter - Bring some structure to your p
 
 The full documentation can be found at [ls-lint.org](https://ls-lint.org)
 
-- [Installation](https://ls-lint.org/1.x/getting-started/installation.html#curl)
-- [The Basics](https://ls-lint.org/1.x/configuration/the-basics.html)
-- [The Rules](https://ls-lint.org/1.x/configuration/the-basics.html)
-- [Contributions](https://ls-lint.org/1.x/prologue/contributions.html)
+- [Installation](https://ls-lint.org/2.0/getting-started/installation.html#curl)
+- [The Basics](https://ls-lint.org/2.0/configuration/the-basics.html)
+- [The Rules](https://ls-lint.org/2.0/configuration/the-basics.html)
+- [Contributions](https://ls-lint.org/2.0/prologue/contributions.html)
 
 ## Demo
 
