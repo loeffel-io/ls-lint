@@ -22,8 +22,8 @@ func main() {
 	var writer = os.Stdout
 	var flags = flag.NewFlagSet(os.Args[0], flag.ExitOnError)
 	var flagConfig = flags.String("config", ".ls-lint.yml", "ls-lint config file path")
-	var flagWorkdir = flags.String("workdir", ".", "switch to a different working directory before executing the given subcommand")
-	var flagWarn = flags.Bool("warn", false, "treat lint errors as warnings; write output to stdout and return exit code 0")
+	var flagWorkdir = flags.String("workdir", ".", "change working directory before executing the given subcommand")
+	var flagWarn = flags.Bool("warn", false, "write lint errors to stdout instead of stderr (exit 0)")
 	var flagDebug = flags.Bool("debug", false, "write debug informations to stdout")
 	var flagVersion = flags.Bool("version", false, "prints version information for ls-lint")
 
