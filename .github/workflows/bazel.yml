@@ -11,8 +11,8 @@ jobs:
         GOOGLE_BUCKET: https://storage.googleapis.com/ls-lint-bazel
     steps:
       - run: set -eu
-      - run: cat ${GITHUB_WORKSPACE}/deployments/npm/.npmrc
       - uses: actions/checkout@v3
+      - run: cat ${GITHUB_WORKSPACE}/deployments/npm/.npmrc
       - uses: google-github-actions/auth@v1
         with:
           credentials_json: ${{ secrets.GOOGLE_CREDENTIALS }}
