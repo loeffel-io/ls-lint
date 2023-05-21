@@ -1,0 +1,66 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library")
+load("@rules_pkg//pkg:tar.bzl", "pkg_tar")
+load(":target.bzl", "targets")
+
+go_library(
+    name = "ls_lint_lib",
+    srcs = ["main.go"],
+    importpath = "github.com/loeffel-io/ls-lint/v2/cmd/ls_lint",
+    visibility = ["//visibility:private"],
+    deps = [
+        "//internal/config",
+        "//internal/debug",
+        "//internal/linter",
+        "//internal/rule",
+        "@in_gopkg_yaml_v3//:yaml_v3",
+    ],
+)
+
+go_binary(
+    name = "ls-lint",
+    embed = [":ls_lint_lib"],
+    pure = "on",
+    visibility = ["//visibility:public"],
+    x_defs = {"Version": "{STABLE_GIT_TAG}"},
+)
+
+[
+    go_binary(
+        name = "ls-lint-" + goos + "-" + goarch,
+        embed = [":ls_lint_lib"],
+        goarch = goarch,
+        goos = goos,
+        pure = "on",
+        visibility = ["//visibility:public"],
+        x_defs = {"Version": "{STABLE_GIT_TAG}"},
+    )
+    for goos, goarch in targets
+]
+
+[
+    pkg_tar(
+        name = "ls-lint-" + goos + "-" + goarch + "-pkg",
+        srcs = [
+            ":ls-lint-" + goos + "-" + goarch,
+            "//:LICENSE",
+        ],
+        package_file_name = "ls-lint-" + goos + "-" + goarch + ".tar.gz",
+        visibility = ["//visibility:public"],
+    )
+    for goos, goarch in targets
+]
+
+genrule(
+    name = "ls_lint_checksums",
+    srcs = [
+        "//cmd/ls_lint:ls-lint-" + goos + "-" + goarch
+        for goos, goarch in targets
+    ] + [
+        "//cmd/ls_lint:ls-lint-" + goos + "-" + goarch + "-pkg"
+        for goos, goarch in targets
+    ],
+    outs = ["checksums.txt"],
+    cmd = "$(location //:coreutils) sha256sum $(SRCS) > $(OUTS)",
+    tools = ["//:coreutils"],
+    visibility = ["//visibility:public"],
+)

@@ -15,12 +15,11 @@
 # vendor/
 
 # custom
-/.idea
-ls-lint
-ls-lint-darwin
-ls-lint-darwin-arm64
-ls-lint-linux
-ls-lint-linux-arm64
-ls-lint-windows.exe
-/coverage.txt
-!npm
+.DS_Store
+.idea
+bazel-bin
+bazel-ls-lint
+bazel-out
+bazel-testlogs
+genhtml
+gha-creds-*.json

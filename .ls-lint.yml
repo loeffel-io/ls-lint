@@ -1,8 +1,19 @@
 ls:
-  .dir: kebab-case
+  .dir: snake_case
+  .bzl: snake_case
+  .sh: snake_case
+  .bazel: SCREAMING_SNAKE_CASE
   .go: snake_case
+  .yaml: snake_case
+  .js: snake_case
 
 ignore:
+  - .git
   - .idea
   - .github
-  - .git
+  - genhtml
+  - bazel-bin
+  - bazel-out
+  - bazel-ls-lint
+  - bazel-testlogs
+  - deployments/npm/pnpm-lock.yaml

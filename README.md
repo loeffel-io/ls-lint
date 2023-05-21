@@ -4,10 +4,9 @@
 
 An extremely fast directory and filename linter - Bring some structure to your project directories
 
-[![Build Status](https://cloud.drone.io/api/badges/loeffel-io/ls-lint/status.svg)](https://cloud.drone.io/loeffel-io/ls-lint)
+[![CI](https://github.com/loeffel-io/ls-lint/actions/workflows/bazel.yml/badge.svg?branch=master)](https://github.com/loeffel-io/ls-lint/actions/workflows/bazel.yml)
 [![Go Report Card](https://goreportcard.com/badge/github.com/loeffel-io/ls-lint)](https://goreportcard.com/report/github.com/loeffel-io/ls-lint)
 <a href="https://www.npmjs.com/package/@ls-lint/ls-lint"><img src="https://img.shields.io/npm/v/@ls-lint/ls-lint.svg?sanitize=true" alt="Version"></a>
-[![codecov](https://codecov.io/gh/loeffel-io/ls-lint/branch/master/graph/badge.svg?token=76N7CNQT2G)](https://codecov.io/gh/loeffel-io/ls-lint)
 <a href="https://www.npmjs.com/package/@ls-lint/ls-lint"><img src="https://img.shields.io/npm/dm/@ls-lint/ls-lint?label=npm%20downloads" alt="NPM Downloads"></a>
 ![npm](https://img.shields.io/npm/dt/@ls-lint/ls-lint?label=npm%20downloads%20total)
 <a href="https://www.npmjs.com/package/@ls-lint/ls-lint"><img src="https://img.shields.io/npm/l/@ls-lint/ls-lint.svg?sanitize=true" alt="License"></a>
@@ -16,7 +15,6 @@ An extremely fast directory and filename linter - Bring some structure to your p
 - Works for directory and file names - all extensions supported - full unicode support
 - Incredibly fast - lints thousands of files and directories in milliseconds
 - Support for Windows, MacOS and Linux + NPM Package & Docker Image
-- ARM support
 - Almost zero third-party dependencies (only [go-yaml](https://github.com/go-yaml/yaml)
   and [doublestar](https://github.com/bmatcuk/doublestar))
 
@@ -47,12 +45,6 @@ ignore:
 ### Result
 
 <img src="https://i.imgur.com/pxXkYcl.gif" alt="command" width="600">
-
-## Benchmarks ([hyperfine](https://github.com/sharkdp/hyperfine))
-
-| Package                                          | v1.10.x: Mean [s]  | v1.11.x: Mean [s]  | File                                                                                                          | 
-|--------------------------------------------------|--------------------|--------------------|---------------------------------------------------------------------------------------------------------------|
-| [nuxt/nuxt.js](https://github.com/nuxt/nuxt.js)  | 627.2 ms ± 19.0 ms | 51.9 ms ± 3.2 ms   | [examples/nuxt-nuxt-js](https://github.com/loeffel-io/ls-lint/tree/master/examples/nuxt-nuxt-js/.ls-lint.yml) |
 
 ## Discord
 

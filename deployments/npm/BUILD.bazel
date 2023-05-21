@@ -1,0 +1,50 @@
+load("@aspect_bazel_lib//lib:copy_to_directory.bzl", "copy_to_directory")
+load("@aspect_rules_js//npm:defs.bzl", "npm_package", "stamped_package_json")
+load("//cmd/ls_lint:target.bzl", "targets")
+
+stamped_package_json(
+    name = "package",
+    stamp_var = "STABLE_GIT_TAG",
+)
+
+filegroup(
+    name = "package_files",
+    srcs = [
+        ":pnpm-lock.yaml",
+        "//:LICENSE",
+        "//:README.md",
+    ],
+)
+
+copy_to_directory(
+    name = "package_files_bin",
+    srcs = [
+        "bin/cli.js",
+        "//cmd/ls_lint:checksums.txt",
+    ] + [
+        "//cmd/ls_lint:ls-lint-" + goos + "-" + goarch
+        for goos, goarch in targets
+    ],
+    out = "bin",
+    root_paths = [
+        "deployments/npm/bin",
+        "cmd/ls_lint",
+    ] + [
+        "cmd/ls_lint/ls-lint-" + goos + "-" + goarch + "_"
+        for goos, goarch in targets
+    ],
+)
+
+npm_package(
+    name = "ls_lint",
+    srcs = [
+        ":package",  # stamped package json
+        ":package_files",
+        ":package_files_bin",
+    ],
+    hardlink = "off",
+    include_srcs_packages = [
+        "deployments/npm/**",
+        "**",  # LICENSE + README.md
+    ],
+)

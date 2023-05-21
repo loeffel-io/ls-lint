@@ -1,0 +1,26 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "linter",
+    srcs = ["linter.go"],
+    importpath = "github.com/loeffel-io/ls-lint/v2/internal/linter",
+    visibility = ["//:__subpackages__"],
+    deps = [
+        "//internal/config",
+        "//internal/debug",
+        "//internal/rule",
+        "@org_golang_x_sync//errgroup",
+    ],
+)
+
+go_test(
+    name = "linter_test",
+    srcs = ["linter_test.go"],
+    embed = [":linter"],
+    race = "on",
+    deps = [
+        "//internal/config",
+        "//internal/debug",
+        "//internal/rule",
+    ],
+)
