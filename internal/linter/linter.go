@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/loeffel-io/ls-lint/v2/internal/config"
 	"github.com/loeffel-io/ls-lint/v2/internal/debug"
+	"github.com/loeffel-io/ls-lint/v2/internal/glob"
 	"github.com/loeffel-io/ls-lint/v2/internal/rule"
 	"golang.org/x/sync/errgroup"
 	"io/fs"
@@ -173,7 +174,12 @@ func (linter *Linter) Run(filesystem fs.FS, debug bool, statistics bool) (err er
 	}
 
 	// glob index
-	if err = linter.config.GlobIndex(filesystem, index); err != nil {
+	if err = glob.Index(filesystem, index, false); err != nil {
+		return err
+	}
+
+	// glob ignore index
+	if err = glob.Index(filesystem, ignoreIndex, true); err != nil {
 		return err
 	}
 

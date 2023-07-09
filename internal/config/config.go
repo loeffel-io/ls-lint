@@ -2,9 +2,7 @@ package config
 
 import (
 	"fmt"
-	"github.com/bmatcuk/doublestar/v4"
 	"github.com/loeffel-io/ls-lint/v2/internal/rule"
-	"io/fs"
 	"reflect"
 	"strings"
 	"sync"
@@ -91,42 +89,6 @@ func (config *Config) GetIndex(list Ls) (RuleIndex, error) {
 	}
 
 	return index, nil
-}
-
-func (config *Config) GlobIndex(filesystem fs.FS, index RuleIndex) (err error) {
-	for key, value := range index {
-		var matches []string
-
-		if !strings.ContainsAny(key, "*{}") {
-			continue
-		}
-
-		if matches, err = doublestar.Glob(filesystem, key); err != nil {
-			return err
-		}
-
-		if len(matches) == 0 {
-			delete(index, key)
-			continue
-		}
-
-		for _, match := range matches {
-			var matchInfo fs.FileInfo
-
-			if matchInfo, err = fs.Stat(filesystem, match); err != nil {
-				return err
-			}
-
-			if !matchInfo.IsDir() {
-				continue
-			}
-
-			index[match] = value
-			delete(index, key)
-		}
-	}
-
-	return nil
 }
 
 func (config *Config) walkIndex(index RuleIndex, key string, list Ls) error {

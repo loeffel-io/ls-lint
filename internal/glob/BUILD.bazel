@@ -1,0 +1,12 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "glob",
+    srcs = ["glob.go"],
+    importpath = "github.com/loeffel-io/ls-lint/v2/internal/glob",
+    visibility = ["//:__subpackages__"],
+    deps = [
+        "//internal/rule",
+        "@com_github_bmatcuk_doublestar_v4//:doublestar",
+    ],
+)
