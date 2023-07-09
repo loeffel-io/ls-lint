@@ -9,11 +9,8 @@ ls:
 
 ignore:
   - .git
-  - .idea
   - .github
+  - .idea
   - genhtml
-  - bazel-bin
-  - bazel-out
-  - bazel-ls-lint
-  - bazel-testlogs
+  - bazel-*
   - deployments/npm/pnpm-lock.yaml

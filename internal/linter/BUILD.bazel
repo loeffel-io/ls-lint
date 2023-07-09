@@ -8,6 +8,7 @@ go_library(
     deps = [
         "//internal/config",
         "//internal/debug",
+        "//internal/glob",
         "//internal/rule",
         "@org_golang_x_sync//errgroup",
     ],
