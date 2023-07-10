@@ -14,7 +14,7 @@ An extremely fast directory and filename linter - Bring some structure to your p
 - Minimal setup with simple rules managed in one single `.ls-lint.yml` file
 - Works for directory and file names - all extensions supported - full unicode support
 - Incredibly fast - lints thousands of files and directories in milliseconds
-- Support for Windows, MacOS and Linux + NPM Package & Docker Image
+- Support for Windows, MacOS and Linux + NPM Package + [GitHub Action](https://github.com/ls-lint/action) & Docker Image
 - Almost zero third-party dependencies (only [go-yaml](https://github.com/go-yaml/yaml)
   and [doublestar](https://github.com/bmatcuk/doublestar))
 
