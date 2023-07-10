@@ -6,6 +6,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: ls-lint/action@6c016c90025c7b6ed60360fedd22f39bf7fe9a66
+        with:
+          config: "asdf/ls"
 
   build:
     runs-on: ubuntu-latest
