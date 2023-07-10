@@ -5,7 +5,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: ls-lint/action@0a98d15052ab86bd856d435fa96d298aca816185
+      - uses: ls-lint/action@4c58c0b5d4bef8beaff76570d75e8c012ca2b6bb
 
   build:
     runs-on: ubuntu-latest
