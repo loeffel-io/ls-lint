@@ -2,6 +2,7 @@ name: CI
 on: [ push ]
 jobs:
   test-action:
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - uses: ls-lint/action@d714003f8c57b1e46f02f2d5047ed924307d1a30
