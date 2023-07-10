@@ -6,5 +6,3 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: ls-lint/action@0ee62a23e017386453e10173f84dfe2cc6fa5595
-        with:
-          debug: true
