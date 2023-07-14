@@ -136,10 +136,10 @@ http_archive(
 http_archive(
     name = "com_github_uutils_coreutils_darwin_arm64",
     build_file_content = """exports_files(["coreutils"])""",
-    sha256 = "0d0f02f3ff59bc5490c915d3c4711234c69f5a84d7348f9cf4c67dc212a28923",
-    strip_prefix = "coreutils-0.0.19-x86_64-apple-darwin",
+    sha256 = "98dd028079a684d2a3c368de3f2a69d9744c1fe0bee1121c689c4ba8815b2055",
+    strip_prefix = "coreutils-0.0.20-x86_64-apple-darwin",
     urls = [
-        "https://github.com/uutils/coreutils/releases/download/0.0.19/coreutils-0.0.19-x86_64-apple-darwin.tar.gz",  # only amd64
+        "https://github.com/uutils/coreutils/releases/download/0.0.20/coreutils-0.0.20-x86_64-apple-darwin.tar.gz",  # only amd64
     ],
 )
 
