@@ -50,6 +50,10 @@ ignore:
 
 [Join the ls-lint discord server](https://discord.gg/bsf9q7f2Rh)
 
+## Sponsors
+
+<a href="https://jetbrains.com"><img height="130" src="https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.png?_ga=2.249742848.788370738.1691416665-1384286648.1691416665" alt="jetbrains"></a>
+
 ## Logo
 
 Logo created by [Studio Ajot](https://www.studio-ajot.de/)
