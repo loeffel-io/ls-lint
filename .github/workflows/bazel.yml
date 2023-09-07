@@ -11,7 +11,7 @@ jobs:
         GOOGLE_BUCKET: https://storage.googleapis.com/ls-lint-bazel
     steps:
       - run: set -eu
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: google-github-actions/auth@v1
         with:
           credentials_json: ${{ secrets.GOOGLE_CREDENTIALS }}
@@ -33,7 +33,7 @@ jobs:
       GOOGLE_BUCKET: https://storage.googleapis.com/ls-lint-bazel
     steps:
       - run: set -eu && curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && apt-get install -y nodejs
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: google-github-actions/auth@v1
         with:
           credentials_json: ${{ secrets.GOOGLE_CREDENTIALS }}
