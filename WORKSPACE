@@ -122,10 +122,10 @@ http_archive(
 http_archive(
     name = "com_github_cli_cli_linux_amd64",
     build_file_content = """exports_files(glob(["bin/*"]))""",
-    sha256 = "c46d0adae4dbd0589a62b6a1d822b84ca5184ee78d246d21d5c082ab9f38a04e",
-    strip_prefix = "gh_2.33.0_linux_amd64",
+    sha256 = "056c45c510ca77ec7e492023e1aa79c078b679932b6202188b7f5abd914df911",
+    strip_prefix = "gh_2.34.0_linux_amd64",
     urls = [
-        "https://github.com/cli/cli/releases/download/v2.33.0/gh_2.33.0_linux_amd64.tar.gz",
+        "https://github.com/cli/cli/releases/download/v2.34.0/gh_2.34.0_linux_amd64.tar.gz",
     ],
 )
 
