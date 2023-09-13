@@ -8,10 +8,10 @@ import (
 	"github.com/loeffel-io/ls-lint/v2/internal/rule"
 	"golang.org/x/sync/errgroup"
 	"io/fs"
-	"log"
 	"path/filepath"
 	"strings"
 	"sync"
+	"time"
 )
 
 const (
@@ -164,7 +164,7 @@ func (linter *Linter) validateFile(index config.RuleIndex, path string) error {
 	return nil
 }
 
-func (linter *Linter) Run(filesystem fs.FS, debug bool, statistics bool) (err error) {
+func (linter *Linter) Run(filesystem fs.FS, debug bool) (err error) {
 	var index config.RuleIndex
 	var ignoreIndex = linter.config.GetIgnoreIndex()
 
@@ -183,26 +183,66 @@ func (linter *Linter) Run(filesystem fs.FS, debug bool, statistics bool) (err er
 		return err
 	}
 
+	if debug {
+		fmt.Printf("=============================\nls index\n-----------------------------\n")
+		for path, pathIndex := range index {
+			switch path == "" {
+			case true:
+				fmt.Printf(".:")
+			case false:
+				fmt.Printf("%s:", path)
+			}
+
+			for extension, rules := range pathIndex {
+				var tmpRules = make([]string, 0)
+				for _, tmpRule := range rules {
+					if len(tmpRule.GetParameters()) > 0 {
+						tmpRules = append(tmpRules, fmt.Sprintf("%s:%s", tmpRule.GetName(), strings.Join(tmpRule.GetParameters(), ",")))
+						continue
+					}
+
+					tmpRules = append(tmpRules, tmpRule.GetName())
+				}
+
+				fmt.Printf(" %s: %s", extension, strings.Join(tmpRules, ", "))
+			}
+			fmt.Printf("\n")
+		}
+
+		fmt.Printf("-----------------------------\nignore index\n-----------------------------\n")
+		for path := range ignoreIndex {
+			fmt.Printf("%s\n", path)
+		}
+
+		fmt.Printf("-----------------------------\nlint\n-----------------------------\n")
+	}
+
+	if debug {
+		defer func() {
+			fmt.Printf("-----------------------------\nstatistics\n-----------------------------\n")
+			fmt.Printf("time: %d ms\n", time.Since(linter.GetStatistics().Start).Milliseconds())
+			fmt.Printf("files: %d\n", linter.GetStatistics().Files)
+			fmt.Printf("file skips: %d\n", linter.GetStatistics().FileSkips)
+			fmt.Printf("dirs: %d\n", linter.GetStatistics().Dirs)
+			fmt.Printf("dir skips: %d\n", linter.GetStatistics().DirSkips)
+			fmt.Printf("=============================\n")
+		}()
+	}
+
 	return fs.WalkDir(filesystem, linter.root, func(path string, info fs.DirEntry, err error) error {
 		if linter.config.ShouldIgnore(ignoreIndex, path) {
 			if info.IsDir() {
 				if debug {
-					log.Printf("skip dir: %s", path)
-				}
-
-				if statistics {
-					defer linter.GetStatistics().AddDirSkip()
+					fmt.Printf("skip dir: %s\n", path)
+					linter.GetStatistics().AddDirSkip()
 				}
 
 				return fs.SkipDir
 			}
 
 			if debug {
-				log.Printf("skip file: %s", path)
-			}
-
-			if statistics {
-				defer linter.GetStatistics().AddFileSkip()
+				fmt.Printf("skip file: %s\n", path)
+				linter.GetStatistics().AddFileSkip()
 			}
 
 			return nil
@@ -214,22 +254,16 @@ func (linter *Linter) Run(filesystem fs.FS, debug bool, statistics bool) (err er
 
 		if info.IsDir() {
 			if debug {
-				log.Printf("lint dir: %s", path)
-			}
-
-			if statistics {
-				defer linter.GetStatistics().AddDir()
+				fmt.Printf("lint dir: %s\n", path)
+				linter.GetStatistics().AddDir()
 			}
 
 			return linter.validateDir(index, path)
 		}
 
 		if debug {
-			log.Printf("lint file: %s", path)
-		}
-
-		if statistics {
-			defer linter.GetStatistics().AddFile()
+			fmt.Printf("lint file: %s\n", path)
+			linter.GetStatistics().AddFile()
 		}
 
 		return linter.validateFile(index, path)

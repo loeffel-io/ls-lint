@@ -28,6 +28,10 @@ func (rule *CamelCase) SetParameters(params []string) error {
 	return nil
 }
 
+func (rule *CamelCase) GetParameters() []string {
+	return nil
+}
+
 // Validate checks if string is camel case
 // false if rune is no letter and no digit
 func (rule *CamelCase) Validate(value string) (bool, error) {

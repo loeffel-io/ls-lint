@@ -28,6 +28,10 @@ func (rule *Lowercase) SetParameters(params []string) error {
 	return nil
 }
 
+func (rule *Lowercase) GetParameters() []string {
+	return nil
+}
+
 // Validate checks if every letter is lower
 func (rule *Lowercase) Validate(value string) (bool, error) {
 	for _, c := range value {

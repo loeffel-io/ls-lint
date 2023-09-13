@@ -43,6 +43,10 @@ func (rule *Regex) SetParameters(params []string) error {
 	return nil
 }
 
+func (rule *Regex) GetParameters() []string {
+	return []string{rule.RegexPattern}
+}
+
 // Validate checks if full string matches regex
 func (rule *Regex) Validate(value string) (bool, error) {
 	return regexp.MatchString(fmt.Sprintf("^%s$", rule.getRegexPattern()), value)

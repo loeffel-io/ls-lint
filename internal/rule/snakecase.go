@@ -28,6 +28,10 @@ func (rule *SnakeCase) SetParameters(params []string) error {
 	return nil
 }
 
+func (rule *SnakeCase) GetParameters() []string {
+	return nil
+}
+
 // Validate checks if string is sneak case
 // false if rune is no lowercase letter, digit or _
 func (rule *SnakeCase) Validate(value string) (bool, error) {
