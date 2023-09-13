@@ -4,7 +4,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     container:
-      image: gcr.io/bazel-public/bazel@sha256:9527dbca23d6e823b13365371528b20ff73fcbcf5dd45fe02bcdb4f91c5a864d # v6.2.0
+      image: gcr.io/bazel-public/bazel@sha256:9527dbca23d6e823b13365371528b20ff73fcbcf5dd45fe02bcdb4f91c5a864d # v6.3.2
       options: --user root # ref: https://docs.github.com/en/actions/creating-actions/dockerfile-support-for-github-actions#user
       env:
         NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
@@ -24,7 +24,7 @@ jobs:
     if: startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
     container:
-      image: gcr.io/bazel-public/bazel@sha256:9527dbca23d6e823b13365371528b20ff73fcbcf5dd45fe02bcdb4f91c5a864d # v6.2.0
+      image: gcr.io/bazel-public/bazel@sha256:9527dbca23d6e823b13365371528b20ff73fcbcf5dd45fe02bcdb4f91c5a864d # v6.3.2
       options: --user root # ref: https://docs.github.com/en/actions/creating-actions/dockerfile-support-for-github-actions#user
     env:
       GH_TOKEN: ${{ github.token }}
@@ -39,4 +39,4 @@ jobs:
           credentials_json: ${{ secrets.GOOGLE_CREDENTIALS }}
       - run: bazel run --remote_cache=$GOOGLE_BUCKET --google_default_credentials //deployments/github:ls_lint_publish
       - run: bazel build --remote_cache=$GOOGLE_BUCKET --google_default_credentials //deployments/npm:ls_lint
-      - run: (cd bazel-bin/deployments/npm/ls_lint && NPM_CONFIG_USERCONFIG=${GITHUB_WORKSPACE}/deployments/npm/.npmrc npm publish --no-git-checks) # workaround: https://bazelbuild.slack.com/archives/CEZUUKQ6P/p1667995025343689 # --dry-run --tag beta
+      - run: (cd bazel-bin/deployments/npm/ls_lint && NPM_CONFIG_USERCONFIG=${GITHUB_WORKSPACE}/deployments/npm/.npmrc npm publish --no-git-checks --tag beta) # workaround: https://bazelbuild.slack.com/archives/CEZUUKQ6P/p1667995025343689 # --dry-run --tag beta
