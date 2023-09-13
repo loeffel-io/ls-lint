@@ -28,6 +28,10 @@ func (rule *KebabCase) SetParameters(params []string) error {
 	return nil
 }
 
+func (rule *KebabCase) GetParameters() []string {
+	return nil
+}
+
 // Validate checks if string is kebab case
 // false if rune is no lowercase letter, digit or -
 func (rule *KebabCase) Validate(value string) (bool, error) {

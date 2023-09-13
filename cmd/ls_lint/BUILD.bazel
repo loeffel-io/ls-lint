@@ -10,6 +10,7 @@ go_library(
     deps = [
         "//internal/config",
         "//internal/debug",
+        "//internal/flag",
         "//internal/linter",
         "//internal/rule",
         "@in_gopkg_yaml_v3//:yaml_v3",

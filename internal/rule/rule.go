@@ -39,6 +39,7 @@ type Rule interface {
 	Init() Rule
 	GetName() string
 	SetParameters(params []string) error
+	GetParameters() []string
 	Validate(value string) (bool, error)
 	GetErrorMessage() string
 }

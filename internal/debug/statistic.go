@@ -16,6 +16,7 @@ type Statistic struct {
 
 func NewStatistic() *Statistic {
 	return &Statistic{
+		Start:   time.Now(),
 		RWMutex: new(sync.RWMutex),
 	}
 }

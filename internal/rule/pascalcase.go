@@ -28,6 +28,10 @@ func (rule *PascalCase) SetParameters(params []string) error {
 	return nil
 }
 
+func (rule *PascalCase) GetParameters() []string {
+	return nil
+}
+
 // Validate checks if string is pascal case
 // false if rune is no letter and no digit
 // false if first rune is not upper

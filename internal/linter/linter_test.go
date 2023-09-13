@@ -292,7 +292,7 @@ func TestLinterRun(t *testing.T) {
 	for _, test := range tests {
 		fmt.Printf("Run test %d (%s)\n", i, test.description)
 
-		var err = test.linter.Run(test.filesystem, true, true)
+		var err = test.linter.Run(test.filesystem, true)
 
 		if !errors.Is(err, test.expectedErr) {
 			t.Errorf("Test %d (%s) failed with unmatched error value - %v", i, test.description, err)

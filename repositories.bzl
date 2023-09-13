@@ -7,6 +7,7 @@ def go_repositories():
         sum = "h1:HTuxyug8GyFbRkrffIpzNCSK4luc0TY3wzXvzIZhEXc=",
         version = "v4.6.0",
     )
+
     go_repository(
         name = "in_gopkg_check_v1",
         importpath = "gopkg.in/check.v1",
@@ -19,6 +20,7 @@ def go_repositories():
         sum = "h1:fxVm/GzAzEWqLHuvctI91KS9hhNmmWOoWu0XTYJS7CA=",
         version = "v3.0.1",
     )
+
     go_repository(
         name = "org_golang_x_sync",
         importpath = "golang.org/x/sync",

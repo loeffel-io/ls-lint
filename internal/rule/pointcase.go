@@ -28,6 +28,10 @@ func (rule *PointCase) SetParameters(params []string) error {
 	return nil
 }
 
+func (rule *PointCase) GetParameters() []string {
+	return nil
+}
+
 // Validate checks if string is "point case"
 // false if rune is no lowercase letter, digit or .
 func (rule *PointCase) Validate(value string) (bool, error) {

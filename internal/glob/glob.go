@@ -35,7 +35,10 @@ func Index[IndexValue bool | map[string][]rule.Rule](filesystem fs.FS, index map
 				continue
 			}
 
-			index[match] = value
+			if _, ok := index[match]; !ok {
+				index[match] = value
+			}
+
 			delete(index, key)
 		}
 	}
