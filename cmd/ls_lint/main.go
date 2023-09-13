@@ -30,7 +30,7 @@ func main() {
 	var flagVersion = flags.Bool("version", false, "prints version information for ls-lint")
 
 	var flagConfig _flag.Config
-	flags.Var(&flagConfig, "config", "ls-lint config file paths")
+	flags.Var(&flagConfig, "config", "ls-lint config file path(s)")
 
 	if err = flags.Parse(os.Args[1:]); err != nil {
 		log.Fatal(err)
