@@ -112,10 +112,10 @@ register_jq_toolchains()
 http_archive(
     name = "com_github_cli_cli_darwin_arm64",
     build_file_content = """exports_files(glob(["bin/*"]))""",
-    sha256 = "b8de47c2c31c747b5f595f44ea69c59e2a6c8d93a96329e852ab571c3f130c3c",
-    strip_prefix = "gh_2.35.0_macOS_arm64",
+    sha256 = "d4e53e8b2127f2ad3f5356e81ef27b50f1cc2e202ea18db4f69b4e9f77fd895f",
+    strip_prefix = "gh_2.36.0_macOS_arm64",
     urls = [
-        "https://github.com/cli/cli/releases/download/v2.35.0/gh_2.35.0_macOS_arm64.zip",
+        "https://github.com/cli/cli/releases/download/v2.36.0/gh_2.36.0_macOS_arm64.zip",
     ],
 )
 
