@@ -56,7 +56,7 @@ go_repositories()
 
 go_rules_dependencies()
 
-go_register_toolchains(version = "1.21.0")
+go_register_toolchains(version = "1.21.3")
 
 ############################################################
 # gazelle ##################################################
