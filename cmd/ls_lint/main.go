@@ -44,7 +44,7 @@ func main() {
 	var filesystem = os.DirFS(*flagWorkdir)
 
 	if len(flagConfig) == 0 {
-		flagConfig = _flag.Config{".ls-lint.yaml"}
+		flagConfig = _flag.Config{".ls-lint.yml"}
 	}
 
 	var lslintConfig = config.NewConfig(make(config.Ls), make([]string, 0))
