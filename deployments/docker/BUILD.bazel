@@ -31,3 +31,17 @@ oci_push(
     remote_tags = ["latest"],
     repository = "index.docker.io/lslintorg/ls-lint",
 )
+
+sh_binary(
+    name = "image_auth",
+    srcs = ["auth"],
+    data = [
+        "@oci_crane_toolchains//:current_toolchain",
+    ],
+    env = {
+        "DOCKER_CONFIG": "deployments/docker",
+    },
+    toolchains = [
+        "@oci_crane_toolchains//:current_toolchain",
+    ],
+)
