@@ -1,0 +1,33 @@
+load("@rules_pkg//pkg:tar.bzl", "pkg_tar")
+load("@rules_oci//oci:defs.bzl", "oci_image", "oci_image_index", "oci_push")
+
+oci_image(
+    name = "image_linux_amd64",
+    base = "@distroless_base_linux_amd64//:distroless_base_linux_amd64",
+    entrypoint = ["/ls-lint-linux-amd64"],
+    tars = ["//cmd/ls_lint:ls-lint-linux-amd64-pkg"],
+    workdir = "/data",
+)
+
+oci_image(
+    name = "image_linux_arm64",
+    base = "@distroless_base_linux_arm64//:distroless_base_linux_arm64",
+    entrypoint = ["/ls-lint-linux-arm64"],
+    tars = ["//cmd/ls_lint:ls-lint-linux-arm64-pkg"],
+    workdir = "/data",
+)
+
+oci_image_index(
+    name = "image",
+    images = [
+        ":image_linux_amd64",
+        ":image_linux_arm64",
+    ],
+)
+
+oci_push(
+    name = "image_push",
+    image = ":image",
+    remote_tags = ["latest"],
+    repository = "index.docker.io/lslintorg/ls-lint",
+)
