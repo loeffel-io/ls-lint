@@ -22,10 +22,10 @@ An extremely fast directory and filename linter - Bring some structure to your p
 
 The full documentation can be found at [ls-lint.org](https://ls-lint.org)
 
-- [Installation](https://ls-lint.org/2.0/getting-started/installation.html#curl)
-- [The Basics](https://ls-lint.org/2.0/configuration/the-basics.html)
-- [The Rules](https://ls-lint.org/2.0/configuration/the-basics.html)
-- [Contributions](https://ls-lint.org/2.0/prologue/contributions.html)
+- [Installation](https://ls-lint.org/2.2/getting-started/installation.html#curl)
+- [The Basics](https://ls-lint.org/2.2/configuration/the-basics.html)
+- [The Rules](https://ls-lint.org/2.2/configuration/the-basics.html)
+- [Contributions](https://ls-lint.org/2.2/prologue/contributions.html)
 
 ## Demo
 
