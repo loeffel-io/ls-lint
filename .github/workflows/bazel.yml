@@ -4,7 +4,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     container:
-      image: gcr.io/bazel-public/bazel@sha256:9527dbca23d6e823b13365371528b20ff73fcbcf5dd45fe02bcdb4f91c5a864d # v6.3.2
+      image: gcr.io/bazel-public/bazel@sha256:3348b14c7b45a4fbf06fee34996a8d15da72f43bb282a81f4720a0c0a5c37dca # v6.3.2
       options: --user root # ref: https://docs.github.com/en/actions/creating-actions/dockerfile-support-for-github-actions#user
       env:
         NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
@@ -24,7 +24,7 @@ jobs:
     if: startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
     container:
-      image: gcr.io/bazel-public/bazel@sha256:9527dbca23d6e823b13365371528b20ff73fcbcf5dd45fe02bcdb4f91c5a864d # v6.3.2
+      image: gcr.io/bazel-public/bazel@sha256:3348b14c7b45a4fbf06fee34996a8d15da72f43bb282a81f4720a0c0a5c37dca # v6.3.2
       options: --user root # ref: https://docs.github.com/en/actions/creating-actions/dockerfile-support-for-github-actions#user
     env:
       GH_TOKEN: ${{ github.token }}
