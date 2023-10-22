@@ -4,8 +4,8 @@ def go_repositories():
     go_repository(
         name = "com_github_bmatcuk_doublestar_v4",
         importpath = "github.com/bmatcuk/doublestar/v4",
-        sum = "h1:HTuxyug8GyFbRkrffIpzNCSK4luc0TY3wzXvzIZhEXc=",
-        version = "v4.6.0",
+        sum = "h1:FH9SifrbvJhnlQpztAx++wlkk70QBf0iBWDwNy7PA4I=",
+        version = "v4.6.1",
     )
 
     go_repository(
