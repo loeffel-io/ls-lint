@@ -13,6 +13,7 @@ go_library(
         "rule.go",
         "screamingsnakecase.go",
         "snakecase.go",
+        "disallow.go",
     ],
     importpath = "github.com/loeffel-io/ls-lint/v2/internal/rule",
     visibility = ["//:__subpackages__"],
@@ -30,6 +31,7 @@ go_test(
         "rule_test.go",
         "screamingsnakecase_test.go",
         "snakecase_test.go",
+        "disallow_test.go",
     ],
     embed = [":rule"],
 )

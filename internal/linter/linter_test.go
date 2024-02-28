@@ -286,6 +286,65 @@ func TestLinterRun(t *testing.T) {
 			},
 			expectedErrors: []*rule.Error{},
 		},
+		{
+			description: "disallow",
+			filesystem: fstest.MapFS{
+				"nope1.blocked": &fstest.MapFile{Mode: fs.ModePerm},
+				"nope2.blocked": &fstest.MapFile{Mode: fs.ModePerm},
+				"nope3.no":      &fstest.MapFile{Mode: fs.ModePerm},
+			},
+			linter: NewLinter(
+				".",
+				config.NewConfig(
+					config.Ls{
+						".blocked": "disallow",
+						".no":      "disallow:you can't use that",
+					},
+					[]string{},
+				),
+				&debug.Statistic{
+					Start:     start,
+					Files:     0,
+					FileSkips: 0,
+					Dirs:      0,
+					DirSkips:  0,
+					RWMutex:   new(sync.RWMutex),
+				},
+				[]*rule.Error{},
+			),
+			expectedErr: nil,
+			expectedStatistic: &debug.Statistic{
+				Start:     start,
+				Files:     3,
+				FileSkips: 0,
+				Dirs:      1,
+				DirSkips:  0,
+				RWMutex:   new(sync.RWMutex),
+			},
+			expectedErrors: []*rule.Error{
+				{
+					Path: "nope1.blocked",
+					Rules: []rule.Rule{
+						new(rule.Disallow).Init(),
+					},
+					RWMutex: new(sync.RWMutex),
+				},
+				{
+					Path: "nope2.blocked",
+					Rules: []rule.Rule{
+						new(rule.Disallow).Init(),
+					},
+					RWMutex: new(sync.RWMutex),
+				},
+				{
+					Path: "nope3.no",
+					Rules: []rule.Rule{
+						buildParameters(new(rule.Disallow).Init(), []string{"you can't use that"}),
+					},
+					RWMutex: new(sync.RWMutex),
+				},
+			},
+		},
 	}
 
 	var i = 0
@@ -326,7 +385,8 @@ func TestLinterRun(t *testing.T) {
 			var k int
 			var tmpRule rule.Rule
 			for k, tmpRule = range tmpError.GetRules() {
-				if tmpRule.GetName() != test.expectedErrors[j].GetRules()[k].GetName() {
+				var expectedRule = test.expectedErrors[j].GetRules()[k]
+				if tmpRule.GetName() != expectedRule.GetName() || tmpRule.GetErrorMessage() != expectedRule.GetErrorMessage() {
 					t.Error(equalErrorsErr)
 					return
 				}
@@ -335,4 +395,12 @@ func TestLinterRun(t *testing.T) {
 
 		i++
 	}
+}
+
+func buildParameters(rule rule.Rule, params []string) rule.Rule {
+	err := rule.SetParameters(params)
+	if err != nil {
+		return nil
+	}
+	return rule
 }
