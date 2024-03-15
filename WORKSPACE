@@ -149,6 +149,6 @@ http_archive(
     sha256 = "5f990d7cd0bf062a3cd75188f84ee4a79bc26572e85aece36024cf9bd2091be6",
     strip_prefix = "coreutils-0.0.22-x86_64-unknown-linux-gnu",
     urls = [
-        "https://github.com/uutils/coreutils/releases/download/0.0.22/coreutils-0.0.22-x86_64-unknown-linux-gnu.tar.gz",
+        "https://github.com/uutils/coreutils/releases/download/0.0.24/coreutils-0.0.22-x86_64-unknown-linux-gnu.tar.gz",
     ],
 )
