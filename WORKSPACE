@@ -24,10 +24,9 @@ http_archive(
 
 http_archive(
     name = "rules_pkg",
-    sha256 = "8f9ee2dc10c1ae514ee599a8b42ed99fa262b757058f65ad3c384289ff70c4b8",
+    sha256 = "d250924a2ecc5176808fc4c25d5cf5e9e79e6346d79d5ab1c493e289e722d1d0",
     urls = [
-        "https://mirror.bazel.build/github.com/bazelbuild/rules_pkg/releases/download/0.9.1/rules_pkg-0.9.1.tar.gz",
-        "https://github.com/bazelbuild/rules_pkg/releases/download/0.9.1/rules_pkg-0.9.1.tar.gz",
+        "https://github.com/bazelbuild/rules_pkg/releases/download/0.10.1/rules_pkg-0.10.1.tar.gz",
     ],
 )
 
@@ -56,7 +55,7 @@ go_repositories()
 
 go_rules_dependencies()
 
-go_register_toolchains(version = "1.21.4")
+go_register_toolchains(version = "1.22.1")
 
 ############################################################
 # gazelle ##################################################
@@ -136,19 +135,19 @@ http_archive(
 http_archive(
     name = "com_github_uutils_coreutils_darwin_arm64",
     build_file_content = """exports_files(["coreutils"])""",
-    sha256 = "1f8c3640697d90be3cbb3be6a2afac144a4991dd98d71f0a2ad758595786b15d",
-    strip_prefix = "coreutils-0.0.22-x86_64-apple-darwin",
+    sha256 = "28ff74b232b1b570db2c2fa8e5fe3e8109ef3f74ebeced11a29304e20f501791",
+    strip_prefix = "coreutils-0.0.23-aarch64-apple-darwin",
     urls = [
-        "https://github.com/uutils/coreutils/releases/download/0.0.24/coreutils-0.0.22-x86_64-apple-darwin.tar.gz",  # only amd64
+        "https://github.com/uutils/coreutils/releases/download/0.0.23/coreutils-0.0.23-aarch64-apple-darwin.tar.gz",  # only amd64
     ],
 )
 
 http_archive(
     name = "com_github_uutils_coreutils_linux_amd64",
     build_file_content = """exports_files(["coreutils"])""",
-    sha256 = "5f990d7cd0bf062a3cd75188f84ee4a79bc26572e85aece36024cf9bd2091be6",
-    strip_prefix = "coreutils-0.0.22-x86_64-unknown-linux-gnu",
+    sha256 = "bbb38c5b8dd8e3a69745120a50b7ca75f516e755899fa1bbd2ce57c706faff58",
+    strip_prefix = "coreutils-0.0.23-x86_64-unknown-linux-gnu",
     urls = [
-        "https://github.com/uutils/coreutils/releases/download/0.0.24/coreutils-0.0.22-x86_64-unknown-linux-gnu.tar.gz",
+        "https://github.com/uutils/coreutils/releases/download/0.0.23/coreutils-0.0.23-x86_64-unknown-linux-gnu.tar.gz",
     ],
 )
