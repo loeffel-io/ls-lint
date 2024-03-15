@@ -139,7 +139,7 @@ http_archive(
     sha256 = "1f8c3640697d90be3cbb3be6a2afac144a4991dd98d71f0a2ad758595786b15d",
     strip_prefix = "coreutils-0.0.22-x86_64-apple-darwin",
     urls = [
-        "https://github.com/uutils/coreutils/releases/download/0.0.22/coreutils-0.0.22-x86_64-apple-darwin.tar.gz",  # only amd64
+        "https://github.com/uutils/coreutils/releases/download/0.0.24/coreutils-0.0.22-x86_64-apple-darwin.tar.gz",  # only amd64
     ],
 )
 
