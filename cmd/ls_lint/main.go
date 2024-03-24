@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
 	"fmt"
 	"github.com/loeffel-io/ls-lint/v2/internal/config"
@@ -27,6 +28,7 @@ func main() {
 	var writer = os.Stdout
 	var flags = flag.NewFlagSet(os.Args[0], flag.ExitOnError)
 	var flagWorkdir = flags.String("workdir", ".", "change working directory before executing the given subcommand")
+	var flagErrorOutputFormat = flags.String("error-output-format", "text", "use a specific error output format (text, json)")
 	var flagWarn = flags.Bool("warn", false, "write lint errors to stdout instead of stderr (exit 0)")
 	var flagDebug = flags.Bool("debug", false, "write debug informations to stdout")
 	var flagVersion = flags.Bool("version", false, "prints version information for ls-lint")
@@ -103,7 +105,6 @@ func main() {
 		make([]*rule.Error, 0),
 	)
 
-	// runner
 	if err = lslintLinter.Run(filesystem, *flagDebug); err != nil {
 		log.Fatal(err)
 	}
@@ -119,16 +120,36 @@ func main() {
 		exitCode = 1
 	}
 
-	logger := log.New(writer, "", log.LstdFlags)
-
-	for _, ruleErr := range lslintLinter.GetErrors() {
-		var ruleMessages []string
-
-		for _, errRule := range ruleErr.GetRules() {
-			ruleMessages = append(ruleMessages, errRule.GetErrorMessage())
+	switch *flagErrorOutputFormat {
+	case "json":
+		var errIndex = make(map[string][]string, len(lslintLinter.GetErrors()))
+		for _, ruleErr := range lslintLinter.GetErrors() {
+			errIndex[ruleErr.GetPath()] = make([]string, len(ruleErr.GetRules()))
+			for i, ruleErrMessages := range ruleErr.GetRules() {
+				errIndex[ruleErr.GetPath()][i] = ruleErrMessages.GetErrorMessage()
+			}
 		}
 
-		logger.Printf("%s failed for rules: %s", ruleErr.GetPath(), strings.Join(ruleMessages, "|"))
+		var jsonStr []byte
+		if jsonStr, err = json.Marshal(errIndex); err != nil {
+			log.Fatal(err)
+		}
+
+		if _, err = fmt.Fprintln(writer, string(jsonStr)); err != nil {
+			log.Fatal(err)
+		}
+	default:
+		for _, ruleErr := range lslintLinter.GetErrors() {
+			var ruleMessages []string
+
+			for _, errRule := range ruleErr.GetRules() {
+				ruleMessages = append(ruleMessages, errRule.GetErrorMessage())
+			}
+
+			if _, err = fmt.Fprintf(writer, "%s failed for rules: %s\n", ruleErr.GetPath(), strings.Join(ruleMessages, "|")); err != nil {
+				log.Fatal(err)
+			}
+		}
 	}
 
 	os.Exit(exitCode)
