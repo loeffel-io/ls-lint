@@ -9,12 +9,14 @@ import (
 	"github.com/loeffel-io/ls-lint/v2/internal/linter"
 	"github.com/loeffel-io/ls-lint/v2/internal/rule"
 	"gopkg.in/yaml.v3"
+	"io/fs"
 	"log"
 	"maps"
 	"os"
 	"runtime"
 	"slices"
 	"strings"
+	"testing/fstest"
 )
 
 var Version = "dev"
@@ -32,6 +34,18 @@ func main() {
 	var flagConfig _flag.Config
 	flags.Var(&flagConfig, "config", "ls-lint config file path(s)")
 
+	flags.Usage = func() {
+		if _, err = fmt.Fprintln(flags.Output(), "ls-lint [options] [file|dir]*"); err != nil {
+			log.Fatal(err)
+		}
+
+		if _, err = fmt.Fprintln(flags.Output(), "Options: "); err != nil {
+			log.Fatal(err)
+		}
+
+		flags.PrintDefaults()
+	}
+
 	if err = flags.Parse(os.Args[1:]); err != nil {
 		log.Fatal(err)
 	}
@@ -41,10 +55,26 @@ func main() {
 		os.Exit(0)
 	}
 
-	var filesystem = os.DirFS(*flagWorkdir)
-
 	if len(flagConfig) == 0 {
 		flagConfig = _flag.Config{".ls-lint.yml"}
+	}
+
+	var args = flags.Args()
+	var filesystem fs.FS
+	switch len(args) {
+	case 0:
+		filesystem = os.DirFS(*flagWorkdir)
+	default:
+		var mapFilesystem = make(fstest.MapFS, len(args))
+		for _, file := range args {
+			var fileInfo os.FileInfo
+			if fileInfo, err = os.Stat(fmt.Sprintf("%s/%s", *flagWorkdir, file)); err != nil {
+				log.Fatal(err)
+			}
+
+			mapFilesystem[file] = &fstest.MapFile{Mode: fileInfo.Mode()}
+		}
+		filesystem = mapFilesystem
 	}
 
 	var lslintConfig = config.NewConfig(make(config.Ls), make([]string, 0))
@@ -52,12 +82,10 @@ func main() {
 		var tmpLslintConfig = config.NewConfig(nil, nil)
 		var tmpConfigBytes []byte
 
-		// read file
 		if tmpConfigBytes, err = os.ReadFile(c); err != nil {
 			log.Fatal(err)
 		}
 
-		// to yaml
 		if err = yaml.Unmarshal(tmpConfigBytes, tmpLslintConfig); err != nil {
 			log.Fatal(err)
 		}
@@ -68,7 +96,6 @@ func main() {
 		lslintConfig.Ignore = slices.Compact(lslintConfig.Ignore)
 	}
 
-	// linter
 	var lslintLinter = linter.NewLinter(
 		".",
 		lslintConfig,
@@ -81,10 +108,8 @@ func main() {
 		log.Fatal(err)
 	}
 
-	// rule errors
 	ruleErrors := lslintLinter.GetErrors()
 
-	// no ruleErrors
 	if len(ruleErrors) == 0 {
 		os.Exit(exitCode)
 	}
@@ -96,7 +121,6 @@ func main() {
 
 	logger := log.New(writer, "", log.LstdFlags)
 
-	// with rule errors
 	for _, ruleErr := range lslintLinter.GetErrors() {
 		var ruleMessages []string
 
