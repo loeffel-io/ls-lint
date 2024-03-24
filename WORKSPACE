@@ -32,9 +32,9 @@ http_archive(
 
 http_archive(
     name = "aspect_rules_js",
-    sha256 = "edc7b0255114fafdbbd593ea5d5fdfd54b2a603f33b3a49518910ac618e1bf2b",
-    strip_prefix = "rules_js-1.38.0",
-    url = "https://github.com/aspect-build/rules_js/releases/download/v1.38.0/rules_js-v1.38.0.tar.gz",
+    sha256 = "63cf42b07aae34904447c74f5b41652c4933984cc325726673a5e4561d9789e7",
+    strip_prefix = "rules_js-1.39.1",
+    url = "https://github.com/aspect-build/rules_js/releases/download/v1.39.1/rules_js-v1.39.1.tar.gz",
 )
 
 load("@io_bazel_rules_go//go:deps.bzl", "go_register_toolchains", "go_rules_dependencies")
