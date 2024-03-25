@@ -286,6 +286,66 @@ func TestLinterRun(t *testing.T) {
 			},
 			expectedErrors: []*rule.Error{},
 		},
+		{
+			description: "defaults",
+			filesystem: fstest.MapFS{
+				"snake_case.png":              &fstest.MapFile{Mode: fs.ModePerm},
+				"kebab-case.jpg":              &fstest.MapFile{Mode: fs.ModePerm},
+				"kabab-case.test.jpg":         &fstest.MapFile{Mode: fs.ModePerm},
+				"sub":                         &fstest.MapFile{Mode: fs.ModeDir},
+				"sub/snake_case.png":          &fstest.MapFile{Mode: fs.ModePerm},
+				"sub/kebab-case.jpg":          &fstest.MapFile{Mode: fs.ModePerm},
+				"sub/kebab-case.test.jpg":     &fstest.MapFile{Mode: fs.ModePerm},
+				"sub/PascalCase.service.jpg":  &fstest.MapFile{Mode: fs.ModePerm},
+				"sub/camelCase.service.gif":   &fstest.MapFile{Mode: fs.ModePerm},
+				"sub/PascalCase.app.gif":      &fstest.MapFile{Mode: fs.ModePerm},
+				"sub/PascalCase.app.test.gif": &fstest.MapFile{Mode: fs.ModePerm},
+				"node_modules":                &fstest.MapFile{Mode: fs.ModeDir},
+				"node_modules/snake_case.png": &fstest.MapFile{Mode: fs.ModePerm},
+			},
+			linter: NewLinter(
+				".",
+				config.NewConfig(
+					config.Ls{
+						".*":     "kebab-case",
+						".*.jpg": "kebab-case",
+						".png":   "snake_case",
+						"sub": config.Ls{
+							".*":            "kebab-case",
+							".*.*":          "kebab-case",
+							".service.jpg":  "PascalCase",
+							".*.jpg":        "kebab-case",
+							".service.*":    "camelCase",
+							".app.test.gif": "PascalCase",
+							".*.gif":        "PascalCase",
+							".png":          "snake_case",
+						},
+					},
+					[]string{
+						"node_modules",
+					},
+				),
+				&debug.Statistic{
+					Start:     start,
+					Files:     0,
+					FileSkips: 0,
+					Dirs:      0,
+					DirSkips:  0,
+					RWMutex:   new(sync.RWMutex),
+				},
+				[]*rule.Error{},
+			),
+			expectedErr: nil,
+			expectedStatistic: &debug.Statistic{
+				Start:     start,
+				Files:     10,
+				FileSkips: 0,
+				Dirs:      2,
+				DirSkips:  1,
+				RWMutex:   new(sync.RWMutex),
+			},
+			expectedErrors: []*rule.Error{},
+		},
 	}
 
 	var i = 0
