@@ -144,6 +144,8 @@ func (config *Config) copyRule(r rule.Rule) rule.Rule {
 	switch r.GetName() {
 	case "regex":
 		return new(rule.Regex).Init()
+	case "disallow":
+		return new(rule.Disallow).Init()
 	}
 
 	return r
