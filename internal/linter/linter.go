@@ -8,6 +8,7 @@ import (
 	"github.com/loeffel-io/ls-lint/v2/internal/rule"
 	"golang.org/x/sync/errgroup"
 	"io/fs"
+	"math"
 	"path/filepath"
 	"strings"
 	"sync"
@@ -116,12 +117,28 @@ func (linter *Linter) validateFile(index config.RuleIndex, path string) error {
 	var rulesError = 0
 	var rulesErrorMutex = new(sync.Mutex)
 
-	exts := strings.Split(filepath.Base(path), extSep)
+	exts := strings.Split(filepath.Base(path), extSep)[1:]
 	rules := linter.config.GetConfig(index, path)
 
-	for i := 1; i < len(exts); i++ {
-		ext = fmt.Sprintf("%s%s", extSep, strings.Join(exts[i:], extSep))
-		withoutExt := strings.TrimSuffix(filepath.Base(path), ext)
+	var n = len(exts)
+	var maxCombinations = int(math.Pow(2, float64(n))) // 2^N combinations
+
+	var withoutExt string
+	for i := 0; i < maxCombinations; i++ {
+		combination := make([]string, n)
+		for j := 0; j < n; j++ {
+			if i&(1<<(n-1-j)) == 0 { // from left to right; right to left: i&(1<<j)
+				combination[j] = exts[j] // Keep original
+			} else {
+				combination[j] = "*" // Replace with "*"
+			}
+		}
+
+		ext = fmt.Sprintf("%s%s", extSep, strings.Join(combination, extSep))
+
+		if i == 0 {
+			withoutExt = strings.TrimSuffix(filepath.Base(path), ext)
+		}
 
 		if _, exists := rules[ext]; exists {
 			for _, ruleFile := range rules[ext] {
