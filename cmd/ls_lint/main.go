@@ -122,11 +122,15 @@ func main() {
 
 	switch *flagErrorOutputFormat {
 	case "json":
-		var errIndex = make(map[string][]string, len(lslintLinter.GetErrors()))
+		var errIndex = make(map[string]map[string][]string, len(lslintLinter.GetErrors()))
 		for _, ruleErr := range lslintLinter.GetErrors() {
-			errIndex[ruleErr.GetPath()] = make([]string, len(ruleErr.GetRules()))
+			if _, ok := errIndex[ruleErr.GetPath()]; !ok {
+				errIndex[ruleErr.GetPath()] = make(map[string][]string)
+			}
+
+			errIndex[ruleErr.GetPath()][ruleErr.GetExt()] = make([]string, len(ruleErr.GetRules()))
 			for i, ruleErrMessages := range ruleErr.GetRules() {
-				errIndex[ruleErr.GetPath()][i] = ruleErrMessages.GetErrorMessage()
+				errIndex[ruleErr.GetPath()][ruleErr.GetExt()][i] = ruleErrMessages.GetErrorMessage()
 			}
 		}
 
