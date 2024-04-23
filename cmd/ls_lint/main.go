@@ -146,7 +146,7 @@ func main() {
 				ruleMessages = append(ruleMessages, errRule.GetErrorMessage())
 			}
 
-			if _, err = fmt.Fprintf(writer, "%s failed for rules: %s\n", ruleErr.GetPath(), strings.Join(ruleMessages, "|")); err != nil {
+			if _, err = fmt.Fprintf(writer, "%s failed for `%s` rules: %s\n", ruleErr.GetPath(), ruleErr.GetExt(), strings.Join(ruleMessages, " | ")); err != nil {
 				log.Fatal(err)
 			}
 		}

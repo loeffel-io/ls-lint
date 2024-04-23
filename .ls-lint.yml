@@ -7,6 +7,17 @@ ls:
   .yaml: snake_case
   .js: snake_case
 
+  peter:
+    .dir: exists:1
+    .*: PascalCase | exists:1
+    .js: exists:2 | snake_case
+    .go: exists:0
+
+    '**':
+      .js: exists:1-3 | snakecase
+      .go: snake_case
+      .html: PascalCase
+
 ignore:
   - .git
   - .github

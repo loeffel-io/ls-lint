@@ -1,6 +1,9 @@
 package rule
 
-import "testing"
+import (
+	"errors"
+	"testing"
+)
 
 func TestKebabCase(t *testing.T) {
 	var rule = new(KebabCase).Init()
@@ -21,10 +24,10 @@ func TestKebabCase(t *testing.T) {
 
 	var i = 0
 	for _, test := range tests {
-		res, err := rule.Validate(test.value)
+		res, err := rule.Validate(test.value, true)
 
-		if err != nil && err != test.err {
-			t.Errorf("Test %d failed with unmatched error - %s", i, err.Error())
+		if !errors.Is(err, test.err) {
+			t.Errorf("Test %d failed with unmatched error - %e", i, err)
 			return
 		}
 

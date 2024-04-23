@@ -1,6 +1,7 @@
 package linter
 
 import (
+	"cmp"
 	"errors"
 	"fmt"
 	"github.com/loeffel-io/ls-lint/v2/internal/config"
@@ -8,13 +9,15 @@ import (
 	"github.com/loeffel-io/ls-lint/v2/internal/rule"
 	"io/fs"
 	"reflect"
+	"slices"
+	"strings"
 	"sync"
 	"testing"
 	"testing/fstest"
 	"time"
 )
 
-func TestLinterRun(t *testing.T) {
+func TestLinter_Run(t *testing.T) {
 	var start = time.Now()
 
 	var tests = []*struct {
@@ -102,6 +105,7 @@ func TestLinterRun(t *testing.T) {
 			expectedErrors: []*rule.Error{
 				{
 					Path: "not-snake-case.png",
+					Ext:  ".png",
 					Rules: []rule.Rule{
 						new(rule.SnakeCase).Init(),
 					},
@@ -218,6 +222,7 @@ func TestLinterRun(t *testing.T) {
 			expectedErrors: []*rule.Error{
 				{
 					Path: "src/c/c/packages/not-snake-case.png",
+					Ext:  ".png",
 					Rules: []rule.Rule{
 						new(rule.SnakeCase).Init(),
 					},
@@ -346,6 +351,139 @@ func TestLinterRun(t *testing.T) {
 			},
 			expectedErrors: []*rule.Error{},
 		},
+		{
+			description: "exists",
+			filesystem: fstest.MapFS{
+				"snake_case.png":              &fstest.MapFile{Mode: fs.ModePerm},
+				"kebab-case.png":              &fstest.MapFile{Mode: fs.ModePerm},
+				"node_modules":                &fstest.MapFile{Mode: fs.ModeDir},
+				"node_modules/snake_case.png": &fstest.MapFile{Mode: fs.ModePerm},
+				"test":                        &fstest.MapFile{Mode: fs.ModeDir},
+				"test/sub":                    &fstest.MapFile{Mode: fs.ModeDir},
+				"test/sub/snake_case_123.png": &fstest.MapFile{Mode: fs.ModePerm},
+				"test/sub/snake_case_456.png": &fstest.MapFile{Mode: fs.ModePerm},
+			},
+			linter: NewLinter(
+				".",
+				config.NewConfig(
+					config.Ls{
+						".png": "snake_case | exists:1",
+						"test": config.Ls{
+							".dir": "exists:1",
+						},
+						"test/*": config.Ls{
+							".*":   "exists:0",
+							".png": "snake_case | exists:1-2",
+						},
+						"not_exists": config.Ls{
+							".dir": "exists:0",
+						},
+					},
+					[]string{
+						"node_modules",
+						"kebab-case.png",
+					},
+				),
+				&debug.Statistic{
+					Start:     start,
+					Files:     0,
+					FileSkips: 0,
+					Dirs:      0,
+					DirSkips:  0,
+					RWMutex:   new(sync.RWMutex),
+				},
+				[]*rule.Error{},
+			),
+			expectedErr: nil,
+			expectedStatistic: &debug.Statistic{
+				Start:     start,
+				Files:     3,
+				FileSkips: 1,
+				Dirs:      3,
+				DirSkips:  1,
+				RWMutex:   new(sync.RWMutex),
+			},
+			expectedErrors: []*rule.Error{},
+		},
+		{
+			description: "exists with error",
+			filesystem: fstest.MapFS{
+				"snake_case.png":              &fstest.MapFile{Mode: fs.ModePerm},
+				"kebab-case.png":              &fstest.MapFile{Mode: fs.ModePerm},
+				"node_modules":                &fstest.MapFile{Mode: fs.ModeDir},
+				"node_modules/snake_case.png": &fstest.MapFile{Mode: fs.ModePerm},
+				"test":                        &fstest.MapFile{Mode: fs.ModeDir},
+				"test/sub":                    &fstest.MapFile{Mode: fs.ModeDir},
+				"test/sub/snake_case_123.png": &fstest.MapFile{Mode: fs.ModePerm},
+				"test/sub/snake_case_456.png": &fstest.MapFile{Mode: fs.ModePerm},
+			},
+			linter: NewLinter(
+				".",
+				config.NewConfig(
+					config.Ls{
+						".png": "snake_case | exists:2",
+						"test": config.Ls{
+							".dir": "exists:1",
+						},
+						"test/*": config.Ls{
+							".*":   "exists:0",
+							".png": "snake_case | exists:3-5",
+						},
+						"not_exists": config.Ls{
+							".dir": "exists:1",
+						},
+					},
+					[]string{
+						"node_modules",
+						"kebab-case.png",
+					},
+				),
+				&debug.Statistic{
+					Start:     start,
+					Files:     0,
+					FileSkips: 0,
+					Dirs:      0,
+					DirSkips:  0,
+					RWMutex:   new(sync.RWMutex),
+				},
+				[]*rule.Error{},
+			),
+			expectedErr: nil,
+			expectedStatistic: &debug.Statistic{
+				Start:     start,
+				Files:     3,
+				FileSkips: 1,
+				Dirs:      3,
+				DirSkips:  1,
+				RWMutex:   new(sync.RWMutex),
+			},
+			expectedErrors: []*rule.Error{
+				{
+					Path: "not_exists",
+					Ext:  ".dir",
+					Rules: []rule.Rule{
+						new(rule.Exists).Init(),
+					},
+					RWMutex: new(sync.RWMutex),
+				},
+				{
+					Path: "test/sub",
+					Ext:  ".png",
+					Rules: []rule.Rule{
+						new(rule.Exists).Init(),
+					},
+					RWMutex: new(sync.RWMutex),
+				},
+				{
+					Path: "",
+					Ext:  ".png",
+					Rules: []rule.Rule{
+						new(rule.Exists).Init(),
+					},
+					RWMutex: new(sync.RWMutex),
+				},
+			},
+		},
 	}
 
 	var i = 0
@@ -370,10 +508,25 @@ func TestLinterRun(t *testing.T) {
 			return
 		}
 
+		if len(test.linter.GetErrors()) > 0 {
+			slices.SortStableFunc(test.linter.GetErrors(), func(a, b *rule.Error) int {
+				return cmp.Compare(strings.ToLower(a.GetPath()), strings.ToLower(b.GetPath()))
+			})
+
+			slices.SortStableFunc(test.expectedErrors, func(a, b *rule.Error) int {
+				return cmp.Compare(strings.ToLower(a.GetPath()), strings.ToLower(b.GetPath()))
+			})
+		}
+
 		var j int
 		var tmpError *rule.Error
 		for j, tmpError = range test.linter.GetErrors() {
 			if tmpError.GetPath() != test.expectedErrors[j].GetPath() {
+				t.Error(equalErrorsErr)
+				return
+			}
+
+			if tmpError.GetExt() != test.expectedErrors[j].GetExt() {
 				t.Error(equalErrorsErr)
 				return
 			}

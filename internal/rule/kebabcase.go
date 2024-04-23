@@ -6,22 +6,24 @@ import (
 )
 
 type KebabCase struct {
-	Name string
+	name      string
+	exclusive bool
 	*sync.RWMutex
 }
 
 func (rule *KebabCase) Init() Rule {
-	rule.Name = "kebabcase"
+	rule.name = "kebabcase"
+	rule.exclusive = false
 	rule.RWMutex = new(sync.RWMutex)
 
 	return rule
 }
 
 func (rule *KebabCase) GetName() string {
-	rule.Lock()
-	defer rule.Unlock()
+	rule.RLock()
+	defer rule.RUnlock()
 
-	return rule.Name
+	return rule.name
 }
 
 func (rule *KebabCase) SetParameters(params []string) error {
@@ -32,9 +34,16 @@ func (rule *KebabCase) GetParameters() []string {
 	return nil
 }
 
+func (rule *KebabCase) GetExclusive() bool {
+	rule.RLock()
+	defer rule.RUnlock()
+
+	return rule.exclusive
+}
+
 // Validate checks if string is kebab case
 // false if rune is no lowercase letter, digit or -
-func (rule *KebabCase) Validate(value string) (bool, error) {
+func (rule *KebabCase) Validate(value string, fail bool) (bool, error) {
 	for _, c := range value {
 		if c == 45 || unicode.IsDigit(c) { // 45 => -
 			continue
