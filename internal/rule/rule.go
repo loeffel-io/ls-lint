@@ -6,21 +6,29 @@ var RulesIndex = map[string]Rule{
 
 	"camelcase":          new(CamelCase).Init(),
 	"pascalcase":         new(PascalCase).Init(),
+	"pascalcaseacronym":  new(PascalCaseAcronym).Init(),
 	"snakecase":          new(SnakeCase).Init(),
 	"screamingsnakecase": new(ScreamingSnakeCase).Init(),
 	"kebabcase":          new(KebabCase).Init(),
 	"pointcase":          new(PointCase).Init(),
+	"uppercasedigit":     new(UppercaseDigit).Init(),
 }
 
 var Rules = map[string]Rule{
-	"lowercase": RulesIndex["lowercase"],
-	"regex":     RulesIndex["regex"],
+	"lowercase":      RulesIndex["lowercase"],
+	"uppercasedigit": RulesIndex["uppercasedigit"],
+	"UppercaseDigit": RulesIndex["uppercasedigit"],
+
+	"regex": RulesIndex["regex"],
 
 	"camelcase": RulesIndex["camelcase"],
 	"camelCase": RulesIndex["camelcase"],
 
 	"pascalcase": RulesIndex["pascalcase"],
 	"PascalCase": RulesIndex["pascalcase"],
+
+	"pascalcaseacronym": RulesIndex["pascalcaseacronym"],
+	"PascalCaseAcronym": RulesIndex["pascalcaseacronym"],
 
 	"snakecase":  RulesIndex["snakecase"],
 	"snake_case": RulesIndex["snakecase"],
