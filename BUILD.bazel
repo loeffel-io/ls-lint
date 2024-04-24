@@ -10,6 +10,7 @@ config_setting(
         "@platforms//os:osx",
         "@platforms//cpu:arm64",
     ],
+    visibility = ["//visibility:public"],
 )
 
 nogo(
