@@ -2,8 +2,8 @@ package rule
 
 import "testing"
 
-func TestPascalCase(t *testing.T) {
-	var rule = new(PascalCase).Init()
+func TestPascalCaseAbbrev(t *testing.T) {
+	var rule = new(PascalCaseAcronym).Init()
 
 	var tests = []*ruleTest{
 		{value: "pascal", expected: false, err: nil},
@@ -13,13 +13,14 @@ func TestPascalCase(t *testing.T) {
 		{value: "PascalCase", expected: true, err: nil},
 		{value: "Pascal1Case", expected: true, err: nil},
 		{value: "PascalVCase", expected: true, err: nil},
+		{value: "PPPascalCCCaseNN", expected: true, err: nil}, // that's on one's conscience
+		{value: "NASAImages", expected: true, err: nil},
+		{value: "NASVAIImages", expected: false, err: nil},
 		{value: "PascalCaseForever", expected: true, err: nil},
 		{value: "PASCALCASE", expected: false, err: nil},
 		{value: "pascal_case", expected: false, err: nil},
 		{value: "pascal.case", expected: false, err: nil},
 		{value: "pascal-case", expected: false, err: nil},
-		{value: "NASAImages", expected: false, err: nil},
-		{value: "SaySEO", expected: false, err: nil},
 	}
 
 	var i = 0
