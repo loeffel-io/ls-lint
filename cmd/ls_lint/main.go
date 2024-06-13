@@ -10,14 +10,12 @@ import (
 	"github.com/loeffel-io/ls-lint/v2/internal/linter"
 	"github.com/loeffel-io/ls-lint/v2/internal/rule"
 	"gopkg.in/yaml.v3"
-	"io/fs"
 	"log"
 	"maps"
 	"os"
 	"runtime"
 	"slices"
 	"strings"
-	"testing/fstest"
 )
 
 var Version = "dev"
@@ -61,22 +59,13 @@ func main() {
 		flagConfig = _flag.Config{".ls-lint.yml"}
 	}
 
-	var args = flags.Args()
-	var filesystem fs.FS
-	switch len(args) {
-	case 0:
-		filesystem = os.DirFS(*flagWorkdir)
-	default:
-		var mapFilesystem = make(fstest.MapFS, len(args))
-		for _, file := range args {
-			var fileInfo os.FileInfo
-			if fileInfo, err = os.Stat(fmt.Sprintf("%s/%s", *flagWorkdir, file)); err != nil {
-				log.Fatal(err)
-			}
-
-			mapFilesystem[file] = &fstest.MapFile{Mode: fileInfo.Mode()}
+	var filesystem = os.DirFS(*flagWorkdir)
+	var files map[string]struct{}
+	if len(flags.Args()[0:]) > 0 {
+		files = make(map[string]struct{}, len(flags.Args()[0:]))
+		for _, file := range flags.Args()[0:] {
+			files[file] = struct{}{}
 		}
-		filesystem = mapFilesystem
 	}
 
 	var lslintConfig = config.NewConfig(make(config.Ls), make([]string, 0))
@@ -105,7 +94,7 @@ func main() {
 		make([]*rule.Error, 0),
 	)
 
-	if err = lslintLinter.Run(filesystem, *flagDebug); err != nil {
+	if err = lslintLinter.Run(filesystem, files, *flagDebug); err != nil {
 		log.Fatal(err)
 	}
 

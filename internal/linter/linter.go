@@ -59,7 +59,7 @@ func (linter *Linter) AddError(error *rule.Error) {
 	linter.errors = append(linter.errors, error)
 }
 
-func (linter *Linter) validateDir(index config.RuleIndex, path string) error {
+func (linter *Linter) validateDir(index config.RuleIndex, path string, validate bool) error {
 	var g = new(errgroup.Group)
 
 	var rulesNonExclusiveCount int8
@@ -102,7 +102,7 @@ func (linter *Linter) validateDir(index config.RuleIndex, path string) error {
 		return err
 	}
 
-	if rulesNonExclusiveError == 0 || rulesNonExclusiveError != rulesNonExclusiveCount {
+	if !validate || rulesNonExclusiveError == 0 || rulesNonExclusiveError != rulesNonExclusiveCount {
 		return nil
 	}
 
@@ -116,7 +116,7 @@ func (linter *Linter) validateDir(index config.RuleIndex, path string) error {
 	return nil
 }
 
-func (linter *Linter) validateFile(index config.RuleIndex, path string) error {
+func (linter *Linter) validateFile(index config.RuleIndex, path string, validate bool) error {
 	var ext string
 	var g = new(errgroup.Group)
 
@@ -177,7 +177,7 @@ func (linter *Linter) validateFile(index config.RuleIndex, path string) error {
 		return err
 	}
 
-	if rulesNonExclusiveError == 0 || rulesNonExclusiveError != rulesNonExclusiveCount {
+	if !validate || rulesNonExclusiveError == 0 || rulesNonExclusiveError != rulesNonExclusiveCount {
 		return nil
 	}
 
@@ -191,7 +191,7 @@ func (linter *Linter) validateFile(index config.RuleIndex, path string) error {
 	return nil
 }
 
-func (linter *Linter) Run(filesystem fs.FS, debug bool) (err error) {
+func (linter *Linter) Run(filesystem fs.FS, files map[string]struct{}, debug bool) (err error) {
 	var index config.RuleIndex
 	var ignoreIndex = linter.config.GetIgnoreIndex()
 
@@ -279,13 +279,18 @@ func (linter *Linter) Run(filesystem fs.FS, debug bool) (err error) {
 			return fmt.Errorf("%s not found", path)
 		}
 
+		var validate = len(files) == 0
+		if _, fileExists := files[path]; !validate {
+			validate = fileExists
+		}
+
 		if info.IsDir() {
 			if debug {
 				fmt.Printf("lint dir: %s\n", path)
 				linter.GetStatistics().AddDir()
 			}
 
-			return linter.validateDir(index, path)
+			return linter.validateDir(index, path, validate)
 		}
 
 		if debug {
@@ -293,7 +298,7 @@ func (linter *Linter) Run(filesystem fs.FS, debug bool) (err error) {
 			linter.GetStatistics().AddFile()
 		}
 
-		return linter.validateFile(index, path)
+		return linter.validateFile(index, path, validate)
 	}); err != nil {
 		return err
 	}

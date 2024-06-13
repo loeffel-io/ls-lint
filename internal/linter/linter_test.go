@@ -23,6 +23,7 @@ func TestLinter_Run(t *testing.T) {
 	var tests = []*struct {
 		description       string
 		filesystem        fs.FS
+		files             map[string]struct{}
 		linter            *Linter
 		expectedErr       error
 		expectedStatistic *debug.Statistic
@@ -38,6 +39,7 @@ func TestLinter_Run(t *testing.T) {
 				"test":                        &fstest.MapFile{Mode: fs.ModeDir},
 				"test/snake_case_123.png":     &fstest.MapFile{Mode: fs.ModePerm},
 			},
+			files: nil,
 			linter: NewLinter(
 				".",
 				config.NewConfig(
@@ -75,6 +77,7 @@ func TestLinter_Run(t *testing.T) {
 			filesystem: fstest.MapFS{
 				"not-snake-case.png": &fstest.MapFile{Mode: fs.ModePerm},
 			},
+			files: nil,
 			linter: NewLinter(
 				".",
 				config.NewConfig(
@@ -127,6 +130,7 @@ func TestLinter_Run(t *testing.T) {
 				"src/c/c/packages":                &fstest.MapFile{Mode: fs.ModeDir},
 				"src/c/c/packages/snake_case.png": &fstest.MapFile{Mode: fs.ModePerm},
 			},
+			files: nil,
 			linter: NewLinter(
 				".",
 				config.NewConfig(
@@ -181,6 +185,7 @@ func TestLinter_Run(t *testing.T) {
 				"src/c/c/packages":                    &fstest.MapFile{Mode: fs.ModeDir},
 				"src/c/c/packages/not-snake-case.png": &fstest.MapFile{Mode: fs.ModePerm},
 			},
+			files: nil,
 			linter: NewLinter(
 				".",
 				config.NewConfig(
@@ -248,6 +253,7 @@ func TestLinter_Run(t *testing.T) {
 				"src/c/c/packages/snake_case.png": &fstest.MapFile{Mode: fs.ModePerm},
 				"src/c/d/snake_case.png":          &fstest.MapFile{Mode: fs.ModePerm},
 			},
+			files: nil,
 			linter: NewLinter(
 				".",
 				config.NewConfig(
@@ -308,6 +314,7 @@ func TestLinter_Run(t *testing.T) {
 				"node_modules":                &fstest.MapFile{Mode: fs.ModeDir},
 				"node_modules/snake_case.png": &fstest.MapFile{Mode: fs.ModePerm},
 			},
+			files: nil,
 			linter: NewLinter(
 				".",
 				config.NewConfig(
@@ -363,6 +370,7 @@ func TestLinter_Run(t *testing.T) {
 				"test/sub/snake_case_123.png": &fstest.MapFile{Mode: fs.ModePerm},
 				"test/sub/snake_case_456.png": &fstest.MapFile{Mode: fs.ModePerm},
 			},
+			files: nil,
 			linter: NewLinter(
 				".",
 				config.NewConfig(
@@ -417,6 +425,7 @@ func TestLinter_Run(t *testing.T) {
 				"test/sub/snake_case_123.png": &fstest.MapFile{Mode: fs.ModePerm},
 				"test/sub/snake_case_456.png": &fstest.MapFile{Mode: fs.ModePerm},
 			},
+			files: nil,
 			linter: NewLinter(
 				".",
 				config.NewConfig(
@@ -490,7 +499,7 @@ func TestLinter_Run(t *testing.T) {
 	for _, test := range tests {
 		fmt.Printf("Run test %d (%s)\n", i, test.description)
 
-		var err = test.linter.Run(test.filesystem, true)
+		var err = test.linter.Run(test.filesystem, test.files, true)
 
 		if !errors.Is(err, test.expectedErr) {
 			t.Errorf("Test %d (%s) failed with unmatched error value - %v", i, test.description, err)

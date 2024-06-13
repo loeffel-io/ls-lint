@@ -16,7 +16,7 @@ ls:
     '**':
       .js: exists:1-3 | snakecase
       .go: snake_case
-      .html: PascalCase
+      .html: snake_case
 
 ignore:
   - .git
