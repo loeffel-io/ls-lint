@@ -6,22 +6,24 @@ import (
 )
 
 type PointCase struct {
-	Name string
+	name      string
+	exclusive bool
 	*sync.RWMutex
 }
 
 func (rule *PointCase) Init() Rule {
-	rule.Name = "pointcase"
+	rule.name = "pointcase"
+	rule.exclusive = false
 	rule.RWMutex = new(sync.RWMutex)
 
 	return rule
 }
 
 func (rule *PointCase) GetName() string {
-	rule.Lock()
-	defer rule.Unlock()
+	rule.RLock()
+	defer rule.RUnlock()
 
-	return rule.Name
+	return rule.name
 }
 
 func (rule *PointCase) SetParameters(params []string) error {
@@ -32,9 +34,16 @@ func (rule *PointCase) GetParameters() []string {
 	return nil
 }
 
+func (rule *PointCase) GetExclusive() bool {
+	rule.RLock()
+	defer rule.RUnlock()
+
+	return rule.exclusive
+}
+
 // Validate checks if string is "point case"
 // false if rune is no lowercase letter, digit or .
-func (rule *PointCase) Validate(value string) (bool, error) {
+func (rule *PointCase) Validate(value string, fail bool) (bool, error) {
 	for _, c := range value {
 		if c == 46 || unicode.IsDigit(c) { // 46 => .
 			continue

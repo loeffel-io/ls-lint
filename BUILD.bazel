@@ -2,7 +2,25 @@ load("@bazel_gazelle//:def.bzl", "gazelle")
 load("@io_bazel_rules_go//go:def.bzl", "TOOLS_NOGO", "nogo")
 
 # gazelle:prefix github.com/loeffel-io/ls-lint/v2
+# gazelle:exclude vendor
+# gazelle:exclude .idea
 gazelle(name = "gazelle")
+
+gazelle(
+    name = "gazelle_update_repos",
+    args = [
+        "--from_file=go.mod",
+        "--to_macro=repositories.bzl%go_repositories",
+        "--prune",
+    ],
+    command = "update-repos",
+)
+
+gazelle(
+    name = "gazelle_fix_diff",
+    command = "fix",
+    extra_args = ["--mode=diff"],
+)
 
 config_setting(
     name = "darwin_arm64",

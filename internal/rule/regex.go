@@ -7,23 +7,25 @@ import (
 )
 
 type Regex struct {
-	Name         string
-	RegexPattern string
+	name         string
+	exclusive    bool
+	regexPattern string
 	*sync.RWMutex
 }
 
 func (rule *Regex) Init() Rule {
-	rule.Name = "regex"
+	rule.name = "regex"
+	rule.exclusive = false
 	rule.RWMutex = new(sync.RWMutex)
 
 	return rule
 }
 
 func (rule *Regex) GetName() string {
-	rule.Lock()
-	defer rule.Unlock()
+	rule.RLock()
+	defer rule.RUnlock()
 
-	return rule.Name
+	return rule.name
 }
 
 // 0 = regex pattern
@@ -39,16 +41,23 @@ func (rule *Regex) SetParameters(params []string) error {
 		return fmt.Errorf("regex pattern is empty")
 	}
 
-	rule.RegexPattern = params[0]
+	rule.regexPattern = params[0]
 	return nil
 }
 
 func (rule *Regex) GetParameters() []string {
-	return []string{rule.RegexPattern}
+	return []string{rule.regexPattern}
+}
+
+func (rule *Regex) GetExclusive() bool {
+	rule.RLock()
+	defer rule.RUnlock()
+
+	return rule.exclusive
 }
 
 // Validate checks if full string matches regex
-func (rule *Regex) Validate(value string) (bool, error) {
+func (rule *Regex) Validate(value string, fail bool) (bool, error) {
 	return regexp.MatchString(fmt.Sprintf("^%s$", rule.getRegexPattern()), value)
 }
 
@@ -56,9 +65,9 @@ func (rule *Regex) getRegexPattern() string {
 	rule.RLock()
 	defer rule.RUnlock()
 
-	return rule.RegexPattern
+	return rule.regexPattern
 }
 
 func (rule *Regex) GetErrorMessage() string {
-	return fmt.Sprintf("%s (%s)", rule.GetName(), rule.getRegexPattern())
+	return fmt.Sprintf("%s:%s", rule.GetName(), rule.getRegexPattern())
 }

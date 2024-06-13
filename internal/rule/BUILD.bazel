@@ -5,6 +5,7 @@ go_library(
     srcs = [
         "camelcase.go",
         "error.go",
+        "exists.go",
         "kebabcase.go",
         "lowercase.go",
         "pascalcase.go",
@@ -22,6 +23,7 @@ go_test(
     name = "rule_test",
     srcs = [
         "camelcase_test.go",
+        "exists_test.go",
         "kebabcase_test.go",
         "lowercase_test.go",
         "pascalcase_test.go",
