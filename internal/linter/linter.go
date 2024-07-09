@@ -203,10 +203,9 @@ func (linter *Linter) Run(filesystem fs.FS, debug bool) (err error) {
 	if debug {
 		fmt.Printf("=============================\nls index\n-----------------------------\n")
 		for path, pathIndex := range index {
-			switch path == "" {
-			case true:
+			if path == "" {
 				fmt.Printf(".:")
-			case false:
+			} else {
 				fmt.Printf("%s:", path)
 			}
 
