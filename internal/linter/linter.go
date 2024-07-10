@@ -8,6 +8,7 @@ import (
 	"github.com/loeffel-io/ls-lint/v2/internal/rule"
 	"golang.org/x/sync/errgroup"
 	"io/fs"
+	"log"
 	"math"
 	"path/filepath"
 	"strings"
@@ -60,15 +61,21 @@ func (linter *Linter) AddError(error *rule.Error) {
 }
 
 func (linter *Linter) validateDir(index config.RuleIndex, path string, validate bool) error {
+	if !validate {
+		return nil
+	}
+
 	var g = new(errgroup.Group)
 
 	var rulesNonExclusiveCount int8
 	var rulesNonExclusiveError int8
 	var rulesMutex = new(sync.Mutex)
 
-	rules := linter.config.GetConfig(index, path)
+	_, rules := linter.config.GetConfig(index, path)
+
 	basename := filepath.Base(path)
 
+	// here is the problem why exists not work for ls root directory
 	if basename == linter.root {
 		return nil
 	}
@@ -102,7 +109,7 @@ func (linter *Linter) validateDir(index config.RuleIndex, path string, validate 
 		return err
 	}
 
-	if !validate || rulesNonExclusiveError == 0 || rulesNonExclusiveError != rulesNonExclusiveCount {
+	if rulesNonExclusiveError == 0 || rulesNonExclusiveError != rulesNonExclusiveCount {
 		return nil
 	}
 
@@ -125,7 +132,12 @@ func (linter *Linter) validateFile(index config.RuleIndex, path string, validate
 	var rulesMutex = new(sync.Mutex)
 
 	exts := strings.Split(filepath.Base(path), extSep)[1:]
-	rules := linter.config.GetConfig(index, path)
+	indexDir, rules := linter.config.GetConfig(index, path)
+
+	var pathDir string
+	if pathDir = filepath.Dir(path); pathDir == "." {
+		pathDir = ""
+	}
 
 	var n = len(exts)
 	var maxCombinations = int(math.Pow(2, float64(n))) // 2^N combinations
@@ -149,7 +161,15 @@ func (linter *Linter) validateFile(index config.RuleIndex, path string, validate
 
 		if _, exists := rules[ext]; exists {
 			for _, ruleFile := range rules[ext] {
+				if !validate && ruleFile.GetName() != "exists" {
+					continue
+				}
+
 				g.Go(func() error {
+					if ruleFile.GetName() == "exists" && pathDir != indexDir {
+						return nil
+					}
+
 					valid, err := ruleFile.Validate(withoutExt, ruleFile.GetName() != "exists")
 
 					if err != nil {
@@ -191,11 +211,9 @@ func (linter *Linter) validateFile(index config.RuleIndex, path string, validate
 	return nil
 }
 
-func (linter *Linter) Run(filesystem fs.FS, files map[string]struct{}, debug bool) (err error) {
-	var index config.RuleIndex
-	var ignoreIndex = linter.config.GetIgnoreIndex()
-
+func (linter *Linter) Run(filesystem fs.FS, paths map[string]map[string]struct{}, debug bool) (err error) {
 	// create index
+	var index config.RuleIndex
 	if index, err = linter.config.GetIndex(linter.config.GetLs()); err != nil {
 		return err
 	}
@@ -206,6 +224,7 @@ func (linter *Linter) Run(filesystem fs.FS, files map[string]struct{}, debug boo
 	}
 
 	// glob ignore index
+	var ignoreIndex = linter.config.GetIgnoreIndex()
 	if err = glob.Index(filesystem, ignoreIndex, true); err != nil {
 		return err
 	}
@@ -279,9 +298,9 @@ func (linter *Linter) Run(filesystem fs.FS, files map[string]struct{}, debug boo
 			return fmt.Errorf("%s not found", path)
 		}
 
-		var validate = len(files) == 0
-		if _, fileExists := files[path]; !validate {
-			validate = fileExists
+		var validate = len(paths) == 0
+		if _, ok := paths[filepath.Dir(path)][path]; !validate {
+			validate = ok
 		}
 
 		if info.IsDir() {
@@ -310,6 +329,8 @@ func (linter *Linter) Run(filesystem fs.FS, files map[string]struct{}, debug boo
 					continue
 				}
 
+				log.Printf("%s - %+v - %+v", path, ext, r)
+
 				var valid bool
 				if valid, err = r.Validate("", true); err != nil {
 					return err
@@ -318,6 +339,7 @@ func (linter *Linter) Run(filesystem fs.FS, files map[string]struct{}, debug boo
 				if !valid {
 					linter.AddError(&rule.Error{
 						Path:    path,
+						Dir:     true,
 						Ext:     ext,
 						Rules:   []rule.Rule{r},
 						RWMutex: new(sync.RWMutex),

@@ -13,6 +13,7 @@ import (
 	"log"
 	"maps"
 	"os"
+	"path/filepath"
 	"runtime"
 	"slices"
 	"strings"
@@ -60,13 +61,27 @@ func main() {
 	}
 
 	var filesystem = os.DirFS(*flagWorkdir)
-	var files map[string]struct{}
+	var paths map[string]map[string]struct{}
 	if len(flags.Args()[0:]) > 0 {
-		files = make(map[string]struct{}, len(flags.Args()[0:]))
-		for _, file := range flags.Args()[0:] {
-			files[file] = struct{}{}
+		paths = make(map[string]map[string]struct{}, len(flags.Args()[0:]))
+		for _, path := range flags.Args()[0:] {
+			if _, err = os.Stat(fmt.Sprintf("%s/%s", *flagWorkdir, path)); err != nil {
+				if os.IsNotExist(err) {
+					continue
+				}
+
+				log.Fatal(err)
+			}
+
+			dir := filepath.Dir(path)
+			if _, ok := paths[dir]; !ok {
+				paths[dir] = make(map[string]struct{})
+			}
+			paths[dir][path] = struct{}{}
 		}
 	}
+
+	log.Printf("%+v", paths)
 
 	var lslintConfig = config.NewConfig(make(config.Ls), make([]string, 0))
 	for _, c := range flagConfig {
@@ -94,7 +109,7 @@ func main() {
 		make([]*rule.Error, 0),
 	)
 
-	if err = lslintLinter.Run(filesystem, files, *flagDebug); err != nil {
+	if err = lslintLinter.Run(filesystem, paths, *flagDebug); err != nil {
 		log.Fatal(err)
 	}
 
@@ -136,10 +151,20 @@ func main() {
 			var ruleMessages []string
 
 			for _, errRule := range ruleErr.GetRules() {
+				if !ruleErr.IsDir() && errRule.GetName() == "exists" {
+					continue
+				}
+
 				ruleMessages = append(ruleMessages, errRule.GetErrorMessage())
 			}
 
-			if _, err = fmt.Fprintf(writer, "%s failed for `%s` rules: %s\n", ruleErr.GetPath(), ruleErr.GetExt(), strings.Join(ruleMessages, " | ")); err != nil {
+			path := ruleErr.GetPath()
+
+			if path == "" {
+				path = "."
+			}
+
+			if _, err = fmt.Fprintf(writer, "%s failed for `%s` rules: %s\n", path, ruleErr.GetExt(), strings.Join(ruleMessages, " | ")); err != nil {
 				log.Fatal(err)
 			}
 		}

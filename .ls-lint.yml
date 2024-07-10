@@ -1,5 +1,6 @@
 ls:
-  .dir: snake_case
+  .dir: snake_case # | exists:1
+  .json: exists:1
   .bzl: snake_case
   .sh: snake_case
   .bazel: SCREAMING_SNAKE_CASE
@@ -7,16 +8,15 @@ ls:
   .yaml: snake_case
   .js: snake_case
 
+  deployments:
+    .dir: exists:1
+    .json: exists:1
+
   peter:
     .dir: exists:1
-    .*: PascalCase | exists:1
-    .js: exists:2 | snake_case
-    .go: exists:0
-
-    '**':
-      .js: exists:1-3 | snakecase
-      .go: snake_case
-      .html: snake_case
+    .*: PascalCase | exists:2
+    .js: exists:3 | snake_case
+    .vue: exists:1
 
 ignore:
   - .git

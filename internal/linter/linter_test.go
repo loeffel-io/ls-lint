@@ -23,7 +23,7 @@ func TestLinter_Run(t *testing.T) {
 	var tests = []*struct {
 		description       string
 		filesystem        fs.FS
-		files             map[string]struct{}
+		files             map[string]map[string]struct{}
 		linter            *Linter
 		expectedErr       error
 		expectedStatistic *debug.Statistic
