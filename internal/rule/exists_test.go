@@ -47,7 +47,7 @@ func TestExists_Validate(t *testing.T) {
 	var tests = []*struct {
 		rule  *Exists
 		fail  bool
-		count int16
+		count uint16
 		valid bool
 		err   error
 	}{

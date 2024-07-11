@@ -279,7 +279,7 @@ func (linter *Linter) Run(filesystem fs.FS, paths map[string]struct{}, debug boo
 	if debug {
 		defer func() {
 			fmt.Printf("-----------------------------\nstatistics\n-----------------------------\n")
-			fmt.Printf("time: %d µs / %d ms\n", time.Since(linter.GetStatistics().Start).Microseconds(), time.Since(linter.GetStatistics().Start).Milliseconds())
+			fmt.Printf("time: %s\n", time.Since(linter.GetStatistics().Start).Truncate(time.Microsecond).String())
 			fmt.Printf("paths: %d\n", linter.GetStatistics().Files)
 			fmt.Printf("file skips: %d\n", linter.GetStatistics().FileSkips)
 			fmt.Printf("dirs: %d\n", linter.GetStatistics().Dirs)

@@ -11,9 +11,9 @@ import (
 type Exists struct {
 	name      string
 	exclusive bool
-	min       int16
-	max       int16
-	count     int16
+	min       uint16
+	max       uint16
+	count     uint16
 	*sync.RWMutex
 }
 
@@ -60,8 +60,8 @@ func (rule *Exists) SetParameters(params []string) error {
 			return err.(*strconv.NumError).Err
 		}
 
-		rule.min = int16(value)
-		rule.max = int16(value)
+		rule.min = uint16(value)
+		rule.max = uint16(value)
 		return nil
 	}
 
@@ -78,8 +78,8 @@ func (rule *Exists) SetParameters(params []string) error {
 		return err.(*strconv.NumError).Err
 	}
 
-	rule.min = int16(minValue)
-	rule.max = int16(maxValue)
+	rule.min = uint16(minValue)
+	rule.max = uint16(maxValue)
 	return nil
 }
 
@@ -107,21 +107,21 @@ func (rule *Exists) Validate(value string, fail bool) (bool, error) {
 	return rule.getCount() >= rule.getMin() && rule.getCount() <= rule.getMax(), nil
 }
 
-func (rule *Exists) getMin() int16 {
+func (rule *Exists) getMin() uint16 {
 	rule.RLock()
 	defer rule.RUnlock()
 
 	return rule.min
 }
 
-func (rule *Exists) getMax() int16 {
+func (rule *Exists) getMax() uint16 {
 	rule.RLock()
 	defer rule.RUnlock()
 
 	return rule.max
 }
 
-func (rule *Exists) getCount() int16 {
+func (rule *Exists) getCount() uint16 {
 	rule.RLock()
 	defer rule.RUnlock()
 
