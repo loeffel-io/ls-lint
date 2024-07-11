@@ -10,14 +10,12 @@ import (
 	"github.com/loeffel-io/ls-lint/v2/internal/linter"
 	"github.com/loeffel-io/ls-lint/v2/internal/rule"
 	"gopkg.in/yaml.v3"
-	"io/fs"
 	"log"
 	"maps"
 	"os"
 	"runtime"
 	"slices"
 	"strings"
-	"testing/fstest"
 )
 
 var Version = "dev"
@@ -61,22 +59,13 @@ func main() {
 		flagConfig = _flag.Config{".ls-lint.yml"}
 	}
 
-	var args = flags.Args()
-	var filesystem fs.FS
-	switch len(args) {
-	case 0:
-		filesystem = os.DirFS(*flagWorkdir)
-	default:
-		var mapFilesystem = make(fstest.MapFS, len(args))
-		for _, file := range args {
-			var fileInfo os.FileInfo
-			if fileInfo, err = os.Stat(fmt.Sprintf("%s/%s", *flagWorkdir, file)); err != nil {
-				log.Fatal(err)
-			}
-
-			mapFilesystem[file] = &fstest.MapFile{Mode: fileInfo.Mode()}
+	var filesystem = os.DirFS(*flagWorkdir)
+	var paths map[string]struct{}
+	if len(flags.Args()[0:]) > 0 {
+		paths = make(map[string]struct{}, len(flags.Args()[0:]))
+		for _, path := range flags.Args()[0:] {
+			paths[path] = struct{}{}
 		}
-		filesystem = mapFilesystem
 	}
 
 	var lslintConfig = config.NewConfig(make(config.Ls), make([]string, 0))
@@ -105,7 +94,7 @@ func main() {
 		make([]*rule.Error, 0),
 	)
 
-	if err = lslintLinter.Run(filesystem, *flagDebug); err != nil {
+	if err = lslintLinter.Run(filesystem, paths, *flagDebug); err != nil {
 		log.Fatal(err)
 	}
 
@@ -122,11 +111,23 @@ func main() {
 
 	switch *flagErrorOutputFormat {
 	case "json":
-		var errIndex = make(map[string][]string, len(lslintLinter.GetErrors()))
+		var errIndex = make(map[string]map[string][]string, len(lslintLinter.GetErrors()))
 		for _, ruleErr := range lslintLinter.GetErrors() {
-			errIndex[ruleErr.GetPath()] = make([]string, len(ruleErr.GetRules()))
-			for i, ruleErrMessages := range ruleErr.GetRules() {
-				errIndex[ruleErr.GetPath()][i] = ruleErrMessages.GetErrorMessage()
+			path := ruleErr.GetPath()
+			if path == "" {
+				path = "."
+			}
+
+			if _, ok := errIndex[path]; !ok {
+				errIndex[path] = make(map[string][]string)
+			}
+
+			for _, errRule := range ruleErr.GetRules() {
+				if !ruleErr.IsDir() && errRule.GetName() == "exists" {
+					continue
+				}
+
+				errIndex[path][ruleErr.GetExt()] = append(errIndex[path][ruleErr.GetExt()], errRule.GetErrorMessage())
 			}
 		}
 
@@ -142,11 +143,20 @@ func main() {
 		for _, ruleErr := range lslintLinter.GetErrors() {
 			var ruleMessages []string
 
+			path := ruleErr.GetPath()
+			if path == "" {
+				path = "."
+			}
+
 			for _, errRule := range ruleErr.GetRules() {
+				if !ruleErr.IsDir() && errRule.GetName() == "exists" {
+					continue
+				}
+
 				ruleMessages = append(ruleMessages, errRule.GetErrorMessage())
 			}
 
-			if _, err = fmt.Fprintf(writer, "%s failed for rules: %s\n", ruleErr.GetPath(), strings.Join(ruleMessages, "|")); err != nil {
+			if _, err = fmt.Fprintf(writer, "%s failed for `%s` rules: %s\n", path, ruleErr.GetExt(), strings.Join(ruleMessages, " | ")); err != nil {
 				log.Fatal(err)
 			}
 		}

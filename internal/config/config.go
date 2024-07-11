@@ -69,16 +69,17 @@ func (config *Config) ShouldIgnore(ignoreIndex map[string]bool, path string) boo
 	return false
 }
 
-func (config *Config) GetConfig(index RuleIndex, path string) map[string][]rule.Rule {
+func (config *Config) GetConfig(index RuleIndex, path string) (string, map[string][]rule.Rule) {
 	dirs := strings.Split(path, sep)
 
 	for i := len(dirs); i >= 0; i-- {
-		if find, exists := index[strings.Join(dirs[:i], sep)]; exists {
-			return find
+		var dir = strings.Join(dirs[:i], sep)
+		if find, exists := index[dir]; exists {
+			return dir, find
 		}
 	}
 
-	return nil
+	return "", nil
 }
 
 func (config *Config) GetIndex(list Ls) (RuleIndex, error) {
@@ -144,6 +145,8 @@ func (config *Config) copyRule(r rule.Rule) rule.Rule {
 	switch r.GetName() {
 	case "regex":
 		return new(rule.Regex).Init()
+	case "exists":
+		return new(rule.Exists).Init()
 	}
 
 	return r

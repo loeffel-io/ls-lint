@@ -1,6 +1,9 @@
 package rule
 
-import "testing"
+import (
+	"errors"
+	"testing"
+)
 
 func TestRegex(t *testing.T) {
 	var tests = []*struct {
@@ -23,13 +26,13 @@ func TestRegex(t *testing.T) {
 		// parameters
 		err := rule.SetParameters(test.params)
 
-		if err != nil && err != test.err {
-			t.Errorf("Test %d failed with unmatched error - %s", i, err.Error())
+		if !errors.Is(err, test.err) {
+			t.Errorf("Test %d failed with unmatched error - %e", i, err)
 			return
 		}
 
 		// validate
-		res, err := rule.Validate(test.value)
+		res, err := rule.Validate(test.value, true)
 
 		if err != nil && err != test.err {
 			t.Errorf("Test %d failed with unmatched error - %s", i, err.Error())

@@ -6,22 +6,24 @@ import (
 )
 
 type CamelCase struct {
-	Name string
+	name      string
+	exclusive bool
 	*sync.RWMutex
 }
 
 func (rule *CamelCase) Init() Rule {
-	rule.Name = "camelcase"
+	rule.name = "camelcase"
+	rule.exclusive = false
 	rule.RWMutex = new(sync.RWMutex)
 
 	return rule
 }
 
 func (rule *CamelCase) GetName() string {
-	rule.Lock()
-	defer rule.Unlock()
+	rule.RLock()
+	defer rule.RUnlock()
 
-	return rule.Name
+	return rule.name
 }
 
 func (rule *CamelCase) SetParameters(params []string) error {
@@ -32,9 +34,16 @@ func (rule *CamelCase) GetParameters() []string {
 	return nil
 }
 
+func (rule *CamelCase) GetExclusive() bool {
+	rule.RLock()
+	defer rule.RUnlock()
+
+	return rule.exclusive
+}
+
 // Validate checks if string is camel case
 // false if rune is no letter and no digit
-func (rule *CamelCase) Validate(value string) (bool, error) {
+func (rule *CamelCase) Validate(value string, fail bool) (bool, error) {
 	for i, c := range value {
 		// must be letter or digit
 		if !unicode.IsLetter(c) && !unicode.IsDigit(c) {

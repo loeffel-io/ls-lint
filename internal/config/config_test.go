@@ -50,7 +50,7 @@ func TestGetConfig(t *testing.T) {
 
 	var i = 0
 	for _, test := range tests {
-		res := test.config.GetConfig(test.index, test.path)
+		_, res := test.config.GetConfig(test.index, test.path)
 
 		if !reflect.DeepEqual(res, test.expected) {
 			t.Errorf("Test %d failed with unmatched return value - %+v", i, res)

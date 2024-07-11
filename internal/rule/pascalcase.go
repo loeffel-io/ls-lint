@@ -6,22 +6,24 @@ import (
 )
 
 type PascalCase struct {
-	Name string
+	name      string
+	exclusive bool
 	*sync.RWMutex
 }
 
 func (rule *PascalCase) Init() Rule {
-	rule.Name = "pascalcase"
+	rule.name = "pascalcase"
+	rule.exclusive = false
 	rule.RWMutex = new(sync.RWMutex)
 
 	return rule
 }
 
 func (rule *PascalCase) GetName() string {
-	rule.Lock()
-	defer rule.Unlock()
+	rule.RLock()
+	defer rule.RUnlock()
 
-	return rule.Name
+	return rule.name
 }
 
 func (rule *PascalCase) SetParameters(params []string) error {
@@ -32,10 +34,17 @@ func (rule *PascalCase) GetParameters() []string {
 	return nil
 }
 
+func (rule *PascalCase) GetExclusive() bool {
+	rule.RLock()
+	defer rule.RUnlock()
+
+	return rule.exclusive
+}
+
 // Validate checks if string is pascal case
 // false if rune is no letter and no digit
 // false if first rune is not upper
-func (rule *PascalCase) Validate(value string) (bool, error) {
+func (rule *PascalCase) Validate(value string, fail bool) (bool, error) {
 	for i, c := range value {
 		// must be letter or digit
 		if !unicode.IsLetter(c) && !unicode.IsDigit(c) {

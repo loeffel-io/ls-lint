@@ -37,8 +37,8 @@ http_archive(
     url = "https://github.com/aspect-build/rules_js/releases/download/v1.41.2/rules_js-v1.41.2.tar.gz",
 )
 
-load("@io_bazel_rules_go//go:deps.bzl", "go_register_toolchains", "go_rules_dependencies")
 load("@bazel_gazelle//:deps.bzl", "gazelle_dependencies")
+load("@io_bazel_rules_go//go:deps.bzl", "go_register_toolchains", "go_rules_dependencies")
 
 ############################################################
 # custom repositories ######################################
@@ -55,7 +55,7 @@ go_repositories()
 
 go_rules_dependencies()
 
-go_register_toolchains(version = "1.22.1")
+go_register_toolchains(version = "1.22.4")
 
 ############################################################
 # gazelle ##################################################
