@@ -1,6 +1,6 @@
 ls:
   .dir: snake_case # | exists:1
-  .json: exists:1-2
+  .json: exists:2
   .bzl: snake_case
   .sh: snake_case
   .bazel: SCREAMING_SNAKE_CASE
@@ -13,7 +13,7 @@ ls:
     .json: exists:1
 
   peter:
-    .dir: exists:1
+    .dir: exists:2
     .*: PascalCase | exists:2
     .js: exists:3 | snake_case
     .vue: exists:1

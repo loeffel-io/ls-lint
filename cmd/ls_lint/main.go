@@ -113,13 +113,21 @@ func main() {
 	case "json":
 		var errIndex = make(map[string]map[string][]string, len(lslintLinter.GetErrors()))
 		for _, ruleErr := range lslintLinter.GetErrors() {
-			if _, ok := errIndex[ruleErr.GetPath()]; !ok {
-				errIndex[ruleErr.GetPath()] = make(map[string][]string)
+			path := ruleErr.GetPath()
+			if path == "" {
+				path = "."
 			}
 
-			errIndex[ruleErr.GetPath()][ruleErr.GetExt()] = make([]string, len(ruleErr.GetRules()))
-			for i, ruleErrMessages := range ruleErr.GetRules() {
-				errIndex[ruleErr.GetPath()][ruleErr.GetExt()][i] = ruleErrMessages.GetErrorMessage()
+			if _, ok := errIndex[path]; !ok {
+				errIndex[path] = make(map[string][]string)
+			}
+
+			for _, errRule := range ruleErr.GetRules() {
+				if !ruleErr.IsDir() && errRule.GetName() == "exists" {
+					continue
+				}
+
+				errIndex[path][ruleErr.GetExt()] = append(errIndex[path][ruleErr.GetExt()], errRule.GetErrorMessage())
 			}
 		}
 
@@ -135,18 +143,17 @@ func main() {
 		for _, ruleErr := range lslintLinter.GetErrors() {
 			var ruleMessages []string
 
+			path := ruleErr.GetPath()
+			if path == "" {
+				path = "."
+			}
+
 			for _, errRule := range ruleErr.GetRules() {
 				if !ruleErr.IsDir() && errRule.GetName() == "exists" {
 					continue
 				}
 
 				ruleMessages = append(ruleMessages, errRule.GetErrorMessage())
-			}
-
-			path := ruleErr.GetPath()
-
-			if path == "" {
-				path = "."
 			}
 
 			if _, err = fmt.Fprintf(writer, "%s failed for `%s` rules: %s\n", path, ruleErr.GetExt(), strings.Join(ruleMessages, " | ")); err != nil {
