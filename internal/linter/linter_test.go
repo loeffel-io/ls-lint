@@ -585,6 +585,7 @@ func TestLinter_Run(t *testing.T) {
 				"test/sub/snake_case_456.png": &fstest.MapFile{Mode: fs.ModePerm},
 			},
 			paths: map[string]struct{}{
+				"snake_case.png":   {},
 				"test/sub/test.ts": {},
 			},
 			linter: NewLinter(
@@ -598,6 +599,10 @@ func TestLinter_Run(t *testing.T) {
 						"test/*": config.Ls{
 							".*":   "exists:0",
 							".png": "snake_case | exists:3-5",
+							".vue": "exists:1",
+							"*": config.Ls{
+								".dir": "exists:1 | snake_case",
+							},
 						},
 						"not_exists": config.Ls{
 							".dir": "exists:1",
@@ -631,6 +636,14 @@ func TestLinter_Run(t *testing.T) {
 				{
 					Path: "test/sub",
 					Ext:  ".*",
+					Rules: []rule.Rule{
+						new(rule.Exists).Init(),
+					},
+					RWMutex: new(sync.RWMutex),
+				},
+				{
+					Path: "",
+					Ext:  ".png",
 					Rules: []rule.Rule{
 						new(rule.Exists).Init(),
 					},

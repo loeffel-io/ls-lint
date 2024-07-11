@@ -13,7 +13,7 @@ ls:
     .json: exists:1
 
   peter:
-    .dir: exists:2
+    .dir: exists:2 | PascalCase
     .*: PascalCase | exists:2
     .js: exists:3 | snake_case
     .vue: exists:1
