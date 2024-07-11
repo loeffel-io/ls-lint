@@ -663,11 +663,11 @@ func TestLinter_Run(t *testing.T) {
 		}
 
 		if len(test.linter.GetErrors()) > 0 {
-			slices.SortFunc(test.linter.GetErrors(), func(a, b *rule.Error) int {
+			slices.SortStableFunc(test.linter.GetErrors(), func(a, b *rule.Error) int {
 				return cmp.Compare(strings.ToLower(a.GetPath()+a.GetExt()), strings.ToLower(b.GetPath()+b.GetExt()))
 			})
 
-			slices.SortFunc(test.expectedErrors, func(a, b *rule.Error) int {
+			slices.SortStableFunc(test.expectedErrors, func(a, b *rule.Error) int {
 				return cmp.Compare(strings.ToLower(a.GetPath()+a.GetExt()), strings.ToLower(b.GetPath()+b.GetExt()))
 			})
 		}
