@@ -59,9 +59,11 @@ func (linter *Linter) AddError(error *rule.Error) {
 	linter.errors = append(linter.errors, error)
 }
 
-func (linter *Linter) validateDir(index config.RuleIndex, path string, validate bool) error {
+func (linter *Linter) validateDir(index config.RuleIndex, path string, validate bool) (string, string, error) {
+	indexDir, rules := linter.config.GetConfig(index, path)
+
 	if !validate {
-		return nil
+		return indexDir, dir, nil
 	}
 
 	var g = new(errgroup.Group)
@@ -69,8 +71,6 @@ func (linter *Linter) validateDir(index config.RuleIndex, path string, validate 
 	var rulesNonExclusiveCount int8
 	var rulesNonExclusiveError int8
 	var rulesMutex = new(sync.Mutex)
-
-	indexDir, rules := linter.config.GetConfig(index, path)
 
 	var pathDir string
 	if pathDir = path; pathDir == "." {
@@ -80,11 +80,11 @@ func (linter *Linter) validateDir(index config.RuleIndex, path string, validate 
 	basename := filepath.Base(path)
 
 	if basename == linter.root {
-		return nil
+		return indexDir, dir, nil
 	}
 
 	if _, exists := rules[dir]; !exists {
-		return nil
+		return indexDir, dir, nil
 	}
 
 	for _, ruleDir := range rules[dir] {
@@ -113,11 +113,11 @@ func (linter *Linter) validateDir(index config.RuleIndex, path string, validate 
 	}
 
 	if err := g.Wait(); err != nil {
-		return err
+		return indexDir, dir, err
 	}
 
 	if rulesNonExclusiveError == 0 || rulesNonExclusiveError != rulesNonExclusiveCount {
-		return nil
+		return indexDir, dir, nil
 	}
 
 	linter.AddError(&rule.Error{
@@ -127,10 +127,10 @@ func (linter *Linter) validateDir(index config.RuleIndex, path string, validate 
 		RWMutex: new(sync.RWMutex),
 	})
 
-	return nil
+	return indexDir, dir, nil
 }
 
-func (linter *Linter) validateFile(index config.RuleIndex, path string, validate bool) error {
+func (linter *Linter) validateFile(index config.RuleIndex, path string, validate bool) (string, string, error) {
 	var ext string
 	var g = new(errgroup.Group)
 
@@ -201,24 +201,30 @@ func (linter *Linter) validateFile(index config.RuleIndex, path string, validate
 	}
 
 	if err := g.Wait(); err != nil {
-		return err
+		return indexDir, ext, err
 	}
 
 	if !validate || rulesNonExclusiveError == 0 || rulesNonExclusiveError != rulesNonExclusiveCount {
-		return nil
+		return indexDir, ext, nil
 	}
 
 	linter.AddError(&rule.Error{
 		Path:    path,
+		Dir:     false,
 		Ext:     ext,
 		Rules:   rules[ext],
 		RWMutex: new(sync.RWMutex),
 	})
 
-	return nil
+	return indexDir, ext, nil
 }
 
-func (linter *Linter) Run(filesystem fs.FS, paths map[string]map[string]struct{}, debug bool) (err error) {
+func (linter *Linter) Run(filesystem fs.FS, paths map[string]struct{}, debug bool) (err error) {
+	var pathsIndex map[string]map[string]struct{} = nil
+	if len(paths) > 0 {
+		pathsIndex = make(map[string]map[string]struct{})
+	}
+
 	// create index
 	var index config.RuleIndex
 	if index, err = linter.config.GetIndex(linter.config.GetLs()); err != nil {
@@ -274,7 +280,7 @@ func (linter *Linter) Run(filesystem fs.FS, paths map[string]map[string]struct{}
 		defer func() {
 			fmt.Printf("-----------------------------\nstatistics\n-----------------------------\n")
 			fmt.Printf("time: %d µs / %d ms\n", time.Since(linter.GetStatistics().Start).Microseconds(), time.Since(linter.GetStatistics().Start).Milliseconds())
-			fmt.Printf("files: %d\n", linter.GetStatistics().Files)
+			fmt.Printf("paths: %d\n", linter.GetStatistics().Files)
 			fmt.Printf("file skips: %d\n", linter.GetStatistics().FileSkips)
 			fmt.Printf("dirs: %d\n", linter.GetStatistics().Dirs)
 			fmt.Printf("dir skips: %d\n", linter.GetStatistics().DirSkips)
@@ -305,8 +311,9 @@ func (linter *Linter) Run(filesystem fs.FS, paths map[string]map[string]struct{}
 			return fmt.Errorf("%s not found", path)
 		}
 
+		var indexDir, ext string
 		var validate = len(paths) == 0
-		if _, ok := paths[filepath.Dir(path)][path]; !validate {
+		if _, ok := paths[path]; !validate {
 			validate = ok
 		}
 
@@ -316,7 +323,19 @@ func (linter *Linter) Run(filesystem fs.FS, paths map[string]map[string]struct{}
 				linter.GetStatistics().AddDir()
 			}
 
-			return linter.validateDir(index, path, validate)
+			if indexDir, ext, err = linter.validateDir(index, path, validate); err != nil {
+				return err
+			}
+
+			if pathsIndex != nil && validate {
+				if _, ok := pathsIndex[indexDir]; !ok {
+					pathsIndex[indexDir] = make(map[string]struct{})
+				}
+
+				pathsIndex[indexDir][ext] = struct{}{}
+			}
+
+			return nil
 		}
 
 		if debug {
@@ -324,13 +343,30 @@ func (linter *Linter) Run(filesystem fs.FS, paths map[string]map[string]struct{}
 			linter.GetStatistics().AddFile()
 		}
 
-		return linter.validateFile(index, path, validate)
+		if indexDir, ext, err = linter.validateFile(index, path, validate); err != nil {
+			return err
+		}
+
+		if pathsIndex != nil && validate {
+			if _, ok := pathsIndex[indexDir]; !ok {
+				pathsIndex[indexDir] = make(map[string]struct{})
+			}
+
+			pathsIndex[indexDir][ext] = struct{}{}
+		}
+
+		return nil
 	}); err != nil {
 		return err
 	}
 
+	// validate exists
 	for path, pathIndex := range index {
 		for ext, rules := range pathIndex {
+			if _, ok := pathsIndex[path][ext]; pathsIndex != nil && !ok {
+				continue
+			}
+
 			for _, r := range rules {
 				if r.GetName() != "exists" {
 					continue

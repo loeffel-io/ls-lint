@@ -13,7 +13,6 @@ import (
 	"log"
 	"maps"
 	"os"
-	"path/filepath"
 	"runtime"
 	"slices"
 	"strings"
@@ -61,27 +60,13 @@ func main() {
 	}
 
 	var filesystem = os.DirFS(*flagWorkdir)
-	var paths map[string]map[string]struct{}
+	var paths map[string]struct{}
 	if len(flags.Args()[0:]) > 0 {
-		paths = make(map[string]map[string]struct{}, len(flags.Args()[0:]))
+		paths = make(map[string]struct{}, len(flags.Args()[0:]))
 		for _, path := range flags.Args()[0:] {
-			if _, err = os.Stat(fmt.Sprintf("%s/%s", *flagWorkdir, path)); err != nil {
-				if os.IsNotExist(err) {
-					continue
-				}
-
-				log.Fatal(err)
-			}
-
-			dir := filepath.Dir(path)
-			if _, ok := paths[dir]; !ok {
-				paths[dir] = make(map[string]struct{})
-			}
-			paths[dir][path] = struct{}{}
+			paths[path] = struct{}{}
 		}
 	}
-
-	log.Printf("%+v", paths)
 
 	var lslintConfig = config.NewConfig(make(config.Ls), make([]string, 0))
 	for _, c := range flagConfig {
