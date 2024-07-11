@@ -1,6 +1,6 @@
 ls:
   .dir: snake_case # | exists:1
-  .json: exists:2
+  .json: exists:1-2
   .bzl: snake_case
   .sh: snake_case
   .bazel: SCREAMING_SNAKE_CASE
