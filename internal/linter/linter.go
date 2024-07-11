@@ -8,7 +8,6 @@ import (
 	"github.com/loeffel-io/ls-lint/v2/internal/rule"
 	"golang.org/x/sync/errgroup"
 	"io/fs"
-	"log"
 	"math"
 	"path/filepath"
 	"strings"
@@ -71,11 +70,15 @@ func (linter *Linter) validateDir(index config.RuleIndex, path string, validate 
 	var rulesNonExclusiveError int8
 	var rulesMutex = new(sync.Mutex)
 
-	_, rules := linter.config.GetConfig(index, path)
+	indexDir, rules := linter.config.GetConfig(index, path)
+
+	var pathDir string
+	if pathDir = path; pathDir == "." {
+		pathDir = ""
+	}
 
 	basename := filepath.Base(path)
 
-	// here is the problem why exists not work for ls root directory
 	if basename == linter.root {
 		return nil
 	}
@@ -86,6 +89,10 @@ func (linter *Linter) validateDir(index config.RuleIndex, path string, validate 
 
 	for _, ruleDir := range rules[dir] {
 		g.Go(func() error {
+			if ruleDir.GetName() == "exists" && pathDir != indexDir {
+				return nil
+			}
+
 			valid, err := ruleDir.Validate(basename, ruleDir.GetName() != "exists")
 
 			if err != nil {
@@ -328,8 +335,6 @@ func (linter *Linter) Run(filesystem fs.FS, paths map[string]map[string]struct{}
 				if r.GetName() != "exists" {
 					continue
 				}
-
-				log.Printf("%s - %+v - %+v", path, ext, r)
 
 				var valid bool
 				if valid, err = r.Validate("", true); err != nil {

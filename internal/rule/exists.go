@@ -137,7 +137,7 @@ func (rule *Exists) incrementCount() {
 
 func (rule *Exists) GetErrorMessage() string {
 	if rule.getMin() == rule.getMax() {
-		return fmt.Sprintf("%s:%d", rule.GetName(), rule.getMin())
+		return fmt.Sprintf("%s:%d (debug: %d)", rule.GetName(), rule.getMin(), rule.getCount())
 	}
 
 	return fmt.Sprintf("%s:%d-%d", rule.GetName(), rule.getMin(), rule.getMax())

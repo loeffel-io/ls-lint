@@ -18,6 +18,9 @@ ls:
     .js: exists:3 | snake_case
     .vue: exists:1
 
+    '*':
+      .dir: exists:1
+
 ignore:
   - .git
   - .github
