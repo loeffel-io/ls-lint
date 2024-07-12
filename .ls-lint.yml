@@ -14,4 +14,5 @@ ignore:
   - .idea
   - genhtml
   - bazel-*
+  - gha-*
   - deployments/npm/pnpm-lock.yaml
