@@ -84,3 +84,7 @@ func (rule *PascalCase) Validate(value string, fail bool) (bool, error) {
 func (rule *PascalCase) GetErrorMessage() string {
 	return rule.GetName()
 }
+
+func (rule *PascalCase) Copy() Rule {
+	return rule
+}

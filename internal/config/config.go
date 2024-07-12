@@ -123,8 +123,8 @@ func (config *Config) walkIndex(index RuleIndex, key string, list Ls) error {
 			ruleSplit := strings.SplitN(ruleName, ":", 2)
 			ruleName = ruleSplit[0]
 
-			if r, exists := rule.Rules[ruleName]; exists {
-				r = config.copyRule(r)
+			if r, ok := rule.Rules[ruleName]; ok {
+				r = r.Copy()
 
 				if err := r.SetParameters(ruleSplit[1:]); err != nil {
 					return fmt.Errorf("rule %s failed with %s", ruleName, err.Error())
@@ -139,15 +139,4 @@ func (config *Config) walkIndex(index RuleIndex, key string, list Ls) error {
 	}
 
 	return nil
-}
-
-func (config *Config) copyRule(r rule.Rule) rule.Rule {
-	switch r.GetName() {
-	case "regex":
-		return new(rule.Regex).Init()
-	case "exists":
-		return new(rule.Exists).Init()
-	}
-
-	return r
 }

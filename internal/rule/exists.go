@@ -3,6 +3,7 @@ package rule
 import (
 	"fmt"
 	"math"
+	"math/rand"
 	"strconv"
 	"strings"
 	"sync"
@@ -14,6 +15,7 @@ type Exists struct {
 	min       uint16
 	max       uint16
 	count     uint16
+	test      int
 	*sync.RWMutex
 }
 
@@ -22,6 +24,7 @@ func (rule *Exists) Init() Rule {
 	rule.exclusive = true
 	rule.count = 0
 	rule.RWMutex = new(sync.RWMutex)
+	rule.test = rand.Intn(100)
 
 	return rule
 }
@@ -137,8 +140,20 @@ func (rule *Exists) incrementCount() {
 
 func (rule *Exists) GetErrorMessage() string {
 	if rule.getMin() == rule.getMax() {
-		return fmt.Sprintf("%s:%d", rule.GetName(), rule.getMin())
+		return fmt.Sprintf("%s:%d (debug: %d)", rule.GetName(), rule.getMin(), rule.getCount())
 	}
 
-	return fmt.Sprintf("%s:%d-%d", rule.GetName(), rule.getMin(), rule.getMax())
+	return fmt.Sprintf("%s:%d-%d (debug: %d)", rule.GetName(), rule.getMin(), rule.getMax(), rule.getCount())
+}
+
+func (rule *Exists) Copy() Rule {
+	rule.RLock()
+	defer rule.RUnlock()
+
+	var c = new(Exists)
+	c.Init()
+	c.min = rule.min
+	c.max = rule.max
+
+	return c
 }

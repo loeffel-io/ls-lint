@@ -64,3 +64,7 @@ func (rule *KebabCase) Validate(value string, fail bool) (bool, error) {
 func (rule *KebabCase) GetErrorMessage() string {
 	return rule.GetName()
 }
+
+func (rule *KebabCase) Copy() Rule {
+	return rule
+}

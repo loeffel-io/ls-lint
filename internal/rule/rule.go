@@ -45,4 +45,5 @@ type Rule interface {
 	GetExclusive() bool
 	Validate(value string, fail bool) (bool, error)
 	GetErrorMessage() string
+	Copy() Rule
 }

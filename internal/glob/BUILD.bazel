@@ -6,6 +6,7 @@ go_library(
     importpath = "github.com/loeffel-io/ls-lint/v2/internal/glob",
     visibility = ["//:__subpackages__"],
     deps = [
+        "//internal/config",
         "//internal/rule",
         "@com_github_bmatcuk_doublestar_v4//:doublestar",
     ],

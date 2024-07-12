@@ -64,3 +64,7 @@ func (rule *ScreamingSnakeCase) Validate(value string, fail bool) (bool, error) 
 func (rule *ScreamingSnakeCase) GetErrorMessage() string {
 	return rule.GetName()
 }
+
+func (rule *ScreamingSnakeCase) Copy() Rule {
+	return rule
+}

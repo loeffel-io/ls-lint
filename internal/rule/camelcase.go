@@ -79,3 +79,7 @@ func (rule *CamelCase) Validate(value string, fail bool) (bool, error) {
 func (rule *CamelCase) GetErrorMessage() string {
 	return rule.GetName()
 }
+
+func (rule *CamelCase) Copy() Rule {
+	return rule
+}

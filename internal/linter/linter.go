@@ -166,7 +166,7 @@ func (linter *Linter) validateFile(index config.RuleIndex, path string, validate
 			withoutExt = strings.TrimSuffix(filepath.Base(path), ext)
 		}
 
-		if _, exists := rules[ext]; exists {
+		if _, ok := rules[ext]; ok {
 			for _, ruleFile := range rules[ext] {
 				if !validate && ruleFile.GetName() != "exists" {
 					continue
@@ -238,7 +238,7 @@ func (linter *Linter) Run(filesystem fs.FS, paths map[string]struct{}, debug boo
 
 	// glob ignore index
 	var ignoreIndex = linter.config.GetIgnoreIndex()
-	if err = glob.Index(filesystem, ignoreIndex, true); err != nil {
+	if err = glob.IgnoreIndex(filesystem, ignoreIndex, true); err != nil {
 		return err
 	}
 

@@ -64,3 +64,7 @@ func (rule *PointCase) Validate(value string, fail bool) (bool, error) {
 func (rule *PointCase) GetErrorMessage() string {
 	return rule.GetName()
 }
+
+func (rule *PointCase) Copy() Rule {
+	return rule
+}

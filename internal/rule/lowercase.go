@@ -55,3 +55,7 @@ func (rule *Lowercase) Validate(value string, fail bool) (bool, error) {
 func (rule *Lowercase) GetErrorMessage() string {
 	return rule.GetName()
 }
+
+func (rule *Lowercase) Copy() Rule {
+	return rule
+}

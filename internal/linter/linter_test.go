@@ -494,6 +494,11 @@ func TestLinter_Run(t *testing.T) {
 				"test/sub/test.ts":            &fstest.MapFile{Mode: fs.ModePerm},
 				"test/sub/snake_case_123.png": &fstest.MapFile{Mode: fs.ModePerm},
 				"test/sub/snake_case_456.png": &fstest.MapFile{Mode: fs.ModePerm},
+				"wildcards":                   &fstest.MapFile{Mode: fs.ModeDir},
+				"wildcards/a":                 &fstest.MapFile{Mode: fs.ModeDir},
+				"wildcards/a/b":               &fstest.MapFile{Mode: fs.ModeDir},
+				"wildcards/a/b/test.vue":      &fstest.MapFile{Mode: fs.ModePerm},
+				"wildcards/a/b/c":             &fstest.MapFile{Mode: fs.ModeDir},
 			},
 			paths: nil,
 			linter: NewLinter(
@@ -510,6 +515,11 @@ func TestLinter_Run(t *testing.T) {
 						},
 						"not_exists": config.Ls{
 							".dir": "exists:1",
+						},
+						"wildcards/**": config.Ls{
+							".dir": "exists:1",
+							".*":   "snake_case | exists:1",
+							".vue": "snake_case | exists:1",
 						},
 					},
 					[]string{
@@ -530,9 +540,9 @@ func TestLinter_Run(t *testing.T) {
 			expectedErr: nil,
 			expectedStatistic: &debug.Statistic{
 				Start:     start,
-				Files:     4,
+				Files:     5,
 				FileSkips: 1,
-				Dirs:      3,
+				Dirs:      7,
 				DirSkips:  1,
 				RWMutex:   new(sync.RWMutex),
 			},
@@ -564,6 +574,62 @@ func TestLinter_Run(t *testing.T) {
 				{
 					Path: "",
 					Ext:  ".png",
+					Rules: []rule.Rule{
+						new(rule.Exists).Init(),
+					},
+					RWMutex: new(sync.RWMutex),
+				},
+				{
+					Path: "wildcards",
+					Ext:  ".vue",
+					Rules: []rule.Rule{
+						new(rule.Exists).Init(),
+					},
+					RWMutex: new(sync.RWMutex),
+				},
+				{
+					Path: "wildcards",
+					Ext:  ".*",
+					Rules: []rule.Rule{
+						new(rule.Exists).Init(),
+					},
+					RWMutex: new(sync.RWMutex),
+				},
+				{
+					Path: "wildcards/a",
+					Ext:  ".vue",
+					Rules: []rule.Rule{
+						new(rule.Exists).Init(),
+					},
+					RWMutex: new(sync.RWMutex),
+				},
+				{
+					Path: "wildcards/a",
+					Ext:  ".*",
+					Rules: []rule.Rule{
+						new(rule.Exists).Init(),
+					},
+					RWMutex: new(sync.RWMutex),
+				},
+				{
+					Path: "wildcards/a/b",
+					Ext:  ".*",
+					Rules: []rule.Rule{
+						new(rule.Exists).Init(),
+					},
+					RWMutex: new(sync.RWMutex),
+				},
+				{
+					Path: "wildcards/a/b/c",
+					Ext:  ".vue",
+					Rules: []rule.Rule{
+						new(rule.Exists).Init(),
+					},
+					RWMutex: new(sync.RWMutex),
+				},
+				{
+					Path: "wildcards/a/b/c",
+					Ext:  ".*",
 					Rules: []rule.Rule{
 						new(rule.Exists).Init(),
 					},
