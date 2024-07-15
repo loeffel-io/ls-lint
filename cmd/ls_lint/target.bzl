@@ -1,4 +1,3 @@
-# linux ppc64le not supported yet: https://github.com/bazelbuild/platforms/pull/64
 targets = [
     [
         "darwin",
@@ -19,6 +18,10 @@ targets = [
     [
         "linux",
         "s390x",
+    ],
+    [
+        "linux",
+        "ppc64le",
     ],
     [
         "windows",
