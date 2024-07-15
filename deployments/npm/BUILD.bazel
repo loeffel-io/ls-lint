@@ -42,6 +42,10 @@ npm_package(
         ":package_files",
         ":package_files_bin",
     ],
+    args = [
+        "--tag beta",
+        "--no-git-checks",
+    ],
     hardlink = "off",
     include_srcs_packages = [
         "deployments/npm/**",
