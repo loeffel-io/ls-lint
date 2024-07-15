@@ -9,4 +9,4 @@ jobs:
         with:
           config: .ls-lint.yml .ls-lint-2.yml
           debug: true
-          paths: peter-schuh.yaml
+          paths: peter-schuh.yaml peter_gurke.youtube
