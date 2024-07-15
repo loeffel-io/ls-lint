@@ -38,4 +38,5 @@ jobs:
         with:
           credentials_json: ${{ secrets.GOOGLE_CREDENTIALS }}
       - run: bazel run --remote_cache=$GOOGLE_BUCKET --google_default_credentials //deployments/github:ls_lint_publish
-      - run: NPM_CONFIG_USERCONFIG=${GITHUB_WORKSPACE}/deployments/npm/.npmrc bazel run --remote_cache=$GOOGLE_BUCKET --google_default_credentials //deployments/npm:ls_lint.publish
+      - run: echo ${GITHUB_WORKSPACE}
+      - run: bazel run --remote_cache=$GOOGLE_BUCKET --google_default_credentials //deployments/npm:ls_lint.publish -- --userconfig=${GITHUB_WORKSPACE}/deployments/npm/.npmrc
