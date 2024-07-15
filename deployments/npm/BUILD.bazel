@@ -45,7 +45,6 @@ npm_package(
     args = [
         "--tag beta",
         "--no-git-checks",
-        "--verbose",
     ],
     hardlink = "off",
     include_srcs_packages = [
