@@ -10,7 +10,6 @@ var RulesIndex = map[string]Rule{
 	"snakecase":          new(SnakeCase).Init(),
 	"screamingsnakecase": new(ScreamingSnakeCase).Init(),
 	"kebabcase":          new(KebabCase).Init(),
-	"pointcase":          new(PointCase).Init(),
 }
 
 var Rules = map[string]Rule{
@@ -32,9 +31,6 @@ var Rules = map[string]Rule{
 
 	"kebabcase":  RulesIndex["kebabcase"],
 	"kebab-case": RulesIndex["kebabcase"],
-
-	"pointcase":  RulesIndex["pointcase"],
-	"point.case": RulesIndex["pointcase"],
 }
 
 type Rule interface {
