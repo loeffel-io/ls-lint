@@ -17,7 +17,8 @@
   "cpu": [
     "x64",
     "arm64",
-    "s390x"
+    "s390x",
+    "ppc64le"
   ],
   "keywords": [
     "linter",

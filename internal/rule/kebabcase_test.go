@@ -1,11 +1,14 @@
 package rule
 
-import "testing"
+import (
+	"errors"
+	"testing"
+)
 
 func TestKebabCase(t *testing.T) {
-	var rule = new(KebabCase).Init()
+	rule := new(KebabCase).Init()
 
-	var tests = []*ruleTest{
+	tests := []*ruleTest{
 		{value: "kebab", expected: true, err: nil},
 		{value: "kebabcase", expected: true, err: nil},
 		{value: "kebabCase", expected: false, err: nil},
@@ -19,12 +22,12 @@ func TestKebabCase(t *testing.T) {
 		{value: "kebab_test", expected: false, err: nil},
 	}
 
-	var i = 0
+	i := 0
 	for _, test := range tests {
-		res, err := rule.Validate(test.value)
+		res, err := rule.Validate(test.value, true)
 
-		if err != nil && err != test.err {
-			t.Errorf("Test %d failed with unmatched error - %s", i, err.Error())
+		if !errors.Is(err, test.err) {
+			t.Errorf("Test %d failed with unmatched error - %e", i, err)
 			return
 		}
 

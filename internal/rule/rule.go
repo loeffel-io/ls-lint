@@ -3,18 +3,21 @@ package rule
 var RulesIndex = map[string]Rule{
 	"lowercase": new(Lowercase).Init(),
 	"regex":     new(Regex).Init(),
+	"not_regex": new(NotRegex).Init(),
+	"exists":    new(Exists).Init(),
 
 	"camelcase":          new(CamelCase).Init(),
 	"pascalcase":         new(PascalCase).Init(),
 	"snakecase":          new(SnakeCase).Init(),
 	"screamingsnakecase": new(ScreamingSnakeCase).Init(),
 	"kebabcase":          new(KebabCase).Init(),
-	"pointcase":          new(PointCase).Init(),
 }
 
 var Rules = map[string]Rule{
 	"lowercase": RulesIndex["lowercase"],
 	"regex":     RulesIndex["regex"],
+	"not_regex": RulesIndex["not_regex"],
+	"exists":    RulesIndex["exists"],
 
 	"camelcase": RulesIndex["camelcase"],
 	"camelCase": RulesIndex["camelcase"],
@@ -30,9 +33,6 @@ var Rules = map[string]Rule{
 
 	"kebabcase":  RulesIndex["kebabcase"],
 	"kebab-case": RulesIndex["kebabcase"],
-
-	"pointcase":  RulesIndex["pointcase"],
-	"point.case": RulesIndex["pointcase"],
 }
 
 type Rule interface {
@@ -40,6 +40,8 @@ type Rule interface {
 	GetName() string
 	SetParameters(params []string) error
 	GetParameters() []string
-	Validate(value string) (bool, error)
+	GetExclusive() bool
+	Validate(value string, fail bool) (bool, error)
 	GetErrorMessage() string
+	Copy() Rule
 }

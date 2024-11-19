@@ -1,36 +1,51 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
 	"fmt"
-	"github.com/loeffel-io/ls-lint/v2/internal/config"
-	"github.com/loeffel-io/ls-lint/v2/internal/debug"
-	_flag "github.com/loeffel-io/ls-lint/v2/internal/flag"
-	"github.com/loeffel-io/ls-lint/v2/internal/linter"
-	"github.com/loeffel-io/ls-lint/v2/internal/rule"
-	"gopkg.in/yaml.v3"
 	"log"
 	"maps"
 	"os"
 	"runtime"
 	"slices"
 	"strings"
+
+	"github.com/loeffel-io/ls-lint/v2/internal/config"
+	"github.com/loeffel-io/ls-lint/v2/internal/debug"
+	_flag "github.com/loeffel-io/ls-lint/v2/internal/flag"
+	"github.com/loeffel-io/ls-lint/v2/internal/linter"
+	"github.com/loeffel-io/ls-lint/v2/internal/rule"
+	"gopkg.in/yaml.v3"
 )
 
 var Version = "dev"
 
 func main() {
 	var err error
-	var exitCode = 0
-	var writer = os.Stdout
-	var flags = flag.NewFlagSet(os.Args[0], flag.ExitOnError)
-	var flagWorkdir = flags.String("workdir", ".", "change working directory before executing the given subcommand")
-	var flagWarn = flags.Bool("warn", false, "write lint errors to stdout instead of stderr (exit 0)")
-	var flagDebug = flags.Bool("debug", false, "write debug informations to stdout")
-	var flagVersion = flags.Bool("version", false, "prints version information for ls-lint")
+	exitCode := 0
+	writer := os.Stdout
+	flags := flag.NewFlagSet(os.Args[0], flag.ExitOnError)
+	flagWorkdir := flags.String("workdir", ".", "change working directory before executing the given subcommand")
+	flagErrorOutputFormat := flags.String("error-output-format", "text", "use a specific error output format (text, json)")
+	flagWarn := flags.Bool("warn", false, "write lint errors to stdout instead of stderr (exit 0)")
+	flagDebug := flags.Bool("debug", false, "write debug informations to stdout")
+	flagVersion := flags.Bool("version", false, "prints version information for ls-lint")
 
 	var flagConfig _flag.Config
 	flags.Var(&flagConfig, "config", "ls-lint config file path(s)")
+
+	flags.Usage = func() {
+		if _, err = fmt.Fprintln(flags.Output(), "ls-lint [options] [file|dir]*"); err != nil {
+			log.Fatal(err)
+		}
+
+		if _, err = fmt.Fprintln(flags.Output(), "Options: "); err != nil {
+			log.Fatal(err)
+		}
+
+		flags.PrintDefaults()
+	}
 
 	if err = flags.Parse(os.Args[1:]); err != nil {
 		log.Fatal(err)
@@ -41,23 +56,28 @@ func main() {
 		os.Exit(0)
 	}
 
-	var filesystem = os.DirFS(*flagWorkdir)
-
 	if len(flagConfig) == 0 {
 		flagConfig = _flag.Config{".ls-lint.yml"}
 	}
 
-	var lslintConfig = config.NewConfig(make(config.Ls), make([]string, 0))
+	filesystem := os.DirFS(*flagWorkdir)
+	var paths map[string]struct{}
+	if len(flags.Args()[0:]) > 0 {
+		paths = make(map[string]struct{}, len(flags.Args()[0:]))
+		for _, path := range flags.Args()[0:] {
+			paths[path] = struct{}{}
+		}
+	}
+
+	lslintConfig := config.NewConfig(make(config.Ls), make([]string, 0))
 	for _, c := range flagConfig {
-		var tmpLslintConfig = config.NewConfig(nil, nil)
+		tmpLslintConfig := config.NewConfig(nil, nil)
 		var tmpConfigBytes []byte
 
-		// read file
 		if tmpConfigBytes, err = os.ReadFile(c); err != nil {
 			log.Fatal(err)
 		}
 
-		// to yaml
 		if err = yaml.Unmarshal(tmpConfigBytes, tmpLslintConfig); err != nil {
 			log.Fatal(err)
 		}
@@ -68,23 +88,19 @@ func main() {
 		lslintConfig.Ignore = slices.Compact(lslintConfig.Ignore)
 	}
 
-	// linter
-	var lslintLinter = linter.NewLinter(
+	lslintLinter := linter.NewLinter(
 		".",
 		lslintConfig,
 		debug.NewStatistic(),
 		make([]*rule.Error, 0),
 	)
 
-	// runner
-	if err = lslintLinter.Run(filesystem, *flagDebug); err != nil {
+	if err = lslintLinter.Run(filesystem, paths, *flagDebug); err != nil {
 		log.Fatal(err)
 	}
 
-	// rule errors
 	ruleErrors := lslintLinter.GetErrors()
 
-	// no ruleErrors
 	if len(ruleErrors) == 0 {
 		os.Exit(exitCode)
 	}
@@ -94,17 +110,57 @@ func main() {
 		exitCode = 1
 	}
 
-	logger := log.New(writer, "", log.LstdFlags)
+	switch *flagErrorOutputFormat {
+	case "json":
+		errIndex := make(map[string]map[string][]string, len(lslintLinter.GetErrors()))
+		for _, ruleErr := range lslintLinter.GetErrors() {
+			path := ruleErr.GetPath()
+			if path == "" {
+				path = "."
+			}
 
-	// with rule errors
-	for _, ruleErr := range lslintLinter.GetErrors() {
-		var ruleMessages []string
+			if _, ok := errIndex[path]; !ok {
+				errIndex[path] = make(map[string][]string)
+			}
 
-		for _, errRule := range ruleErr.GetRules() {
-			ruleMessages = append(ruleMessages, errRule.GetErrorMessage())
+			for _, errRule := range ruleErr.GetRules() {
+				if !ruleErr.IsDir() && errRule.GetName() == "exists" {
+					continue
+				}
+
+				errIndex[path][ruleErr.GetExt()] = append(errIndex[path][ruleErr.GetExt()], errRule.GetErrorMessage())
+			}
 		}
 
-		logger.Printf("%s failed for rules: %s", ruleErr.GetPath(), strings.Join(ruleMessages, "|"))
+		var jsonStr []byte
+		if jsonStr, err = json.Marshal(errIndex); err != nil {
+			log.Fatal(err)
+		}
+
+		if _, err = fmt.Fprintln(writer, string(jsonStr)); err != nil {
+			log.Fatal(err)
+		}
+	default:
+		for _, ruleErr := range lslintLinter.GetErrors() {
+			var ruleMessages []string
+
+			path := ruleErr.GetPath()
+			if path == "" {
+				path = "."
+			}
+
+			for _, errRule := range ruleErr.GetRules() {
+				if !ruleErr.IsDir() && errRule.GetName() == "exists" {
+					continue
+				}
+
+				ruleMessages = append(ruleMessages, errRule.GetErrorMessage())
+			}
+
+			if _, err = fmt.Fprintf(writer, "%s failed for `%s` rules: %s\n", path, ruleErr.GetExt(), strings.Join(ruleMessages, " | ")); err != nil {
+				log.Fatal(err)
+			}
+		}
 	}
 
 	os.Exit(exitCode)

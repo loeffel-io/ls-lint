@@ -7,14 +7,14 @@ An extremely fast directory and filename linter - Bring some structure to your p
 [![CI](https://github.com/loeffel-io/ls-lint/actions/workflows/bazel.yml/badge.svg?branch=master)](https://github.com/loeffel-io/ls-lint/actions/workflows/bazel.yml)
 [![Go Report Card](https://goreportcard.com/badge/github.com/loeffel-io/ls-lint)](https://goreportcard.com/report/github.com/loeffel-io/ls-lint)
 <a href="https://www.npmjs.com/package/@ls-lint/ls-lint"><img src="https://img.shields.io/npm/v/@ls-lint/ls-lint.svg?sanitize=true" alt="Version"></a>
-<a href="https://www.npmjs.com/package/@ls-lint/ls-lint"><img src="https://img.shields.io/npm/dm/@ls-lint/ls-lint?label=npm%20downloads" alt="NPM Downloads"></a>
-![npm](https://img.shields.io/npm/dt/@ls-lint/ls-lint?label=npm%20downloads%20total)
+![npm](https://img.shields.io/npm/dy/@ls-lint/ls-lint?label=npm%20downloads)
+![npm](https://badgen.net/static/npm%20downloads%20total/6M+/green)
 <a href="https://www.npmjs.com/package/@ls-lint/ls-lint"><img src="https://img.shields.io/npm/l/@ls-lint/ls-lint.svg?sanitize=true" alt="License"></a>
 
 - Minimal setup with simple rules managed in one single or multiple `.ls-lint.yml` files
 - Works for directory and file names - all extensions supported - full unicode support
 - Incredibly fast - lints thousands of files and directories in milliseconds
-- Support for Windows, MacOS and Linux + NPM Package + [GitHub Action](https://github.com/ls-lint/action) & Docker Image
+- Support for Windows, MacOS and Linux + NPM Package + [GitHub Action](https://github.com/ls-lint/action) + [Homebrew](https://formulae.brew.sh/formula/ls-lint) + Docker
 - Almost zero third-party dependencies (only [go-yaml](https://github.com/go-yaml/yaml)
   and [doublestar](https://github.com/bmatcuk/doublestar))
 

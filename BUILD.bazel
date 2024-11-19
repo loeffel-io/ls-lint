@@ -1,8 +1,16 @@
-load("@bazel_gazelle//:def.bzl", "gazelle")
-load("@io_bazel_rules_go//go:def.bzl", "TOOLS_NOGO", "nogo")
+load("@gazelle//:def.bzl", "gazelle")
+load("@rules_go//go:def.bzl", "nogo")
 
 # gazelle:prefix github.com/loeffel-io/ls-lint/v2
+# gazelle:exclude vendor
+# gazelle:exclude .idea
 gazelle(name = "gazelle")
+
+gazelle(
+    name = "gazelle_fix_diff",
+    command = "fix",
+    extra_args = ["--mode=diff"],
+)
 
 config_setting(
     name = "darwin_arm64",
@@ -17,7 +25,7 @@ nogo(
     name = "nogo",
     config = ":nogo.json",
     visibility = ["//visibility:public"],
-    deps = TOOLS_NOGO + [],
+    deps = [],  # TOOLS_NOGO: https://github.com/bazel-contrib/rules_go/issues/3924
 )
 
 exports_files(

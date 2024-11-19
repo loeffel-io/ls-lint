@@ -1,14 +1,15 @@
-load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
+load("@rules_go//go:def.bzl", "go_library", "go_test")
 
 go_library(
     name = "rule",
     srcs = [
         "camelcase.go",
         "error.go",
+        "exists.go",
         "kebabcase.go",
         "lowercase.go",
+        "not_regex.go",
         "pascalcase.go",
-        "pointcase.go",
         "regex.go",
         "rule.go",
         "screamingsnakecase.go",
@@ -22,10 +23,11 @@ go_test(
     name = "rule_test",
     srcs = [
         "camelcase_test.go",
+        "exists_test.go",
         "kebabcase_test.go",
         "lowercase_test.go",
+        "not_regex_test.go",
         "pascalcase_test.go",
-        "pointcase_test.go",
         "regex_test.go",
         "rule_test.go",
         "screamingsnakecase_test.go",
