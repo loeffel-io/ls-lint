@@ -3,6 +3,7 @@ package rule
 var RulesIndex = map[string]Rule{
 	"lowercase": new(Lowercase).Init(),
 	"regex":     new(Regex).Init(),
+	"not_regex": new(NotRegex).Init(),
 	"exists":    new(Exists).Init(),
 
 	"camelcase":          new(CamelCase).Init(),
@@ -15,6 +16,7 @@ var RulesIndex = map[string]Rule{
 var Rules = map[string]Rule{
 	"lowercase": RulesIndex["lowercase"],
 	"regex":     RulesIndex["regex"],
+	"not_regex": RulesIndex["not_regex"],
 	"exists":    RulesIndex["exists"],
 
 	"camelcase": RulesIndex["camelcase"],
