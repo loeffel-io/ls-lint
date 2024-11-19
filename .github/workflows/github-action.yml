@@ -5,4 +5,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: ls-lint/action@v2.3.0-beta.2
+      - uses: ls-lint/action@v2.3.0-beta.3
