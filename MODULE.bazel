@@ -1,6 +1,90 @@
-###############################################################################
-# Bazel now uses Bzlmod by default to manage external dependencies.
-# Please consider migrating your external dependencies from WORKSPACE to MODULE.bazel.
-#
-# For more details, please check https://github.com/bazelbuild/bazel/issues/18958
-###############################################################################
+bazel_dep(name = "platforms", version = "0.0.10")
+bazel_dep(name = "rules_go", version = "0.50.1")
+bazel_dep(name = "gazelle", version = "0.40.0")
+bazel_dep(name = "rules_pkg", version = "1.0.1")
+bazel_dep(name = "aspect_bazel_lib", version = "2.9.4")
+bazel_dep(name = "aspect_rules_js", version = "2.1.0")
+
+####################################################################
+# rules_go #########################################################
+####################################################################
+
+go_sdk = use_extension("@rules_go//go:extensions.bzl", "go_sdk")
+go_sdk.download(version = "1.23.3")
+go_sdk.nogo(nogo = "//:nogo")
+
+####################################################################
+# gazelle ##########################################################
+# upgrade with bazel run @rules_go//go mod tidy && bazel mod tidy ##
+####################################################################
+
+go_deps = use_extension("@gazelle//:extensions.bzl", "go_deps")
+go_deps.from_file(go_mod = "//:go.mod")
+use_repo(
+    go_deps,
+    "com_github_bmatcuk_doublestar_v4",
+    "in_gopkg_yaml_v3",
+    "org_golang_x_sync",
+)
+
+####################################################################
+# rules_js #########################################################
+####################################################################
+
+npm = use_extension("@aspect_rules_js//npm:extensions.bzl", "npm", dev_dependency = True)
+npm.npm_translate_lock(
+    name = "npm",
+    npmrc = "//deployments/npm:.npmrc",
+    pnpm_lock = "//deployments/npm:pnpm-lock.yaml",
+)
+use_repo(npm, "npm")
+
+####################################################################
+# github cli #######################################################
+####################################################################
+
+http_archive = use_repo_rule("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+
+http_archive(
+    name = "com_github_cli_cli_darwin_arm64",
+    build_file_content = """exports_files(glob(["bin/*"]))""",
+    sha256 = "fdb77f31b8a6dd23c3fd858758d692a45f7fc76383e37d475bdcae038df92afc",
+    strip_prefix = "gh_2.62.0_macOS_arm64",
+    urls = [
+        "https://github.com/cli/cli/releases/download/v2.62.0/gh_2.62.0_macOS_arm64.zip",
+    ],
+)
+
+http_archive(
+    name = "com_github_cli_cli_linux_amd64",
+    build_file_content = """exports_files(glob(["bin/*"]))""",
+    sha256 = "41c8b0698ad3003cb5c44bde672a1ffd5f818595abd80162fbf8cc999418446a",
+    strip_prefix = "gh_2.62.0_linux_amd64",
+    urls = [
+        "https://github.com/cli/cli/releases/download/v2.62.0/gh_2.62.0_linux_amd64.tar.gz",
+    ],
+)
+
+####################################################################
+# coreutils (sha256) ###############################################
+####################################################################
+
+http_archive(
+    name = "com_github_uutils_coreutils_darwin_arm64",
+    build_file_content = """exports_files(["coreutils"])""",
+    sha256 = "bbd9b97fc38b9e8841feb93b5684f3587afb3d651a1cc91e46d00b1b0bcf28f6",
+    strip_prefix = "coreutils-0.0.28-aarch64-apple-darwin",
+    urls = [
+        "https://github.com/uutils/coreutils/releases/download/0.0.28/coreutils-0.0.28-aarch64-apple-darwin.tar.gz",
+    ],
+)
+
+http_archive(
+    name = "com_github_uutils_coreutils_linux_amd64",
+    build_file_content = """exports_files(["coreutils"])""",
+    sha256 = "e22a4a9179bbde667865917dc1399e4686a18159da35be6c1b78582c52a373a2",
+    strip_prefix = "coreutils-0.0.28-x86_64-unknown-linux-gnu",
+    urls = [
+        "https://github.com/uutils/coreutils/releases/download/0.0.28/coreutils-0.0.28-x86_64-unknown-linux-gnu.tar.gz",
+    ],
+)
