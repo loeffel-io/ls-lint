@@ -1,3 +1,4 @@
+load("@aspect_bazel_lib//lib:expand_template.bzl", "expand_template")
 load("@rules_oci//oci:defs.bzl", "oci_image", "oci_image_index", "oci_push")
 
 oci_image(
@@ -42,10 +43,20 @@ oci_image_index(
     ],
 )
 
+expand_template(
+    name = "stamped",
+    out = "_stamped.tags.txt",
+    stamp_substitutions = {"0.0.0": "{{STABLE_GIT_TAG}}"},
+    template = [
+        "0.0.0",
+        "latest",
+    ],
+)
+
 oci_push(
     name = "image_push",
     image = ":image",
-    remote_tags = ["latest"],
+    remote_tags = ":stamped",
     repository = "index.docker.io/lslintorg/ls-lint",
 )
 
