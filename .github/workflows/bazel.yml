@@ -9,7 +9,7 @@ jobs:
       env:
         NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         GOOGLE_BUCKET: https://storage.googleapis.com/ls-lint-bazel
-        BUILD_USER: nonroot # bazel user
+        BUILD_USER: non-root # bazel user
     steps:
       - run: set -eu
       - uses: actions/checkout@v4
@@ -33,7 +33,7 @@ jobs:
       STABLE_GIT_TAG: ${{ github.ref_name }}
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       GOOGLE_BUCKET: https://storage.googleapis.com/ls-lint-bazel
-      BUILD_USER: nonroot
+      BUILD_USER: non-root
     steps:
       - run: set -eu
       - uses: actions/checkout@v4
