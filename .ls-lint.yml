@@ -1,12 +1,11 @@
 ls:
   .dir: snake_case
-  .json: snake_case
-  .bzl: snake_case
-  .sh: snake_case
+  .*: snake_case
+  .*.*: snake_case
+  .png: kebab-case
+  .md: SCREAMING_SNAKE_CASE
   .bazel: SCREAMING_SNAKE_CASE
-  .go: snake_case
-  .yaml: snake_case
-  .js: snake_case
+  .bazel.lock: SCREAMING_SNAKE_CASE
 
 ignore:
   - .git
@@ -16,3 +15,4 @@ ignore:
   - bazel-*
   - gha-*
   - deployments/npm/pnpm-lock.yaml
+  - deployments/docker
