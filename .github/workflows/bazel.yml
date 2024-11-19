@@ -5,10 +5,11 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: gcr.io/bazel-public/bazel@sha256:35c128509642f76fede4ade16e8c829781048f6a62a7b2d9cfbabd45246af81a
-      # options: --user root # ref: https://docs.github.com/en/actions/creating-actions/dockerfile-support-for-github-actions#user
+      options: --user root # ref: https://docs.github.com/en/actions/creating-actions/dockerfile-support-for-github-actions#user
       env:
         NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         GOOGLE_BUCKET: https://storage.googleapis.com/ls-lint-bazel
+        BUILD_USER: nonroot # bazel user
     steps:
       - run: set -eu
       - uses: actions/checkout@v4
@@ -26,12 +27,13 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: gcr.io/bazel-public/bazel@sha256:35c128509642f76fede4ade16e8c829781048f6a62a7b2d9cfbabd45246af81a
-      # options: --user nonroot # ref: https://docs.github.com/en/actions/creating-actions/dockerfile-support-for-github-actions#user
+      options: --user root # ref: https://docs.github.com/en/actions/creating-actions/dockerfile-support-for-github-actions#user
     env:
       GH_TOKEN: ${{ github.token }}
       STABLE_GIT_TAG: ${{ github.ref_name }}
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       GOOGLE_BUCKET: https://storage.googleapis.com/ls-lint-bazel
+      BUILD_USER: nonroot
     steps:
       - run: set -eu
       - uses: actions/checkout@v4
