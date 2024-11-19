@@ -34,11 +34,11 @@ func (rule *NotRegex) SetParameters(params []string) error {
 	defer rule.Unlock()
 
 	if len(params) == 0 {
-		return fmt.Errorf("regex pattern not exists")
+		return fmt.Errorf("not_regex pattern not exists")
 	}
 
 	if params[0] == "" {
-		return fmt.Errorf("regex pattern is empty")
+		return fmt.Errorf("not_regex pattern is empty")
 	}
 
 	rule.regexPattern = params[0]
@@ -77,7 +77,7 @@ func (rule *NotRegex) Copy() Rule {
 	rule.RLock()
 	defer rule.RUnlock()
 
-	c := new(Regex)
+	c := new(NotRegex)
 	c.Init()
 	c.regexPattern = rule.regexPattern
 
