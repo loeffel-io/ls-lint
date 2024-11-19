@@ -1,9 +1,9 @@
-bazel_dep(name = "platforms", version = "0.0.10")
-bazel_dep(name = "rules_go", version = "0.50.1")
-bazel_dep(name = "gazelle", version = "0.40.0")
-bazel_dep(name = "rules_pkg", version = "1.0.1")
-bazel_dep(name = "aspect_bazel_lib", version = "2.9.4")
-bazel_dep(name = "aspect_rules_js", version = "2.1.0")
+bazel_dep(name = "platforms", version = "0.0.10", dev_dependency = True)
+bazel_dep(name = "rules_go", version = "0.50.1", dev_dependency = True)
+bazel_dep(name = "gazelle", version = "0.40.0", dev_dependency = True)
+bazel_dep(name = "rules_pkg", version = "1.0.1", dev_dependency = True)
+bazel_dep(name = "aspect_bazel_lib", version = "2.9.4", dev_dependency = True)
+bazel_dep(name = "aspect_rules_js", version = "2.1.0", dev_dependency = True)
 
 ####################################################################
 # rules_go #########################################################
@@ -38,6 +38,18 @@ npm.npm_translate_lock(
     pnpm_lock = "//deployments/npm:pnpm-lock.yaml",
 )
 use_repo(npm, "npm")
+
+####################################################################
+# rules_python #####################################################
+####################################################################
+
+bazel_dep(name = "rules_python", version = "0.40.0")
+
+python = use_extension("@rules_python//python/extensions:python.bzl", "python")
+python.toolchain(
+    ignore_root_user_error = True,
+    python_version = "3.13",
+)
 
 ####################################################################
 # github cli #######################################################
