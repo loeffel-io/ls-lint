@@ -42,7 +42,6 @@ npm_package(
         ":package_files",
         ":package_files_bin",
     ],
-    publishable = True,
     args = [
         "--tag beta",
         "--no-git-checks",
@@ -52,4 +51,5 @@ npm_package(
         "deployments/npm/**",
         "**",  # LICENSE + README.md
     ],
+    publishable = True,
 )
