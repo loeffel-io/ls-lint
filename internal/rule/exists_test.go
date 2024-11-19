@@ -9,7 +9,7 @@ import (
 )
 
 func TestExists_GetParameters(t *testing.T) {
-	var tests = []*struct {
+	tests := []*struct {
 		params   []string
 		expected []string
 		err      error
@@ -23,9 +23,9 @@ func TestExists_GetParameters(t *testing.T) {
 		{params: []string{"1-2342323423234"}, expected: []string{"0"}, err: strconv.ErrRange},
 	}
 
-	var i = 0
+	i := 0
 	for _, test := range tests {
-		var rule = new(Exists).Init()
+		rule := new(Exists).Init()
 
 		err := rule.SetParameters(test.params)
 		if !errors.Is(err, test.err) {
@@ -44,7 +44,7 @@ func TestExists_GetParameters(t *testing.T) {
 }
 
 func TestExists_Validate(t *testing.T) {
-	var tests = []*struct {
+	tests := []*struct {
 		rule  *Exists
 		fail  bool
 		count uint16
@@ -57,9 +57,9 @@ func TestExists_Validate(t *testing.T) {
 		{rule: &Exists{name: "exists", exclusive: true, min: 3, max: 6, count: 6, RWMutex: new(sync.RWMutex)}, fail: false, count: 7, valid: true, err: nil},
 	}
 
-	var i = 0
+	i := 0
 	for _, test := range tests {
-		var valid, err = test.rule.Validate("", test.fail)
+		valid, err := test.rule.Validate("", test.fail)
 
 		if !errors.Is(err, test.err) {
 			t.Errorf("Test %d failed with unmatched error - %e", i, err)

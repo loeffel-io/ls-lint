@@ -76,7 +76,7 @@ func (rule *Regex) Copy() Rule {
 	rule.RLock()
 	defer rule.RUnlock()
 
-	var c = new(Regex)
+	c := new(Regex)
 	c.Init()
 	c.regexPattern = rule.regexPattern
 

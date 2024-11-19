@@ -6,9 +6,9 @@ import (
 )
 
 func TestPascalCase(t *testing.T) {
-	var rule = new(PascalCase).Init()
+	rule := new(PascalCase).Init()
 
-	var tests = []*ruleTest{
+	tests := []*ruleTest{
 		{value: "pascal", expected: false, err: nil},
 		{value: "pascalcase", expected: false, err: nil},
 		{value: "pascalCase", expected: false, err: nil},
@@ -23,7 +23,7 @@ func TestPascalCase(t *testing.T) {
 		{value: "pascal-case", expected: false, err: nil},
 	}
 
-	var i = 0
+	i := 0
 	for _, test := range tests {
 		res, err := rule.Validate(test.value, true)
 

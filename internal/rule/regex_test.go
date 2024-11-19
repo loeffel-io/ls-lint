@@ -6,7 +6,7 @@ import (
 )
 
 func TestRegex(t *testing.T) {
-	var tests = []*struct {
+	tests := []*struct {
 		params   []string
 		value    string
 		expected bool
@@ -19,9 +19,9 @@ func TestRegex(t *testing.T) {
 		{params: []string{"[a-z\\-]+"}, value: "google.test", expected: false, err: nil},
 	}
 
-	var i = 0
+	i := 0
 	for _, test := range tests {
-		var rule = new(Regex).Init()
+		rule := new(Regex).Init()
 
 		// parameters
 		err := rule.SetParameters(test.params)

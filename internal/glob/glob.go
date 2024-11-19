@@ -1,11 +1,12 @@
 package glob
 
 import (
+	"io/fs"
+	"strings"
+
 	"github.com/bmatcuk/doublestar/v4"
 	"github.com/loeffel-io/ls-lint/v2/internal/config"
 	"github.com/loeffel-io/ls-lint/v2/internal/rule"
-	"io/fs"
-	"strings"
 )
 
 func Index(filesystem fs.FS, index config.RuleIndex, files bool) (err error) {

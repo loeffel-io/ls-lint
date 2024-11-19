@@ -6,15 +6,15 @@ import (
 )
 
 func TestLowercase(t *testing.T) {
-	var rule = new(Lowercase).Init()
+	rule := new(Lowercase).Init()
 
-	var tests = []*ruleTest{
+	tests := []*ruleTest{
 		{value: "abC", expected: false, err: nil},
 		{value: "abc", expected: true, err: nil},
 		{value: "abc-1", expected: true, err: nil},
 	}
 
-	var i = 0
+	i := 0
 	for _, test := range tests {
 		res, err := rule.Validate(test.value, true)
 

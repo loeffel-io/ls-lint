@@ -4,32 +4,33 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
-	"github.com/loeffel-io/ls-lint/v2/internal/config"
-	"github.com/loeffel-io/ls-lint/v2/internal/debug"
-	_flag "github.com/loeffel-io/ls-lint/v2/internal/flag"
-	"github.com/loeffel-io/ls-lint/v2/internal/linter"
-	"github.com/loeffel-io/ls-lint/v2/internal/rule"
-	"gopkg.in/yaml.v3"
 	"log"
 	"maps"
 	"os"
 	"runtime"
 	"slices"
 	"strings"
+
+	"github.com/loeffel-io/ls-lint/v2/internal/config"
+	"github.com/loeffel-io/ls-lint/v2/internal/debug"
+	_flag "github.com/loeffel-io/ls-lint/v2/internal/flag"
+	"github.com/loeffel-io/ls-lint/v2/internal/linter"
+	"github.com/loeffel-io/ls-lint/v2/internal/rule"
+	"gopkg.in/yaml.v3"
 )
 
 var Version = "dev"
 
 func main() {
 	var err error
-	var exitCode = 0
-	var writer = os.Stdout
-	var flags = flag.NewFlagSet(os.Args[0], flag.ExitOnError)
-	var flagWorkdir = flags.String("workdir", ".", "change working directory before executing the given subcommand")
-	var flagErrorOutputFormat = flags.String("error-output-format", "text", "use a specific error output format (text, json)")
-	var flagWarn = flags.Bool("warn", false, "write lint errors to stdout instead of stderr (exit 0)")
-	var flagDebug = flags.Bool("debug", false, "write debug informations to stdout")
-	var flagVersion = flags.Bool("version", false, "prints version information for ls-lint")
+	exitCode := 0
+	writer := os.Stdout
+	flags := flag.NewFlagSet(os.Args[0], flag.ExitOnError)
+	flagWorkdir := flags.String("workdir", ".", "change working directory before executing the given subcommand")
+	flagErrorOutputFormat := flags.String("error-output-format", "text", "use a specific error output format (text, json)")
+	flagWarn := flags.Bool("warn", false, "write lint errors to stdout instead of stderr (exit 0)")
+	flagDebug := flags.Bool("debug", false, "write debug informations to stdout")
+	flagVersion := flags.Bool("version", false, "prints version information for ls-lint")
 
 	var flagConfig _flag.Config
 	flags.Var(&flagConfig, "config", "ls-lint config file path(s)")
@@ -59,7 +60,7 @@ func main() {
 		flagConfig = _flag.Config{".ls-lint.yml"}
 	}
 
-	var filesystem = os.DirFS(*flagWorkdir)
+	filesystem := os.DirFS(*flagWorkdir)
 	var paths map[string]struct{}
 	if len(flags.Args()[0:]) > 0 {
 		paths = make(map[string]struct{}, len(flags.Args()[0:]))
@@ -68,9 +69,9 @@ func main() {
 		}
 	}
 
-	var lslintConfig = config.NewConfig(make(config.Ls), make([]string, 0))
+	lslintConfig := config.NewConfig(make(config.Ls), make([]string, 0))
 	for _, c := range flagConfig {
-		var tmpLslintConfig = config.NewConfig(nil, nil)
+		tmpLslintConfig := config.NewConfig(nil, nil)
 		var tmpConfigBytes []byte
 
 		if tmpConfigBytes, err = os.ReadFile(c); err != nil {
@@ -87,7 +88,7 @@ func main() {
 		lslintConfig.Ignore = slices.Compact(lslintConfig.Ignore)
 	}
 
-	var lslintLinter = linter.NewLinter(
+	lslintLinter := linter.NewLinter(
 		".",
 		lslintConfig,
 		debug.NewStatistic(),
@@ -111,7 +112,7 @@ func main() {
 
 	switch *flagErrorOutputFormat {
 	case "json":
-		var errIndex = make(map[string]map[string][]string, len(lslintLinter.GetErrors()))
+		errIndex := make(map[string]map[string][]string, len(lslintLinter.GetErrors()))
 		for _, ruleErr := range lslintLinter.GetErrors() {
 			path := ruleErr.GetPath()
 			if path == "" {

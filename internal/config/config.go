@@ -2,14 +2,17 @@ package config
 
 import (
 	"fmt"
-	"github.com/loeffel-io/ls-lint/v2/internal/rule"
 	"reflect"
 	"strings"
 	"sync"
+
+	"github.com/loeffel-io/ls-lint/v2/internal/rule"
 )
 
-type Ls map[string]interface{}
-type RuleIndex map[string]map[string][]rule.Rule
+type (
+	Ls        map[string]interface{}
+	RuleIndex map[string]map[string][]rule.Rule
+)
 
 const (
 	sep = string('/')
@@ -45,7 +48,7 @@ func (config *Config) GetIgnore() []string {
 }
 
 func (config *Config) GetIgnoreIndex() map[string]bool {
-	var ignoreIndex = make(map[string]bool)
+	ignoreIndex := make(map[string]bool)
 
 	for _, path := range config.GetIgnore() {
 		ignoreIndex[path] = true
@@ -73,7 +76,7 @@ func (config *Config) GetConfig(index RuleIndex, path string) (string, map[strin
 	dirs := strings.Split(path, sep)
 
 	for i := len(dirs); i >= 0; i-- {
-		var dir = strings.Join(dirs[:i], sep)
+		dir := strings.Join(dirs[:i], sep)
 		if find, exists := index[dir]; exists {
 			return dir, find
 		}
@@ -83,7 +86,7 @@ func (config *Config) GetConfig(index RuleIndex, path string) (string, map[strin
 }
 
 func (config *Config) GetIndex(list Ls) (RuleIndex, error) {
-	var index = make(RuleIndex)
+	index := make(RuleIndex)
 
 	if err := config.walkIndex(index, "", list); err != nil {
 		return nil, err
@@ -109,7 +112,7 @@ func (config *Config) walkIndex(index RuleIndex, key string, list Ls) error {
 					return err
 				}
 			case false:
-				var keyCombination = fmt.Sprintf("%s%s%s", key, sep, k)
+				keyCombination := fmt.Sprintf("%s%s%s", key, sep, k)
 				if err := config.walkIndex(index, keyCombination, v.(Ls)); err != nil {
 					return err
 				}
