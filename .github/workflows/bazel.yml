@@ -3,23 +3,37 @@ on: [ push, pull_request ]
 
 jobs:
   build:
+    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     container:
       image: gcr.io/bazel-public/bazel@sha256:35c128509642f76fede4ade16e8c829781048f6a62a7b2d9cfbabd45246af81a
-      options: --user root # ref: https://docs.github.com/en/actions/creating-actions/dockerfile-support-for-github-actions#user
+      options: --user root
       env:
         NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         GOOGLE_BUCKET: https://storage.googleapis.com/ls-lint-bazel
     steps:
       - run: set -eu
       - uses: actions/checkout@v4
-      - if: github.event.pull_request.head.repo.full_name == github.repository # only run on prs from the same repo in case of forks to avoid leaking secrets
-        uses: google-github-actions/auth@v2
+      - uses: google-github-actions/auth@v2
         with:
           credentials_json: ${{ secrets.GOOGLE_CREDENTIALS }}
       - run: bazel run --remote_cache=$GOOGLE_BUCKET --google_default_credentials //:gazelle_fix_diff
       - run: bazel test --remote_cache=$GOOGLE_BUCKET --google_default_credentials //...
       - run: bazel build --remote_cache=$GOOGLE_BUCKET --google_default_credentials //...
+      - run: bazel run //cmd/ls_lint:ls-lint -- --config ${PWD}/.ls-lint.yml --workdir ${PWD}
+
+  build-no-cache: # unauthenticated contributors
+    if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository
+    runs-on: ubuntu-latest
+    container:
+      image: gcr.io/bazel-public/bazel@sha256:35c128509642f76fede4ade16e8c829781048f6a62a7b2d9cfbabd45246af81a
+      options: --user root
+    steps:
+      - run: set -eu
+      - uses: actions/checkout@v4
+      - run: bazel run //:gazelle_fix_diff
+      - run: bazel test //...
+      - run: bazel build //...
       - run: bazel run //cmd/ls_lint:ls-lint -- --config ${PWD}/.ls-lint.yml --workdir ${PWD}
 
   release:
