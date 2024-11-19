@@ -3,7 +3,7 @@ on: [ push, pull_request ]
 
 jobs:
   build:
-    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
+    if: github.event_name == 'push'
     runs-on: ubuntu-latest
     container:
       image: gcr.io/bazel-public/bazel@sha256:35c128509642f76fede4ade16e8c829781048f6a62a7b2d9cfbabd45246af81a
@@ -23,7 +23,7 @@ jobs:
       - run: bazel run //cmd/ls_lint:ls-lint -- --config ${PWD}/.ls-lint.yml --workdir ${PWD}
 
   build-no-cache: # unauthenticated contributors
-    if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     container:
       image: gcr.io/bazel-public/bazel@sha256:35c128509642f76fede4ade16e8c829781048f6a62a7b2d9cfbabd45246af81a
