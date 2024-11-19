@@ -1,4 +1,3 @@
-load("@rules_pkg//pkg:tar.bzl", "pkg_tar")
 load("@rules_oci//oci:defs.bzl", "oci_image", "oci_image_index", "oci_push")
 
 oci_image(
@@ -10,10 +9,26 @@ oci_image(
 )
 
 oci_image(
-    name = "image_linux_arm64",
-    base = "@distroless_base_linux_arm64//:distroless_base_linux_arm64",
+    name = "image_linux_arm64_v8",
+    base = "@distroless_base_linux_arm64_v8//:distroless_base_linux_arm64_v8",
     entrypoint = ["/ls-lint-linux-arm64"],
     tars = ["//cmd/ls_lint:ls-lint-linux-arm64-pkg"],
+    workdir = "/data",
+)
+
+oci_image(
+    name = "image_linux_s390x",
+    base = "@distroless_base_linux_s390x//:distroless_base_linux_s390x",
+    entrypoint = ["/ls-lint-linux-s390x"],
+    tars = ["//cmd/ls_lint:ls-lint-linux-s390x-pkg"],
+    workdir = "/data",
+)
+
+oci_image(
+    name = "image_linux_ppc64le",
+    base = "@distroless_base_linux_ppc64le//:distroless_base_linux_ppc64le",
+    entrypoint = ["/ls-lint-linux-ppc64le"],
+    tars = ["//cmd/ls_lint:ls-lint-linux-ppc64le-pkg"],
     workdir = "/data",
 )
 
@@ -21,7 +36,9 @@ oci_image_index(
     name = "image",
     images = [
         ":image_linux_amd64",
-        ":image_linux_arm64",
+        ":image_linux_arm64_v8",
+        ":image_linux_s390x",
+        ":image_linux_ppc64le",
     ],
 )
 
@@ -32,16 +49,16 @@ oci_push(
     repository = "index.docker.io/lslintorg/ls-lint",
 )
 
-sh_binary(
-    name = "image_auth",
-    srcs = ["auth"],
-    data = [
-        "@oci_crane_toolchains//:current_toolchain",
-    ],
-    env = {
-        "DOCKER_CONFIG": "deployments/docker",
-    },
-    toolchains = [
-        "@oci_crane_toolchains//:current_toolchain",
-    ],
-)
+# sh_binary(
+#     name = "image_auth",
+#     srcs = ["auth"],
+#     data = [
+#         "@oci_crane_toolchains//:current_toolchain",
+#     ],
+#     env = {
+#         "DOCKER_CONFIG": "deployments/docker",
+#     },
+#     toolchains = [
+#         "@oci_crane_toolchains//:current_toolchain",
+#     ],
+# )
