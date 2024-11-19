@@ -145,9 +145,9 @@ http_archive(
 http_archive(
     name = "com_github_uutils_coreutils_linux_amd64",
     build_file_content = """exports_files(["coreutils"])""",
-    sha256 = "02ab80c97c7849dc12b30ea21b3c06cf238563e9dbd72343373275871f4cb043",
-    strip_prefix = "coreutils-0.0.27-x86_64-unknown-linux-gnu",
+    sha256 = "e22a4a9179bbde667865917dc1399e4686a18159da35be6c1b78582c52a373a2",
+    strip_prefix = "coreutils-0.0.28-x86_64-unknown-linux-gnu",
     urls = [
-        "https://github.com/uutils/coreutils/releases/download/0.0.27/coreutils-0.0.27-x86_64-unknown-linux-gnu.tar.gz",
+        "https://github.com/uutils/coreutils/releases/download/0.0.28/coreutils-0.0.28-x86_64-unknown-linux-gnu.tar.gz",
     ],
 )
