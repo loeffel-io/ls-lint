@@ -4,7 +4,7 @@ bazel_dep(name = "gazelle", version = "0.40.0", dev_dependency = True)
 bazel_dep(name = "rules_pkg", version = "1.0.1", dev_dependency = True)
 bazel_dep(name = "aspect_bazel_lib", version = "2.9.4", dev_dependency = True)
 bazel_dep(name = "aspect_rules_js", version = "2.1.0", dev_dependency = True)
-bazel_dep(name = "rules_oci", version = "2.0.1", dev_dependency = True)
+bazel_dep(name = "rules_oci", version = "1.7.4", dev_dependency = True)
 
 ####################################################################
 # rules_go #########################################################
@@ -69,6 +69,9 @@ oci.pull(
         "linux/s390x",
     ],
 )
+oci.toolchains(
+    crane_version = "v0.18.0",
+)
 use_repo(
     oci,
     "distroless_base",
@@ -76,6 +79,7 @@ use_repo(
     "distroless_base_linux_arm64_v8",
     "distroless_base_linux_ppc64le",
     "distroless_base_linux_s390x",
+    "oci_crane_toolchains",
 )
 
 ####################################################################

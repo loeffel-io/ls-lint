@@ -60,16 +60,16 @@ oci_push(
     repository = "index.docker.io/lslintorg/ls-lint",
 )
 
-# sh_binary(
-#     name = "image_auth",
-#     srcs = ["auth"],
-#     data = [
-#         "@oci_crane_toolchains//:current_toolchain",
-#     ],
-#     env = {
-#         "DOCKER_CONFIG": "deployments/docker",
-#     },
-#     toolchains = [
-#         "@oci_crane_toolchains//:current_toolchain",
-#     ],
-# )
+sh_binary(
+    name = "image_auth",
+    srcs = ["auth"],
+    args = [
+        "$(CRANE_BIN)",
+    ],
+    data = [
+        "@oci_crane_toolchains//:current_toolchain",
+    ],
+    toolchains = [
+        "@oci_crane_toolchains//:current_toolchain",
+    ],
+)
