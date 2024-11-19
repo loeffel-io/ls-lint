@@ -6,9 +6,9 @@ import (
 )
 
 func TestCamelCase(t *testing.T) {
-	var rule = new(CamelCase).Init()
+	rule := new(CamelCase).Init()
 
-	var tests = []*ruleTest{
+	tests := []*ruleTest{
 		{value: "camel", expected: true, err: nil},
 		{value: "camelcase", expected: true, err: nil},
 		{value: "camelCase", expected: true, err: nil},
@@ -24,7 +24,7 @@ func TestCamelCase(t *testing.T) {
 		{value: "camel.case", expected: false, err: nil},
 	}
 
-	var i = 0
+	i := 0
 	for _, test := range tests {
 		res, err := rule.Validate(test.value, true)
 

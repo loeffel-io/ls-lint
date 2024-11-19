@@ -54,7 +54,7 @@ func (rule *Exists) SetParameters(params []string) error {
 	}
 
 	// exists:1
-	var split = strings.Split(params[0], "-")
+	split := strings.Split(params[0], "-")
 	if len(split) == 1 {
 		var value int64
 		var err error
@@ -150,7 +150,7 @@ func (rule *Exists) Copy() Rule {
 	rule.RLock()
 	defer rule.RUnlock()
 
-	var c = new(Exists)
+	c := new(Exists)
 	c.Init()
 	c.min = rule.min
 	c.max = rule.max

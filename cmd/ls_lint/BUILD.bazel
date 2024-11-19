@@ -1,4 +1,4 @@
-load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library")
+load("@rules_go//go:def.bzl", "go_binary", "go_library")
 load("@rules_pkg//pkg:tar.bzl", "pkg_tar")
 load(":target.bzl", "targets")
 
@@ -21,6 +21,7 @@ go_binary(
     name = "ls-lint",
     embed = [":ls_lint_lib"],
     pure = "on",
+    static = "on",
     visibility = ["//visibility:public"],
     x_defs = {"Version": "{STABLE_GIT_TAG}"},
 )
@@ -32,6 +33,7 @@ go_binary(
         goarch = goarch,
         goos = goos,
         pure = "on",
+        static = "on",
         visibility = ["//visibility:public"],
         x_defs = {"Version": "{STABLE_GIT_TAG}"},
     )
