@@ -1,0 +1,75 @@
+load("@aspect_bazel_lib//lib:expand_template.bzl", "expand_template")
+load("@rules_oci//oci:defs.bzl", "oci_image", "oci_image_index", "oci_push")
+
+oci_image(
+    name = "image_linux_amd64",
+    base = "@distroless_base_linux_amd64//:distroless_base_linux_amd64",
+    entrypoint = ["/ls-lint-linux-amd64"],
+    tars = ["//cmd/ls_lint:ls-lint-linux-amd64-pkg"],
+    workdir = "/data",
+)
+
+oci_image(
+    name = "image_linux_arm64_v8",
+    base = "@distroless_base_linux_arm64_v8//:distroless_base_linux_arm64_v8",
+    entrypoint = ["/ls-lint-linux-arm64"],
+    tars = ["//cmd/ls_lint:ls-lint-linux-arm64-pkg"],
+    workdir = "/data",
+)
+
+oci_image(
+    name = "image_linux_s390x",
+    base = "@distroless_base_linux_s390x//:distroless_base_linux_s390x",
+    entrypoint = ["/ls-lint-linux-s390x"],
+    tars = ["//cmd/ls_lint:ls-lint-linux-s390x-pkg"],
+    workdir = "/data",
+)
+
+oci_image(
+    name = "image_linux_ppc64le",
+    base = "@distroless_base_linux_ppc64le//:distroless_base_linux_ppc64le",
+    entrypoint = ["/ls-lint-linux-ppc64le"],
+    tars = ["//cmd/ls_lint:ls-lint-linux-ppc64le-pkg"],
+    workdir = "/data",
+)
+
+oci_image_index(
+    name = "image",
+    images = [
+        ":image_linux_amd64",
+        ":image_linux_arm64_v8",
+        ":image_linux_s390x",
+        ":image_linux_ppc64le",
+    ],
+)
+
+expand_template(
+    name = "stamped",
+    out = "_stamped.tags.txt",
+    stamp_substitutions = {"0.0.0": "{{STABLE_GIT_TAG}}"},
+    template = [
+        "0.0.0",
+        "latest",
+    ],
+)
+
+oci_push(
+    name = "image_push",
+    image = ":image",
+    remote_tags = ":stamped",
+    repository = "index.docker.io/lslintorg/ls-lint",
+)
+
+sh_binary(
+    name = "image_auth",
+    srcs = ["auth"],
+    args = [
+        "$(CRANE_BIN)",
+    ],
+    data = [
+        "@oci_crane_toolchains//:current_toolchain",
+    ],
+    toolchains = [
+        "@oci_crane_toolchains//:current_toolchain",
+    ],
+)

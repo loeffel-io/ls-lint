@@ -1,0 +1,6 @@
+#!/bin/bash
+set -euo pipefail
+
+echo $1
+# crane=external/oci_crane_darwin_arm64/crane
+# $crane auth login index.docker.io -u $DOCKER_USER -p $DOCKER_PASSWORD

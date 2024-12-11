@@ -4,6 +4,7 @@ bazel_dep(name = "gazelle", version = "0.40.0", dev_dependency = True)
 bazel_dep(name = "rules_pkg", version = "1.0.1", dev_dependency = True)
 bazel_dep(name = "aspect_bazel_lib", version = "2.9.4", dev_dependency = True)
 bazel_dep(name = "aspect_rules_js", version = "2.1.0", dev_dependency = True)
+bazel_dep(name = "rules_oci", version = "1.7.4", dev_dependency = True)
 
 ####################################################################
 # rules_go #########################################################
@@ -50,6 +51,35 @@ python = use_extension("@rules_python//python/extensions:python.bzl", "python")
 python.toolchain(
     ignore_root_user_error = True,
     python_version = "3.13",
+)
+
+####################################################################
+# rules_oci (distroless) ###########################################
+####################################################################
+
+oci = use_extension("@rules_oci//oci:extensions.bzl", "oci")
+oci.pull(
+    name = "distroless_base",
+    digest = "sha256:350980ee07b2fc28336bb730cdb02b7c83d4a4d7832b1a49c827c8cc28f7f06b",  # nonroot
+    image = "gcr.io/distroless/base",
+    platforms = [
+        "linux/amd64",
+        "linux/arm64/v8",
+        "linux/ppc64le",
+        "linux/s390x",
+    ],
+)
+oci.toolchains(
+    crane_version = "v0.18.0",
+)
+use_repo(
+    oci,
+    "distroless_base",
+    "distroless_base_linux_amd64",
+    "distroless_base_linux_arm64_v8",
+    "distroless_base_linux_ppc64le",
+    "distroless_base_linux_s390x",
+    "oci_crane_toolchains",
 )
 
 ####################################################################
