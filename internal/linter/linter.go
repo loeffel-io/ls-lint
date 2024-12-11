@@ -101,9 +101,9 @@ func (linter *Linter) validateDir(index config.RuleIndex, path string, validate 
 
 			if !ruleDir.GetExclusive() {
 				rulesMutex.Lock()
-				rulesNonExclusiveCount += 1
+				rulesNonExclusiveCount++
 				if !valid {
-					rulesNonExclusiveError += 1
+					rulesNonExclusiveError++
 				}
 				rulesMutex.Unlock()
 			}
@@ -184,9 +184,9 @@ func (linter *Linter) validateFile(index config.RuleIndex, path string, validate
 
 					if !ruleFile.GetExclusive() {
 						rulesMutex.Lock()
-						rulesNonExclusiveCount += 1
+						rulesNonExclusiveCount++
 						if !valid {
-							rulesNonExclusiveError += 1
+							rulesNonExclusiveError++
 						}
 						rulesMutex.Unlock()
 					}
