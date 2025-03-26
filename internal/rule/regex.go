@@ -71,7 +71,7 @@ func (rule *Regex) GetExclusive() bool {
 }
 
 // Validate checks if full string matches regex
-func (rule *Regex) Validate(value string, fail bool) (bool, error) {
+func (rule *Regex) Validate(value string, path string, _ bool) (bool, error) {
 	match, err := regexp.MatchString("^"+rule.getRegexPattern()+"$", value)
 	return match != rule.negate, err
 }

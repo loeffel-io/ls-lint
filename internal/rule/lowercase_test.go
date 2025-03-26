@@ -16,7 +16,7 @@ func TestLowercase(t *testing.T) {
 
 	i := 0
 	for _, test := range tests {
-		res, err := rule.Validate(test.value, true)
+		res, err := rule.Validate(test.value, "", true)
 
 		if !errors.Is(err, test.err) {
 			t.Errorf("Test %d failed with unmatched error - %e", i, err)

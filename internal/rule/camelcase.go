@@ -43,7 +43,7 @@ func (rule *CamelCase) GetExclusive() bool {
 
 // Validate checks if string is camel case
 // false if rune is no letter and no digit
-func (rule *CamelCase) Validate(value string, fail bool) (bool, error) {
+func (rule *CamelCase) Validate(value string, _ string, _ bool) (bool, error) {
 	for i, c := range value {
 		// must be letter or digit
 		if !unicode.IsLetter(c) && !unicode.IsDigit(c) {
