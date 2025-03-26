@@ -517,6 +517,9 @@ func TestLinter_Run(t *testing.T) {
 						"not_exists": config.Ls{
 							".dir": "exists:1",
 						},
+						"dir_not_exists/*/not_exists": config.Ls{
+							".dir": "exists",
+						},
 						"wildcards/**": config.Ls{
 							".dir": "exists:1",
 							".*":   "snake_case | exists:1",
@@ -631,6 +634,14 @@ func TestLinter_Run(t *testing.T) {
 				{
 					Path: "wildcards/a/b/c",
 					Ext:  ".*",
+					Rules: []rule.Rule{
+						new(rule.Exists).Init(),
+					},
+					RWMutex: new(sync.RWMutex),
+				},
+				{
+					Path: "dir_not_exists/*/not_exists",
+					Ext:  ".dir",
 					Rules: []rule.Rule{
 						new(rule.Exists).Init(),
 					},
