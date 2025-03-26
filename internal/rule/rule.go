@@ -3,7 +3,6 @@ package rule
 var RulesIndex = map[string]Rule{
 	"lowercase": new(Lowercase).Init(),
 	"regex":     new(Regex).Init(),
-	"not_regex": new(NotRegex).Init(),
 	"exists":    new(Exists).Init(),
 
 	"camelcase":          new(CamelCase).Init(),
@@ -16,7 +15,6 @@ var RulesIndex = map[string]Rule{
 var Rules = map[string]Rule{
 	"lowercase": RulesIndex["lowercase"],
 	"regex":     RulesIndex["regex"],
-	"not_regex": RulesIndex["not_regex"],
 	"exists":    RulesIndex["exists"],
 
 	"camelcase": RulesIndex["camelcase"],
@@ -41,6 +39,10 @@ type Rule interface {
 	SetParameters(params []string) error
 	GetParameters() []string
 	GetExclusive() bool
+	// Validate validates the value with the rule
+	// value:
+	//   - file: filename without extension
+	//   - dir: basename
 	Validate(value string, fail bool) (bool, error)
 	GetErrorMessage() string
 	Copy() Rule
