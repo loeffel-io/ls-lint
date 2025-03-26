@@ -59,7 +59,7 @@ func TestExists_Validate(t *testing.T) {
 
 	i := 0
 	for _, test := range tests {
-		valid, err := test.rule.Validate("", test.fail)
+		valid, err := test.rule.Validate("", "", test.fail)
 
 		if !errors.Is(err, test.err) {
 			t.Errorf("Test %d failed with unmatched error - %e", i, err)

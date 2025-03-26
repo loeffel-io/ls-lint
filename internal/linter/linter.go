@@ -94,7 +94,7 @@ func (linter *Linter) validateDir(index config.RuleIndex, path string, validate 
 				return nil
 			}
 
-			valid, err := ruleDir.Validate(basename, ruleDir.GetName() != "exists")
+			valid, err := ruleDir.Validate(basename, pathDir, ruleDir.GetName() != "exists")
 			if err != nil {
 				return err
 			}
@@ -177,7 +177,7 @@ func (linter *Linter) validateFile(index config.RuleIndex, path string, validate
 						return nil
 					}
 
-					valid, err := ruleFile.Validate(withoutExt, ruleFile.GetName() != "exists")
+					valid, err := ruleFile.Validate(withoutExt, pathDir, ruleFile.GetName() != "exists")
 					if err != nil {
 						return err
 					}
@@ -372,7 +372,7 @@ func (linter *Linter) Run(filesystem fs.FS, paths map[string]struct{}, debug boo
 				}
 
 				var valid bool
-				if valid, err = r.Validate("", true); err != nil {
+				if valid, err = r.Validate("", "", true); err != nil {
 					return err
 				}
 

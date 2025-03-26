@@ -101,7 +101,7 @@ func (rule *Exists) GetExclusive() bool {
 	return rule.exclusive
 }
 
-func (rule *Exists) Validate(value string, fail bool) (bool, error) {
+func (rule *Exists) Validate(value string, _ string, fail bool) (bool, error) {
 	if !fail {
 		rule.incrementCount()
 		return true, nil
