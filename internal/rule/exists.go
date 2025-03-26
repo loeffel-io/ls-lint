@@ -140,10 +140,10 @@ func (rule *Exists) incrementCount() {
 
 func (rule *Exists) GetErrorMessage() string {
 	if rule.getMin() == rule.getMax() {
-		return fmt.Sprintf("%s:%d (debug: %d)", rule.GetName(), rule.getMin(), rule.getCount())
+		return fmt.Sprintf("%s:%d (found %d)", rule.GetName(), rule.getMin(), rule.getCount())
 	}
 
-	return fmt.Sprintf("%s:%d-%d (debug: %d)", rule.GetName(), rule.getMin(), rule.getMax(), rule.getCount())
+	return fmt.Sprintf("%s:%d-%d (found %d)", rule.GetName(), rule.getMin(), rule.getMax(), rule.getCount())
 }
 
 func (rule *Exists) Copy() Rule {
