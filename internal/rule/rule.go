@@ -43,7 +43,7 @@ type Rule interface {
 	// value:
 	//   - file: filename without extension
 	//   - dir: basename
-	// path: full path to file or dir
+	// path: full dir path - empty on root
 	Validate(value string, path string, fail bool) (bool, error)
 	GetErrorMessage() string
 	Copy() Rule

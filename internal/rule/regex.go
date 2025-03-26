@@ -3,6 +3,7 @@ package rule
 import (
 	"fmt"
 	"regexp"
+	"strings"
 	"sync"
 )
 
@@ -72,7 +73,19 @@ func (rule *Regex) GetExclusive() bool {
 
 // Validate checks if full string matches regex
 func (rule *Regex) Validate(value string, path string, _ bool) (bool, error) {
-	match, err := regexp.MatchString("^"+rule.getRegexPattern()+"$", value)
+	regexPattern := rule.getRegexPattern()
+	if path != "" && strings.ContainsAny(regexPattern, "$") {
+		pathSplit := strings.Split(path, "/")
+		replaces := make([]string, len(pathSplit)*2)
+		for i := 0; i < len(pathSplit); i++ {
+			replaces[i*2] = fmt.Sprintf("${%d}", len(pathSplit)-1-i)
+			replaces[i*2+1] = pathSplit[i]
+		}
+
+		regexPattern = strings.NewReplacer(replaces...).Replace(regexPattern)
+	}
+
+	match, err := regexp.MatchString("^"+regexPattern+"$", value)
 	return match != rule.negate, err
 }
 
