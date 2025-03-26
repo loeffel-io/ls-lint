@@ -14,6 +14,7 @@ func TestRegex(t *testing.T) {
 	}{
 		{params: []string{".+"}, value: "regex", expected: true, err: nil},
 		{params: []string{"[0-9]+"}, value: "123", expected: true, err: nil},
+		{params: []string{"![0-9]+"}, value: "123", expected: false, err: nil},
 		{params: []string{"[a-z]+"}, value: "123", expected: false, err: nil},
 		{params: []string{"[a-z\\-]+"}, value: "google-test", expected: true, err: nil},
 		{params: []string{"[a-z\\-]+"}, value: "google.test", expected: false, err: nil},
