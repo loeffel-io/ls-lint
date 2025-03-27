@@ -43,7 +43,7 @@ npm_package(
         ":package_files_bin",
     ],
     args = [
-        "--tag beta",
+        # "--tag beta",
         "--no-git-checks",
     ],
     hardlink = "off",
