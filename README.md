@@ -14,7 +14,7 @@ An extremely fast directory and filename linter - Bring some structure to your p
 - Minimal setup with simple rules managed in one single or multiple `.ls-lint.yml` files
 - Works for directory and file names - all extensions supported - full unicode support
 - Incredibly fast - lints thousands of files and directories in milliseconds
-- Support for Windows, MacOS and Linux + NPM Package + [GitHub Action](https://github.com/ls-lint/action) + [Homebrew](https://formulae.brew.sh/formula/ls-lint) + Docker
+- Support for Windows, MacOS and Linux + [NPM Package](https://www.npmjs.com/package/@ls-lint/ls-lint) + [GitHub Action](https://github.com/ls-lint/action) + [Homebrew](https://formulae.brew.sh/formula/ls-lint) + Docker
 - Almost zero third-party dependencies (only [go-yaml](https://github.com/go-yaml/yaml)
   and [doublestar](https://github.com/bmatcuk/doublestar))
 
@@ -33,10 +33,18 @@ The full documentation can be found at [ls-lint.org](https://ls-lint.org)
 
 ```yaml
 ls:
-  .js: snake_case
-  .ts: snake_case | camelCase
-  .d.ts: PascalCase
-  .html: regex:[a-z0-9]+
+  packages/*/{src,__tests__}:
+    .js: kebab-case
+    .ts: camelCase | PascalCase
+    .d.ts: camelCase
+    .spec.ts: camelCase | PascalCase
+    .mock.ts: camelCase
+
+  components/*:
+    .ts: regex:${0}
+    tests:
+      .*: exists:0
+      .test.ts: regex:${1}
 
 ignore:
   - node_modules
@@ -49,10 +57,6 @@ ignore:
 ## Discord
 
 [Join the ls-lint discord server](https://discord.gg/bsf9q7f2Rh)
-
-## Sponsors
-
-<a href="https://jetbrains.com"><img height="130" src="https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.png?_ga=2.249742848.788370738.1691416665-1384286648.1691416665" alt="jetbrains"></a>
 
 ## Logo
 
