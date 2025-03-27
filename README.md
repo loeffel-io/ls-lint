@@ -4,6 +4,8 @@
 
 An extremely fast directory and filename linter - Bring some structure to your project filesystem
 
+`v2.3.0` is here: [https://ls-lint.org/blog/announcements/v2.3.0.html](https://ls-lint.org/blog/announcements/v2.3.0.html)
+
 [![CI](https://github.com/loeffel-io/ls-lint/actions/workflows/bazel.yml/badge.svg?branch=master)](https://github.com/loeffel-io/ls-lint/actions/workflows/bazel.yml)
 [![Go Report Card](https://goreportcard.com/badge/github.com/loeffel-io/ls-lint)](https://goreportcard.com/report/github.com/loeffel-io/ls-lint)
 <a href="https://www.npmjs.com/package/@ls-lint/ls-lint"><img src="https://img.shields.io/npm/v/@ls-lint/ls-lint.svg?sanitize=true" alt="Version"></a>
