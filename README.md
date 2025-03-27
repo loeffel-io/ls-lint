@@ -54,10 +54,6 @@ ignore:
 
 <img src="https://i.imgur.com/pxXkYcl.gif" alt="command" width="600">
 
-## Discord
-
-[Join the ls-lint discord server](https://discord.gg/bsf9q7f2Rh)
-
 ## Logo
 
 Logo created by [Studio Ajot](https://www.studio-ajot.de/)
