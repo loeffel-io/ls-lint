@@ -324,6 +324,11 @@ func TestLinter_Run(t *testing.T) {
 				"lowercase123.svg": &fstest.MapFile{Mode: fs.ModePerm},
 				"123.svg":          &fstest.MapFile{Mode: fs.ModePerm},
 
+				// these are valid flatcase file names
+				"flatcase.raw":    &fstest.MapFile{Mode: fs.ModePerm},
+				"flatcase123.raw": &fstest.MapFile{Mode: fs.ModePerm},
+				"123.raw":         &fstest.MapFile{Mode: fs.ModePerm},
+
 				// these are valid PascalCase file names
 				"PascalCase.txt":    &fstest.MapFile{Mode: fs.ModePerm},
 				"PascalCase123.txt": &fstest.MapFile{Mode: fs.ModePerm},
@@ -358,6 +363,7 @@ func TestLinter_Run(t *testing.T) {
 						".bmp":   "SCREAMING_SNAKE_CASE",
 						".txt":   "PascalCase",
 						".svg":   "lowercase",
+						".raw":   "flatcase",
 						"sub": config.Ls{
 							".*":            "kebab-case",
 							".*.*":          "kebab-case",
@@ -386,7 +392,7 @@ func TestLinter_Run(t *testing.T) {
 			expectedErr: nil,
 			expectedStatistic: &debug.Statistic{
 				Start:     start,
-				Files:     30,
+				Files:     33,
 				FileSkips: 0,
 				Dirs:      2,
 				DirSkips:  1,

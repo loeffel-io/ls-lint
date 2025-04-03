@@ -2,6 +2,7 @@ package rule
 
 var RulesIndex = map[string]Rule{
 	"lowercase": new(Lowercase).Init(),
+	"flatcase":  new(Flatcase).Init(),
 	"regex":     new(Regex).Init(),
 	"exists":    new(Exists).Init(),
 
@@ -14,6 +15,7 @@ var RulesIndex = map[string]Rule{
 
 var Rules = map[string]Rule{
 	"lowercase": RulesIndex["lowercase"],
+	"flatcase":  RulesIndex["flatcase"],
 	"regex":     RulesIndex["regex"],
 	"exists":    RulesIndex["exists"],
 
