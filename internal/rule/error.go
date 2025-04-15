@@ -10,30 +10,30 @@ type Error struct {
 	*sync.RWMutex
 }
 
-func (error *Error) GetPath() string {
-	error.RLock()
-	defer error.RUnlock()
+func (err *Error) GetPath() string {
+	err.RLock()
+	defer err.RUnlock()
 
-	return error.Path
+	return err.Path
 }
 
-func (error *Error) IsDir() bool {
-	error.RLock()
-	defer error.RUnlock()
+func (err *Error) IsDir() bool {
+	err.RLock()
+	defer err.RUnlock()
 
-	return error.Dir
+	return err.Dir
 }
 
-func (error *Error) GetExt() string {
-	error.RLock()
-	defer error.RUnlock()
+func (err *Error) GetExt() string {
+	err.RLock()
+	defer err.RUnlock()
 
-	return error.Ext
+	return err.Ext
 }
 
-func (error *Error) GetRules() []Rule {
-	error.RLock()
-	defer error.RUnlock()
+func (err *Error) GetRules() []Rule {
+	err.RLock()
+	defer err.RUnlock()
 
-	return error.Rules
+	return err.Rules
 }
