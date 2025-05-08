@@ -44,7 +44,7 @@ use_repo(npm, "npm")
 # https://github.com/bazelbuild/rules_python/pull/713 ##############
 ####################################################################
 
-bazel_dep(name = "rules_python", version = "1.2.0")
+bazel_dep(name = "rules_python", version = "1.4.1")
 
 python = use_extension("@rules_python//python/extensions:python.bzl", "python")
 python.toolchain(
