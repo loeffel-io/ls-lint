@@ -1,5 +1,5 @@
 load("@gazelle//:def.bzl", "gazelle")
-load("@rules_go//go:def.bzl", "nogo")
+load("@rules_go//go:def.bzl", "TOOLS_NOGO", "nogo")
 
 # gazelle:prefix github.com/loeffel-io/ls-lint/v2
 # gazelle:exclude vendor
@@ -24,7 +24,7 @@ nogo(
     name = "nogo",
     config = ":nogo.json",
     visibility = ["//visibility:public"],
-    deps = [],  # TOOLS_NOGO: https://github.com/bazel-contrib/rules_go/issues/3924
+    deps = TOOLS_NOGO + [],
 )
 
 exports_files(
