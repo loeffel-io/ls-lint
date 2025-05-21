@@ -20,6 +20,7 @@ func TestRegex(t *testing.T) {
 		{params: []string{"[a-z\\-]+"}, value: "google-test", path: "", expected: true, err: nil},
 		{params: []string{"[a-z\\-]+"}, value: "google.test", path: "", expected: false, err: nil},
 		{params: []string{"${1}_${0}"}, value: "google_test", path: "google/test", expected: true, err: nil},
+		{params: []string{"${1}"}, value: "swu1", path: "gen/swu1/data", expected: true, err: nil}, // github.com/loeffel-io/ls-lint/issues/307
 		{params: []string{"${1}_${0}"}, value: "test", path: "google/test", expected: false, err: nil},
 	}
 
