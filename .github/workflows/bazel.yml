@@ -26,7 +26,7 @@ jobs:
 
   # bazel docker image does not support windows
   # windows does not run presubmit checks to avoid running bazel twice
-  # gofumpt toolchain does not support windows
+  # gofumpt toolchain does not support windows (currently patched)
   # gazelle fix diff does not support windows
   build-windows:
     if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
@@ -66,7 +66,7 @@ jobs:
 
   # bazel docker image does not support windows
   # windows does not run presubmit checks to avoid running bazel twice 
-  # gofumpt toolchain does not support windows
+  # gofumpt toolchain does not support windows (currently patched)
   # gazelle fix diff does not support windows
   build-windows-no-cache: # external pull requests to hide secrets
     if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository
