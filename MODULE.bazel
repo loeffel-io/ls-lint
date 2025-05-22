@@ -42,16 +42,10 @@ use_repo(npm, "npm")
 
 ####################################################################
 # rules_python #####################################################
-# https://github.com/bazelbuild/rules_python/pull/713 ##############
+# waiting for rules_pkg ############################################
 ####################################################################
 
 bazel_dep(name = "rules_python", version = "1.4.1")
-
-python = use_extension("@rules_python//python/extensions:python.bzl", "python")
-python.toolchain(
-    ignore_root_user_error = True,
-    python_version = "3.13",
-)
 
 ####################################################################
 # github cli #######################################################
@@ -79,6 +73,16 @@ http_archive(
     ],
 )
 
+http_archive(
+    name = "com_github_cli_cli_windows_amd64",
+    build_file_content = """exports_files(glob(["bin/*"]))""",
+    sha256 = "7fd29acdf2714d0129b7aedde215fa12e1cfb3ad5d39280893259bdeeceba209",
+    strip_prefix = "gh_2.62.0_windows_amd64",
+    urls = [
+        "https://github.com/cli/cli/releases/download/v2.62.0/gh_2.62.0_windows_amd64.zip",
+    ],
+)
+
 ####################################################################
 # coreutils (sha256) ###############################################
 ####################################################################
@@ -100,5 +104,15 @@ http_archive(
     strip_prefix = "coreutils-0.0.28-x86_64-unknown-linux-gnu",
     urls = [
         "https://github.com/uutils/coreutils/releases/download/0.0.28/coreutils-0.0.28-x86_64-unknown-linux-gnu.tar.gz",
+    ],
+)
+
+http_archive(
+    name = "com_github_uutils_coreutils_windows_amd64",
+    build_file_content = """exports_files(["coreutils"])""",
+    sha256 = "3e2090710fd467d3e7802c77c3c4549e4f876cb53c365f4f802cbc891f55966f",
+    strip_prefix = "coreutils-0.0.28-x86_64-pc-windows-gnu",
+    urls = [
+        "https://github.com/uutils/coreutils/releases/download/0.0.28/coreutils-0.0.28-x86_64-pc-windows-gnu.zip",
     ],
 )
