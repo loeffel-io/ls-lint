@@ -11,12 +11,12 @@ import (
 	"slices"
 	"strings"
 
-	"github.com/goccy/go-yaml"
 	"github.com/loeffel-io/ls-lint/v2/internal/config"
 	"github.com/loeffel-io/ls-lint/v2/internal/debug"
 	_flag "github.com/loeffel-io/ls-lint/v2/internal/flag"
 	"github.com/loeffel-io/ls-lint/v2/internal/linter"
 	"github.com/loeffel-io/ls-lint/v2/internal/rule"
+	"gopkg.in/yaml.v3"
 )
 
 var Version = "dev"
