@@ -42,9 +42,9 @@ jobs:
       - shell: bash
         run: bazel version
       - shell: bash
-        run: bazel build --remote_cache=$GOOGLE_BUCKET --google_default_credentials //...
-      - shell: bash
         run: bazel test --remote_cache=$GOOGLE_BUCKET --google_default_credentials //...
+      - shell: bash
+        run: bazel build --remote_cache=$GOOGLE_BUCKET --google_default_credentials //...
       - shell: bash
         run: bazel run //cmd/ls_lint:ls-lint -- --config ${PWD}/.ls-lint.yml --workdir ${PWD}
 
