@@ -43,11 +43,6 @@ nogo(
     deps = TOOLS_NOGO + [],
 )
 
-alias(
-    name = "format",
-    actual = "//tools/format",
-)
-
 exports_files(
     srcs = [
         "LICENSE",
