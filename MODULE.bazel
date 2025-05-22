@@ -109,7 +109,7 @@ http_archive(
 
 http_archive(
     name = "com_github_uutils_coreutils_windows_amd64",
-    build_file_content = """exports_files(["coreutils"])""",
+    build_file_content = """exports_files(["coreutils.exe"])""",
     sha256 = "3e2090710fd467d3e7802c77c3c4549e4f876cb53c365f4f802cbc891f55966f",
     strip_prefix = "coreutils-0.0.28-x86_64-pc-windows-gnu",
     urls = [

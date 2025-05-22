@@ -26,6 +26,8 @@ jobs:
 
   # bazel docker image does not support windows
   # windows does not run presubmit checks to avoid running bazel twice
+  # gofumpt toolchain does not support windows
+  # gazelle fix diff does not support windows
   build-windows:
     if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
     runs-on: windows-latest
@@ -46,7 +48,7 @@ jobs:
       - shell: bash
         run: bazel run //cmd/ls_lint:ls-lint -- --config ${PWD}/.ls-lint.yml --workdir ${PWD}
 
-  build-linux-no-cache: # external pull requests to hide the secrets
+  build-linux-no-cache: # external pull requests to hide secrets
     if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository
     runs-on: ubuntu-latest
     container:
@@ -63,8 +65,10 @@ jobs:
       - run: bazel run //cmd/ls_lint:ls-lint -- --config ${PWD}/.ls-lint.yml --workdir ${PWD}
 
   # bazel docker image does not support windows
-  # windows does not run presubmit checks to avoid running bazel twice
-  build-windows-no-cache: # external pull requests to hide the secrets
+  # windows does not run presubmit checks to avoid running bazel twice 
+  # gofumpt toolchain does not support windows
+  # gazelle fix diff does not support windows
+  build-windows-no-cache: # external pull requests to hide secrets
     if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository
     runs-on: windows-latest
     steps:
