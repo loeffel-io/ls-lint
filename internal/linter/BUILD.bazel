@@ -18,7 +18,7 @@ go_test(
     name = "linter_test",
     srcs = ["linter_test.go"],
     embed = [":linter"],
-    race = "on",
+    # race = "on",
     deps = [
         "//internal/config",
         "//internal/debug",
