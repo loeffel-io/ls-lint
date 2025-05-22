@@ -21,7 +21,7 @@ go_test(
     race = select({
         "//:darwin_arm64": "on",
         "//:linux_amd64": "on",
-        # Error in fail: race instrumentation can't be enabled when cgo is disabled. Check that pure is not set to "off" and a C/C++ toolchain is configured.
+        # TODO: Error in fail: race instrumentation can't be enabled when cgo is disabled. Check that pure is not set to "off" and a C/C++ toolchain is configured.
         "//:windows_amd64": "off",
     }),
     deps = [
