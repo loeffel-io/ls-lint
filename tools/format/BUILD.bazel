@@ -3,5 +3,10 @@ load("@aspect_rules_lint//format:defs.bzl", "format_multirun")
 format_multirun(
     name = "format",
     go = "@aspect_rules_lint//format:gofumpt",
+    # https://github.com/aspect-build/rules_lint/issues/548
+    target_compatible_with = [
+        "@platforms//os:osx",
+        "@platforms//os:linux",
+    ],
     visibility = ["//visibility:public"],
 )
