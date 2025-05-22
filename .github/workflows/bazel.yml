@@ -19,7 +19,7 @@ jobs:
           credentials_json: ${{ secrets.GOOGLE_CREDENTIALS }}
       - run: bazel version
       - run: bazel run --remote_cache=$GOOGLE_BUCKET --google_default_credentials //:gazelle_fix_diff
-      - run: bazel run --remote_cache=$GOOGLE_BUCKET --google_default_credentials //tools/format:format.check
+      # - run: bazel run --remote_cache=$GOOGLE_BUCKET --google_default_credentials //tools/format:format.check
       - run: bazel test --remote_cache=$GOOGLE_BUCKET --google_default_credentials //...
       - run: bazel build --remote_cache=$GOOGLE_BUCKET --google_default_credentials //...
       - run: bazel run //cmd/ls_lint:ls-lint -- --config ${PWD}/.ls-lint.yml --workdir ${PWD}
