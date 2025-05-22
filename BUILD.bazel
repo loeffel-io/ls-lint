@@ -20,16 +20,27 @@ config_setting(
     ],
 )
 
+config_setting(
+    name = "linux_amd64",
+    constraint_values = [
+        "@platforms//os:linux",
+        "@platforms//cpu:x86_64",
+    ],
+)
+
+config_setting(
+    name = "windows_amd64",
+    constraint_values = [
+        "@platforms//os:windows",
+        "@platforms//cpu:x86_64",
+    ],
+)
+
 nogo(
     name = "nogo",
     config = ":nogo.json",
     visibility = ["//visibility:public"],
     deps = TOOLS_NOGO + [],
-)
-
-alias(
-    name = "format",
-    actual = "//tools/format",
 )
 
 exports_files(
@@ -44,7 +55,8 @@ alias(
     name = "gh",
     actual = select({
         ":darwin_arm64": "@com_github_cli_cli_darwin_arm64//:bin/gh",
-        "//conditions:default": "@com_github_cli_cli_linux_amd64//:bin/gh",
+        ":linux_amd64": "@com_github_cli_cli_linux_amd64//:bin/gh",
+        ":windows_amd64": "@com_github_cli_cli_windows_amd64//:bin/gh.exe",
     }),
     visibility = ["//visibility:public"],
 )
@@ -53,7 +65,8 @@ alias(
     name = "coreutils",
     actual = select({
         ":darwin_arm64": "@com_github_uutils_coreutils_darwin_arm64//:coreutils",
-        "//conditions:default": "@com_github_uutils_coreutils_linux_amd64//:coreutils",
+        ":linux_amd64": "@com_github_uutils_coreutils_linux_amd64//:coreutils",
+        ":windows_amd64": "@com_github_uutils_coreutils_windows_amd64//:coreutils.exe",
     }),
     visibility = ["//visibility:public"],
 )
