@@ -77,7 +77,7 @@ http_archive(
     name = "com_github_cli_cli_windows_amd64",
     build_file_content = """exports_files(glob(["bin/gh.exe"]))""",
     sha256 = "7fd29acdf2714d0129b7aedde215fa12e1cfb3ad5d39280893259bdeeceba209",
-    strip_prefix = "gh_2.62.0_windows_amd64",
+    # strip_prefix = "gh_2.62.0_windows_amd64",
     urls = [
         "https://github.com/cli/cli/releases/download/v2.62.0/gh_2.62.0_windows_amd64.zip",
     ],
