@@ -106,18 +106,17 @@ func (config *Config) walkIndex(index RuleIndex, key string, list Ls) error {
 		}
 
 		if reflect.TypeOf(v).Kind() == reflect.Map {
-			switch key == "" {
-			case true:
+			if key == "" {
 				if err := config.walkIndex(index, k, v.(Ls)); err != nil {
 					return err
 				}
-			case false:
-				keyCombination := fmt.Sprintf("%s%s%s", key, sep, k)
-				if err := config.walkIndex(index, keyCombination, v.(Ls)); err != nil {
-					return err
-				}
+				continue
 			}
 
+			keyCombination := fmt.Sprintf("%s%s%s", key, sep, k)
+			if err := config.walkIndex(index, keyCombination, v.(Ls)); err != nil {
+				return err
+			}
 			continue
 		}
 
