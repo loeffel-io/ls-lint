@@ -19,6 +19,7 @@ jobs:
           credentials_json: ${{ secrets.GOOGLE_CREDENTIALS }}
       - run: bazel version
       - run: bazel run --remote_cache=$GOOGLE_BUCKET --google_default_credentials //:gazelle_fix_diff
+        # TODO: https://github.com/aspect-build/rules_lint/issues/567
       - run: bazel run --remote_cache=$GOOGLE_BUCKET --google_default_credentials //tools/format:format.check
       - run: bazel test --remote_cache=$GOOGLE_BUCKET --google_default_credentials //...
       - run: bazel build --remote_cache=$GOOGLE_BUCKET --google_default_credentials //...
@@ -60,6 +61,7 @@ jobs:
       - uses: actions/checkout@v4
       - run: bazel version
       - run: bazel run //:gazelle_fix_diff
+        # TODO: https://github.com/aspect-build/rules_lint/issues/567
       - run: bazel run //tools/format:format.check
       - run: bazel test //...
       - run: bazel build //...
