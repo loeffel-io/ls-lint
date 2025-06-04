@@ -39,10 +39,10 @@ config_setting(
 nogo(
     name = "nogo",
     config = ":nogo.json",
-    # TODO: https://github.com/bazel-contrib/rules_go/issues/4370
     target_compatible_with = select({
         "@platforms//os:osx": [],
         "@platforms//os:linux": [],
+        "//conditions:default": ["@platforms//:incompatible"],  # TODO: https://github.com/bazel-contrib/rules_go/issues/4370
     }),
     visibility = ["//visibility:public"],
     deps = TOOLS_NOGO + [],
