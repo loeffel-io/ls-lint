@@ -37,6 +37,7 @@ config_setting(
 )
 
 # TODO: https://github.com/bazel-contrib/rules_go/issues/4370
+# currently disabled
 nogo(
     name = "nogo",
     config = ":nogo.json",
