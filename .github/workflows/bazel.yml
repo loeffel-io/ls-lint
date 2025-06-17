@@ -2,11 +2,11 @@ name: Bazel
 on: [ push, pull_request ]
 
 jobs:
-  build:
+  build-linux:
     if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     container:
-      image: gcr.io/bazel-public/bazel@sha256:62d6f3299bef1495cb4744960e315a3dcf158a6330093b51a977431b512c78a4
+      image: gcr.io/bazel-public/bazel@sha256:e45b3b77bf94e6eeb9a2a7151e4474f75247cc52501e5da6a24f976d71e10b14
       options: --user root
       env:
         NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
@@ -17,31 +17,81 @@ jobs:
       - uses: google-github-actions/auth@v2
         with:
           credentials_json: ${{ secrets.GOOGLE_CREDENTIALS }}
+      - run: bazel version
       - run: bazel run --remote_cache=$GOOGLE_BUCKET --google_default_credentials //:gazelle_fix_diff
+        # TODO: https://github.com/aspect-build/rules_lint/issues/567
+      - run: bazel run --remote_cache=$GOOGLE_BUCKET --google_default_credentials //tools/format:format.check
       - run: bazel test --remote_cache=$GOOGLE_BUCKET --google_default_credentials //...
       - run: bazel build --remote_cache=$GOOGLE_BUCKET --google_default_credentials //...
       - run: bazel run //cmd/ls_lint:ls-lint -- --config ${PWD}/.ls-lint.yml --workdir ${PWD}
 
-  build-no-cache: # external pull requests
+  # bazel docker image does not support windows
+  # windows does not run presubmit checks to avoid running bazel twice
+  # gofumpt toolchain does not support windows (currently patched)
+  # gazelle fix diff does not support windows
+  build-windows:
+    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: windows-latest
+    env:
+      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      GOOGLE_BUCKET: https://storage.googleapis.com/ls-lint-bazel
+    steps:
+      - uses: actions/checkout@v4
+      - uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GOOGLE_CREDENTIALS }}
+      - shell: bash
+        run: bazel version
+      - shell: bash
+        run: bazel test --remote_cache=$GOOGLE_BUCKET --google_default_credentials //...
+      - shell: bash
+        run: bazel build --remote_cache=$GOOGLE_BUCKET --google_default_credentials //...
+      # TODO: https://github.com/loeffel-io/ls-lint/actions/runs/15439266849/job/43452949977
+      # - shell: bash
+      #   run: bazel run //cmd/ls_lint:ls-lint -- --config ${PWD}/.ls-lint.yml --workdir ${PWD}
+
+  build-linux-no-cache: # external pull requests to hide secrets
     if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository
     runs-on: ubuntu-latest
     container:
-      image: gcr.io/bazel-public/bazel@sha256:62d6f3299bef1495cb4744960e315a3dcf158a6330093b51a977431b512c78a4
+      image: gcr.io/bazel-public/bazel@sha256:e45b3b77bf94e6eeb9a2a7151e4474f75247cc52501e5da6a24f976d71e10b14
       options: --user root
     steps:
       - run: set -eu
       - uses: actions/checkout@v4
+      - run: bazel version
       - run: bazel run //:gazelle_fix_diff
+        # TODO: https://github.com/aspect-build/rules_lint/issues/567
+      - run: bazel run //tools/format:format.check
       - run: bazel test //...
       - run: bazel build //...
       - run: bazel run //cmd/ls_lint:ls-lint -- --config ${PWD}/.ls-lint.yml --workdir ${PWD}
 
+  # bazel docker image does not support windows
+  # windows does not run presubmit checks to avoid running bazel twice 
+  # gofumpt toolchain does not support windows (currently patched)
+  # gazelle fix diff does not support windows
+  build-windows-no-cache: # external pull requests to hide secrets
+    if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - shell: bash
+        run: bazel version
+      - shell: bash
+        run: bazel test //...
+      - shell: bash
+        run: bazel build //...
+      # TODO: https://github.com/loeffel-io/ls-lint/actions/runs/15439266849/job/43452949977
+      # - shell: bash
+      #   run: bazel run //cmd/ls_lint:ls-lint -- --config ${PWD}/.ls-lint.yml --workdir ${PWD}
+
   release:
-    needs: build
+    needs: [build-linux, build-windows]
     if: startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
     container:
-      image: gcr.io/bazel-public/bazel@sha256:62d6f3299bef1495cb4744960e315a3dcf158a6330093b51a977431b512c78a4
+      image: gcr.io/bazel-public/bazel@sha256:e45b3b77bf94e6eeb9a2a7151e4474f75247cc52501e5da6a24f976d71e10b14
       options: --user root # ref: https://docs.github.com/en/actions/creating-actions/dockerfile-support-for-github-actions#user
     env:
       GH_TOKEN: ${{ github.token }}
@@ -54,5 +104,6 @@ jobs:
       - uses: google-github-actions/auth@v2
         with:
           credentials_json: ${{ secrets.GOOGLE_CREDENTIALS }}
+      - run: bazel version
       - run: bazel run --remote_cache=$GOOGLE_BUCKET --google_default_credentials //deployments/github:ls_lint_publish
       - run: NPM_CONFIG_USERCONFIG=${GITHUB_WORKSPACE}/deployments/npm/.npmrc bazel run --remote_cache=$GOOGLE_BUCKET --google_default_credentials //deployments/npm:ls_lint.publish

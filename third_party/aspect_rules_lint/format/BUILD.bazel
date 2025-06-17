@@ -1,0 +1,4 @@
+exports_files(
+    srcs = ["multitool.lock.json.diff"],
+    visibility = ["//visibility:public"],
+)

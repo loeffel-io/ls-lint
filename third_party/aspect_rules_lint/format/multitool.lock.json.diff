@@ -1,0 +1,18 @@
+diff --git format/multitool.lock.json format/multitool.lock.json
+index ec8c3b8..ef477e9 100644
+--- format/multitool.lock.json
++++ format/multitool.lock.json
+@@ -29,6 +29,13 @@
+         "sha256": "0dda6600cf263b703a5ad93e792b06180c36afdee9638617a91dd552f2c6fb3e",
+         "os": "macos",
+         "cpu": "x86_64"
++      },
++      {
++        "kind": "file",
++        "url": "https://github.com/mvdan/gofumpt/releases/download/v0.8.0/gofumpt_v0.8.0_windows_amd64.exe",
++        "sha256": "6d25310f322080af6de8193617d78495b356a5ede65fde6d5d0e4bcdfff1f2a4",
++        "os": "windows",
++        "cpu": "x86_64"
+       }
+     ]
+   },
