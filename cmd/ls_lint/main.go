@@ -21,6 +21,13 @@ import (
 
 var Version = "dev"
 
+const (
+	// expected ls-lint config file
+	lsLintConfigFile = ".ls-lint.yaml"
+	// former ls-lint config file, supported for backward compatibility
+	lsLintConfigFileLegacy = ".ls-lint.yml"
+)
+
 func main() {
 	var err error
 	exitCode := 0
@@ -57,7 +64,15 @@ func main() {
 	}
 
 	if len(flagConfig) == 0 {
-		flagConfig = _flag.Config{".ls-lint.yml"}
+		// no config files was provided by the --config flag
+
+		// We try the .yaml file first
+		configFile := lsLintConfigFile
+		if _, err := os.Stat(lsLintConfigFileLegacy); err == nil {
+			// but we use the .yml one if it exists
+			configFile = lsLintConfigFileLegacy
+		}
+		flagConfig = _flag.Config{configFile}
 	}
 
 	filesystem := os.DirFS(*flagWorkdir)
