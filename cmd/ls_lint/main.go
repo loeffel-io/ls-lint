@@ -16,7 +16,7 @@ import (
 	_flag "github.com/loeffel-io/ls-lint/v2/internal/flag"
 	"github.com/loeffel-io/ls-lint/v2/internal/linter"
 	"github.com/loeffel-io/ls-lint/v2/internal/rule"
-	"gopkg.in/yaml.v3"
+	"go.yaml.in/yaml/v3"
 )
 
 var Version = "dev"
