@@ -5,5 +5,5 @@ go 1.24
 require (
 	github.com/bmatcuk/doublestar/v4 v4.8.1
 	go.yaml.in/yaml/v3 v3.0.4
-	golang.org/x/sync v0.14.0
+	golang.org/x/sync v0.16.0
 )
