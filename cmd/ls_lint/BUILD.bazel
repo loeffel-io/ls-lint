@@ -13,7 +13,7 @@ go_library(
         "//internal/flag",
         "//internal/linter",
         "//internal/rule",
-        "@in_gopkg_yaml_v3//:yaml_v3",
+        "@in_yaml_go_yaml_v3//:yaml",
     ],
 )
 
