@@ -301,9 +301,46 @@ func TestLinter_Run(t *testing.T) {
 		{
 			description: "defaults",
 			filesystem: fstest.MapFS{
-				"snake_case.png":              &fstest.MapFile{Mode: fs.ModePerm},
-				"kebab-case.jpg":              &fstest.MapFile{Mode: fs.ModePerm},
-				"kabab-case.test.jpg":         &fstest.MapFile{Mode: fs.ModePerm},
+				// these are valid snake_case file names
+				"snake_case.png":     &fstest.MapFile{Mode: fs.ModePerm},
+				"snake_case_123.png": &fstest.MapFile{Mode: fs.ModePerm},
+				"snake123.png":       &fstest.MapFile{Mode: fs.ModePerm},
+				"snake":              &fstest.MapFile{Mode: fs.ModePerm},
+				"123.png":            &fstest.MapFile{Mode: fs.ModePerm},
+
+				// this one is caught by the default rule (kebab-case)
+				"foobar.tmp": &fstest.MapFile{Mode: fs.ModePerm},
+
+				// these are valid kebab-case file names
+				"kebab-case.jpg":      &fstest.MapFile{Mode: fs.ModePerm},
+				"kebab-case-123.jpg":  &fstest.MapFile{Mode: fs.ModePerm},
+				"kebab123.jpg":        &fstest.MapFile{Mode: fs.ModePerm},
+				"kebab.jpg":           &fstest.MapFile{Mode: fs.ModePerm},
+				"123.jpg":             &fstest.MapFile{Mode: fs.ModePerm},
+				"kebab-case.test.jpg": &fstest.MapFile{Mode: fs.ModePerm},
+
+				// these are valid lowercase file names
+				"lowercase.svg":    &fstest.MapFile{Mode: fs.ModePerm},
+				"lowercase123.svg": &fstest.MapFile{Mode: fs.ModePerm},
+				"123.svg":          &fstest.MapFile{Mode: fs.ModePerm},
+
+				// these are valid flatcase file names
+				"flatcase.raw":    &fstest.MapFile{Mode: fs.ModePerm},
+				"flatcase123.raw": &fstest.MapFile{Mode: fs.ModePerm},
+				"123.raw":         &fstest.MapFile{Mode: fs.ModePerm},
+
+				// these are valid PascalCase file names
+				"PascalCase.txt":    &fstest.MapFile{Mode: fs.ModePerm},
+				"PascalCase123.txt": &fstest.MapFile{Mode: fs.ModePerm},
+				"Pascal.txt":        &fstest.MapFile{Mode: fs.ModePerm},
+				"Pascal123.txt":     &fstest.MapFile{Mode: fs.ModePerm},
+				"123.txt":           &fstest.MapFile{Mode: fs.ModePerm},
+
+				// these are valid SCREAMING_SNAKE_CASE file names
+				"SCREAMING_SNAKE_CASE.bmp": &fstest.MapFile{Mode: fs.ModePerm},
+				"SCREAMING123.bmp":         &fstest.MapFile{Mode: fs.ModePerm},
+				"123.bmp":                  &fstest.MapFile{Mode: fs.ModePerm},
+
 				"sub":                         &fstest.MapFile{Mode: fs.ModeDir},
 				"sub/snake_case.png":          &fstest.MapFile{Mode: fs.ModePerm},
 				"sub/kebab-case.jpg":          &fstest.MapFile{Mode: fs.ModePerm},
@@ -320,9 +357,13 @@ func TestLinter_Run(t *testing.T) {
 				".",
 				config.NewConfig(
 					config.Ls{
-						".*":     "kebab-case",
+						".*":     "kebab-case", // default rule
 						".*.jpg": "kebab-case",
 						".png":   "snake_case",
+						".bmp":   "SCREAMING_SNAKE_CASE",
+						".txt":   "PascalCase",
+						".svg":   "lowercase",
+						".raw":   "flatcase",
 						"sub": config.Ls{
 							".*":            "kebab-case",
 							".*.*":          "kebab-case",
@@ -351,7 +392,7 @@ func TestLinter_Run(t *testing.T) {
 			expectedErr: nil,
 			expectedStatistic: &debug.Statistic{
 				Start:     start,
-				Files:     10,
+				Files:     33,
 				FileSkips: 0,
 				Dirs:      2,
 				DirSkips:  1,
