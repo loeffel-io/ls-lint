@@ -11,8 +11,8 @@ An extremely fast directory and filename linter - Bring some structure to your p
 ![npm](https://badgen.net/static/npm%20downloads%20total/9M+/green)
 <a href="https://www.npmjs.com/package/@ls-lint/ls-lint"><img src="https://img.shields.io/npm/l/@ls-lint/ls-lint.svg?sanitize=true" alt="License"></a>
 
-- Minimal setup with simple rules managed in one single or multiple `.ls-lint.yml` files
-- Works for directory and file names - all extensions supported - full unicode support
+- Minimal setup with simple rules managed in one single or multiple `.ls-lint.yaml` (or `.ls-lint.yml`) files
+- Works for directory and file names - all extensions supported - full Unicode support
 - Incredibly fast - lints thousands of files and directories in milliseconds
 - Support for Windows, MacOS and Linux + [NPM Package](https://www.npmjs.com/package/@ls-lint/ls-lint) + [GitHub Action](https://github.com/ls-lint/action) + [Homebrew](https://formulae.brew.sh/formula/ls-lint) + Docker
 - Trusted by [Renovate](https://github.com/renovatebot/renovate/blob/main/.ls-lint.yml), [Terser](https://github.com/terser/terser/blob/master/.ls-lint.yml) and many more
@@ -34,7 +34,7 @@ The full documentation can be found at [ls-lint.org](https://ls-lint.org)
 
 ## Demo
 
-### Configuration `.ls-lint.yml`
+### Configuration `.ls-lint.yaml`
 
 ```yaml
 ls:
