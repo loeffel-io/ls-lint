@@ -13,7 +13,7 @@ jobs:
         GOOGLE_BUCKET: https://storage.googleapis.com/ls-lint-bazel
     steps:
       - run: set -eu
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: google-github-actions/auth@v2
         with:
           credentials_json: ${{ secrets.GOOGLE_CREDENTIALS }}
@@ -36,7 +36,7 @@ jobs:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       GOOGLE_BUCKET: https://storage.googleapis.com/ls-lint-bazel
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: google-github-actions/auth@v2
         with:
           credentials_json: ${{ secrets.GOOGLE_CREDENTIALS }}
@@ -58,7 +58,7 @@ jobs:
       options: --user root
     steps:
       - run: set -eu
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - run: bazel version
       - run: bazel run //:gazelle_fix_diff
         # TODO: https://github.com/aspect-build/rules_lint/issues/567
@@ -75,7 +75,7 @@ jobs:
     if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - shell: bash
         run: bazel version
       - shell: bash
@@ -100,7 +100,7 @@ jobs:
       GOOGLE_BUCKET: https://storage.googleapis.com/ls-lint-bazel
     steps:
       - run: set -eu
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: google-github-actions/auth@v2
         with:
           credentials_json: ${{ secrets.GOOGLE_CREDENTIALS }}
