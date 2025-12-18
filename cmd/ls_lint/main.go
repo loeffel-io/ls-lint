@@ -57,7 +57,17 @@ func main() {
 	}
 
 	if len(flagConfig) == 0 {
-		flagConfig = _flag.Config{".ls-lint.yml"}
+		// Default config file name with .yaml extension
+		configFile := ".ls-lint.yaml"
+		if _, err := os.Stat(configFile); os.IsNotExist(err) {
+			// try to fallback to .yml extension if it exists, otherwise keep .yaml as default
+			altConfigFile := ".ls-lint.yml"
+			if _, err := os.Stat(altConfigFile); err == nil {
+				configFile = altConfigFile
+			}
+		}
+
+		flagConfig = _flag.Config{configFile}
 	}
 
 	filesystem := os.DirFS(*flagWorkdir)
