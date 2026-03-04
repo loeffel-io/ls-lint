@@ -729,6 +729,103 @@ func TestLinter_Run(t *testing.T) {
 				},
 			},
 		},
+		{
+			description: "required",
+			filesystem: fstest.MapFS{
+				"packages":                      &fstest.MapFile{Mode: fs.ModeDir},
+				"packages/my-package":           &fstest.MapFile{Mode: fs.ModeDir},
+				"packages/my-package/AGENTS.md": &fstest.MapFile{Mode: fs.ModePerm},
+			},
+			paths: nil,
+			linter: NewLinter(
+				".",
+				config.NewConfig(
+					config.Ls{
+						"packages": config.Ls{
+							".dir": "required:packages",
+						},
+						"packages/*": config.Ls{
+							".dir": "kebab-case | exists:1",
+							".md":  "required:AGENTS.md",
+						},
+					},
+					[]string{},
+				),
+				&debug.Statistic{
+					Start:     start,
+					Files:     0,
+					FileSkips: 0,
+					Dirs:      0,
+					DirSkips:  0,
+					RWMutex:   new(sync.RWMutex),
+				},
+				[]*rule.Error{},
+			),
+			expectedErr: nil,
+			expectedStatistic: &debug.Statistic{
+				Start:     start,
+				Files:     1,
+				FileSkips: 0,
+				Dirs:      3,
+				DirSkips:  0,
+				RWMutex:   new(sync.RWMutex),
+			},
+			expectedErrors: []*rule.Error{},
+		},
+		{
+			description: "required with error",
+			filesystem: fstest.MapFS{
+				"packages":                 &fstest.MapFile{Mode: fs.ModeDir},
+				"packages/foo":             &fstest.MapFile{Mode: fs.ModeDir},
+				"packages/bar":             &fstest.MapFile{Mode: fs.ModeDir},
+				"packages/bar/AGENTS.md":   &fstest.MapFile{Mode: fs.ModePerm},
+				"packages/bar/another.txt": &fstest.MapFile{Mode: fs.ModePerm},
+			},
+			paths: nil,
+			linter: NewLinter(
+				".",
+				config.NewConfig(
+					config.Ls{
+						"packages": config.Ls{
+							".dir": "required:packages",
+						},
+						"packages/*": config.Ls{
+							".dir": "kebab-case | exists:1",
+							".md":  "required:AGENTS.md",
+						},
+					},
+					[]string{},
+				),
+				&debug.Statistic{
+					Start:     start,
+					Files:     0,
+					FileSkips: 0,
+					Dirs:      0,
+					DirSkips:  0,
+					RWMutex:   new(sync.RWMutex),
+				},
+				[]*rule.Error{},
+			),
+			expectedErr: nil,
+			expectedStatistic: &debug.Statistic{
+				Start:     start,
+				Files:     2,
+				FileSkips: 0,
+				Dirs:      4,
+				DirSkips:  0,
+				RWMutex:   new(sync.RWMutex),
+			},
+			expectedErrors: []*rule.Error{
+				{
+					Path: "packages/foo",
+					Ext:  ".md",
+					Rules: []rule.Rule{
+						new(rule.Required).Init(),
+					},
+					RWMutex: new(sync.RWMutex),
+				},
+			},
+		},
 	}
 
 	i := 0

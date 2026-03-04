@@ -51,6 +51,12 @@ ls:
       .*: exists:0
       .test.ts: regex:${1}
 
+  packages:
+    .dir: required:packages
+  packages/*:
+    .dir: kebab-case | exists:1
+    .md: required:AGENTS.md
+
 ignore:
   - node_modules
 ```

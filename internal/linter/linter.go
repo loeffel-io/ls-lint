@@ -90,11 +90,11 @@ func (linter *Linter) validateDir(index config.RuleIndex, path string, validate 
 
 	for _, ruleDir := range rules[dir] {
 		g.Go(func() error {
-			if ruleDir.GetName() == "exists" && pathDir != indexDir {
+			if (ruleDir.GetName() == "exists" || ruleDir.GetName() == "required") && pathDir != indexDir {
 				return nil
 			}
 
-			valid, err := ruleDir.Validate(basename, pathDir, ruleDir.GetName() != "exists")
+			valid, err := ruleDir.Validate(basename, pathDir, ruleDir.GetName() != "exists" && ruleDir.GetName() != "required")
 			if err != nil {
 				return err
 			}
@@ -142,7 +142,7 @@ func (linter *Linter) validateFile(index config.RuleIndex, path string, validate
 	indexDir, rules := linter.config.GetConfig(index, path)
 
 	var pathDir string
-	pathDir = filepath.ToSlash(filepath.Dir(path)); // compatibility with windows
+	pathDir = filepath.ToSlash(filepath.Dir(path)) // compatibility with windows
 	if pathDir == "." {
 		pathDir = ""
 	}
@@ -169,16 +169,21 @@ func (linter *Linter) validateFile(index config.RuleIndex, path string, validate
 
 		if _, ok := rules[ext]; ok {
 			for _, ruleFile := range rules[ext] {
-				if !validate && ruleFile.GetName() != "exists" {
+				if !validate && ruleFile.GetName() != "exists" && ruleFile.GetName() != "required" {
 					continue
 				}
 
 				g.Go(func() error {
-					if ruleFile.GetName() == "exists" && pathDir != indexDir {
+					if (ruleFile.GetName() == "exists" || ruleFile.GetName() == "required") && pathDir != indexDir {
 						return nil
 					}
 
-					valid, err := ruleFile.Validate(withoutExt, pathDir, ruleFile.GetName() != "exists")
+					value := withoutExt
+					if ruleFile.GetName() == "required" {
+						value = filepath.Base(path)
+					}
+
+					valid, err := ruleFile.Validate(value, pathDir, ruleFile.GetName() != "exists" && ruleFile.GetName() != "required")
 					if err != nil {
 						return err
 					}
@@ -368,7 +373,7 @@ func (linter *Linter) Run(filesystem fs.FS, paths map[string]struct{}, debug boo
 			}
 
 			for _, r := range rules {
-				if r.GetName() != "exists" {
+				if r.GetName() != "exists" && r.GetName() != "required" {
 					continue
 				}
 
