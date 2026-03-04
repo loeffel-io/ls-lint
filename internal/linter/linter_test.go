@@ -742,7 +742,7 @@ func TestLinter_Run(t *testing.T) {
 				config.NewConfig(
 					config.Ls{
 						"packages": config.Ls{
-							".dir": "required:packages",
+							".dir": "required",
 						},
 						"packages/*": config.Ls{
 							".dir": "kebab-case | exists:1",
@@ -787,7 +787,7 @@ func TestLinter_Run(t *testing.T) {
 				config.NewConfig(
 					config.Ls{
 						"packages": config.Ls{
-							".dir": "required:packages",
+							".dir": "required",
 						},
 						"packages/*": config.Ls{
 							".dir": "kebab-case | exists:1",
@@ -821,6 +821,137 @@ func TestLinter_Run(t *testing.T) {
 					Ext:  ".md",
 					Rules: []rule.Rule{
 						new(rule.Required).Init(),
+					},
+					RWMutex: new(sync.RWMutex),
+				},
+			},
+		},
+		{
+			description: "required with paths and bypass error",
+			filesystem: fstest.MapFS{
+				"packages":                     &fstest.MapFile{Mode: fs.ModeDir},
+				"packages/foo":                 &fstest.MapFile{Mode: fs.ModeDir},
+				"packages/bar":                 &fstest.MapFile{Mode: fs.ModeDir},
+				"packages/bar/AGENTS.md":       &fstest.MapFile{Mode: fs.ModePerm},
+				"packages/bar/another_file.md": &fstest.MapFile{Mode: fs.ModePerm},
+			},
+			paths: map[string]struct{}{
+				"packages/bar/AGENTS.md": {},
+			},
+			linter: NewLinter(
+				".",
+				config.NewConfig(
+					config.Ls{
+						"packages": config.Ls{
+							".dir": "required",
+						},
+						"packages/*": config.Ls{
+							".dir": "kebab-case | exists:1",
+							".md":  "required:AGENTS.md | exists:1-2",
+						},
+					},
+					[]string{},
+				),
+				&debug.Statistic{
+					Start:     start,
+					Files:     0,
+					FileSkips: 0,
+					Dirs:      0,
+					DirSkips:  0,
+					RWMutex:   new(sync.RWMutex),
+				},
+				[]*rule.Error{},
+			),
+			expectedErr: nil,
+			expectedStatistic: &debug.Statistic{
+				Start:     start,
+				Files:     2,
+				FileSkips: 0,
+				Dirs:      4,
+				DirSkips:  0,
+				RWMutex:   new(sync.RWMutex),
+			},
+			expectedErrors: []*rule.Error{},
+		},
+		{
+			description: "required with exists combined error",
+			filesystem: fstest.MapFS{
+				"packages":          &fstest.MapFile{Mode: fs.ModeDir},
+				"packages/foo":      &fstest.MapFile{Mode: fs.ModeDir},
+				"packages/foo/B.md": &fstest.MapFile{Mode: fs.ModePerm},
+				"packages/bar":      &fstest.MapFile{Mode: fs.ModeDir},
+				"packages/bar/C.md": &fstest.MapFile{Mode: fs.ModePerm},
+				"packages/bar/D.md": &fstest.MapFile{Mode: fs.ModePerm},
+				"packages/bar/E.md": &fstest.MapFile{Mode: fs.ModePerm},
+			},
+			paths: nil,
+			linter: NewLinter(
+				".",
+				config.NewConfig(
+					config.Ls{
+						"packages": config.Ls{
+							".dir": "required",
+						},
+						"packages/*": config.Ls{
+							".dir": "kebab-case | exists:1",
+							".md":  "required:AGENTS.md | exists:1-2",
+						},
+					},
+					[]string{},
+				),
+				&debug.Statistic{
+					Start:     start,
+					Files:     0,
+					FileSkips: 0,
+					Dirs:      0,
+					DirSkips:  0,
+					RWMutex:   new(sync.RWMutex),
+				},
+				[]*rule.Error{},
+			),
+			expectedErr: nil,
+			expectedStatistic: &debug.Statistic{
+				Start:     start,
+				Files:     4,
+				FileSkips: 0,
+				Dirs:      4,
+				DirSkips:  0,
+				RWMutex:   new(sync.RWMutex),
+			},
+			expectedErrors: []*rule.Error{
+				{
+					Path: "packages/bar",
+					Ext:  ".md",
+					Rules: []rule.Rule{
+						func() rule.Rule {
+							r := new(rule.Required).Init()
+							_ = r.SetParameters([]string{"AGENTS.md"})
+							return r
+						}(),
+					},
+					RWMutex: new(sync.RWMutex),
+				},
+				{
+					Path: "packages/bar",
+					Ext:  ".md",
+					Rules: []rule.Rule{
+						func() rule.Rule {
+							r := new(rule.Exists).Init()
+							_ = r.SetParameters([]string{"1-2"})
+							return r
+						}(),
+					},
+					RWMutex: new(sync.RWMutex),
+				},
+				{
+					Path: "packages/foo",
+					Ext:  ".md",
+					Rules: []rule.Rule{
+						func() rule.Rule {
+							r := new(rule.Required).Init()
+							_ = r.SetParameters([]string{"AGENTS.md"})
+							return r
+						}(),
 					},
 					RWMutex: new(sync.RWMutex),
 				},

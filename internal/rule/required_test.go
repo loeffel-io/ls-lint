@@ -13,8 +13,9 @@ func TestRequired_GetParameters(t *testing.T) {
 		expected []string
 		err      string
 	}{
+		{params: []string{}, expected: []string{}, err: ""},
 		{params: []string{"AGENTS.md"}, expected: []string{"AGENTS.md"}, err: ""},
-		{params: []string{""}, expected: []string{""}, err: "required value is empty"},
+		{params: []string{""}, expected: []string{}, err: "required value is empty"},
 	}
 
 	testIndex := 0
@@ -46,8 +47,10 @@ func TestRequired_Validate(t *testing.T) {
 		valid bool
 		err   error
 	}{
+		{rule: &Required{name: "required", exclusive: true, value: "", count: 0, RWMutex: new(sync.RWMutex)}, value: "README.md", fail: false, count: 1, valid: true, err: nil},
 		{rule: &Required{name: "required", exclusive: true, value: "AGENTS.md", count: 0, RWMutex: new(sync.RWMutex)}, value: "README.md", fail: false, count: 0, valid: true, err: nil},
 		{rule: &Required{name: "required", exclusive: true, value: "AGENTS.md", count: 0, RWMutex: new(sync.RWMutex)}, value: "AGENTS.md", fail: false, count: 1, valid: true, err: nil},
+		{rule: &Required{name: "required", exclusive: true, value: "", count: 0, RWMutex: new(sync.RWMutex)}, value: "", fail: true, count: 0, valid: false, err: nil},
 		{rule: &Required{name: "required", exclusive: true, value: "AGENTS.md", count: 0, RWMutex: new(sync.RWMutex)}, value: "", fail: true, count: 0, valid: false, err: nil},
 		{rule: &Required{name: "required", exclusive: true, value: "AGENTS.md", count: 1, RWMutex: new(sync.RWMutex)}, value: "", fail: true, count: 1, valid: true, err: nil},
 	}
@@ -72,5 +75,22 @@ func TestRequired_Validate(t *testing.T) {
 		}
 
 		testIndex++
+	}
+}
+
+func TestRequired_SetParametersErrorDoesNotMutateValue(t *testing.T) {
+	r := new(Required).Init()
+
+	if err := r.SetParameters([]string{"AGENTS.md"}); err != nil {
+		t.Fatalf("unexpected error setting initial parameter: %v", err)
+	}
+
+	if err := r.SetParameters([]string{""}); err == nil {
+		t.Fatal("expected error for empty required value")
+	}
+
+	params := r.GetParameters()
+	if !reflect.DeepEqual(params, []string{"AGENTS.md"}) {
+		t.Fatalf("expected parameters to remain unchanged after error, got: %+v", params)
 	}
 }

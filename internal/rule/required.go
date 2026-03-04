@@ -34,7 +34,8 @@ func (rule *Required) SetParameters(params []string) error {
 	defer rule.Unlock()
 
 	if len(params) == 0 {
-		return fmt.Errorf("required value does not exist")
+		rule.value = ""
+		return nil
 	}
 
 	if params[0] == "" {
@@ -47,6 +48,10 @@ func (rule *Required) SetParameters(params []string) error {
 }
 
 func (rule *Required) GetParameters() []string {
+	if rule.getValue() == "" {
+		return []string{}
+	}
+
 	return []string{rule.getValue()}
 }
 
@@ -59,7 +64,7 @@ func (rule *Required) GetExclusive() bool {
 
 func (rule *Required) Validate(value string, _ string, fail bool) (bool, error) {
 	if !fail {
-		if value == rule.getValue() {
+		if rule.getValue() == "" || value == rule.getValue() {
 			rule.incrementCount()
 		}
 
@@ -91,6 +96,10 @@ func (rule *Required) incrementCount() {
 }
 
 func (rule *Required) GetErrorMessage() string {
+	if rule.getValue() == "" {
+		return fmt.Sprintf("%s (found %d)", rule.GetName(), rule.getCount())
+	}
+
 	return fmt.Sprintf("%s:%s (found %d)", rule.GetName(), rule.getValue(), rule.getCount())
 }
 
