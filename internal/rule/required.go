@@ -34,7 +34,7 @@ func (rule *Required) SetParameters(params []string) error {
 	defer rule.Unlock()
 
 	if len(params) == 0 {
-		return fmt.Errorf("required value not exists")
+		return fmt.Errorf("required value does not exist")
 	}
 
 	if params[0] == "" {
