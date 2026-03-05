@@ -75,6 +75,17 @@ ls:
     .md: required:AGENTS.md
 ```
 
+`exists` controls count constraints for matching entries in scope:
+
+- `exists:0` - must not exist (exactly zero matches)
+- `exists:1` - must exist exactly once
+- `exists:1-4` - must exist within a range
+- `exists` - shorthand for at least one match (`exists:1-32767`)
+
+`required:<name>` differs from `exists` because it enforces a specific filename/directory
+(`required:AGENTS.md`), while `exists` only validates counts of whatever matched the extension
+rule (for example, any `.md` files).
+
 ### Result
 
 <img src="https://i.imgur.com/pxXkYcl.gif" alt="command" width="600">
