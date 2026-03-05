@@ -94,3 +94,15 @@ func TestRequired_SetParametersErrorDoesNotMutateValue(t *testing.T) {
 		t.Fatalf("expected parameters to remain unchanged after error, got: %+v", params)
 	}
 }
+
+func TestRequired_GetErrorMessage(t *testing.T) {
+	requiredAny := &Required{name: "required", value: "", count: 0, RWMutex: new(sync.RWMutex)}
+	if message := requiredAny.GetErrorMessage(); message != "required (found 0)" {
+		t.Fatalf("unexpected shorthand error message: %s", message)
+	}
+
+	requiredValue := &Required{name: "required", value: "AGENTS.md", count: 0, RWMutex: new(sync.RWMutex)}
+	if message := requiredValue.GetErrorMessage(); message != "required:AGENTS.md (found 0)" {
+		t.Fatalf("unexpected valued error message: %s", message)
+	}
+}

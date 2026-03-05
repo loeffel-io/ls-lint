@@ -96,6 +96,8 @@ func (rule *Required) incrementCount() {
 }
 
 func (rule *Required) GetErrorMessage() string {
+	// For shorthand `required` usage (without a specific filename/dirname),
+	// omit the value segment and report only the observed count.
 	if rule.getValue() == "" {
 		return fmt.Sprintf("%s (found %d)", rule.GetName(), rule.getCount())
 	}

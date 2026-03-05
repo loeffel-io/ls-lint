@@ -61,6 +61,20 @@ ignore:
   - node_modules
 ```
 
+`required` can be used in two forms:
+
+- `required` - shorthand that enforces at least one matching entry in scope
+- `required:<name>` - enforces a specific file or directory name
+
+```yaml
+ls:
+  packages:
+    .dir: required
+
+  packages/*:
+    .md: required:AGENTS.md
+```
+
 ### Result
 
 <img src="https://i.imgur.com/pxXkYcl.gif" alt="command" width="600">

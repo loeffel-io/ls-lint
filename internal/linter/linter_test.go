@@ -1012,7 +1012,19 @@ func TestLinter_Run(t *testing.T) {
 			var k int
 			var tmpRule rule.Rule
 			for k, tmpRule = range tmpError.GetRules() {
-				if tmpRule.GetName() != test.expectedErrors[j].GetRules()[k].GetName() {
+				expectedRule := test.expectedErrors[j].GetRules()[k]
+				if tmpRule.GetName() != expectedRule.GetName() {
+					t.Error(equalErrorsErr)
+					return
+				}
+
+				expectedRuleParameters := expectedRule.GetParameters()
+				compareRuleParameters := len(expectedRuleParameters) > 0
+				if tmpRule.GetName() == "exists" && reflect.DeepEqual(expectedRuleParameters, new(rule.Exists).Init().GetParameters()) {
+					compareRuleParameters = false
+				}
+
+				if compareRuleParameters && !reflect.DeepEqual(tmpRule.GetParameters(), expectedRuleParameters) {
 					t.Error(equalErrorsErr)
 					return
 				}
