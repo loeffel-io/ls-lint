@@ -82,9 +82,16 @@ ls:
 - `exists:1-4` - must exist within a range
 - `exists` - shorthand for at least one match (`exists:1-32767`)
 
-`required:<name>` differs from `exists` because it enforces a specific filename/directory
-(`required:AGENTS.md`), while `exists` only validates counts of whatever matched the extension
-rule (for example, any `.md` files).
+You can also apply `exists` to an explicit file key:
+
+```yaml
+ls:
+  packages/*:
+    AGENTS.md: exists:1
+```
+
+`required:<name>` remains available as a concise way to enforce a specific
+filename/directory on broader keys (for example, `.md: required:AGENTS.md`).
 
 ### Result
 

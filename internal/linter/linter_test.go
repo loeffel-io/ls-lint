@@ -730,6 +730,91 @@ func TestLinter_Run(t *testing.T) {
 			},
 		},
 		{
+			description: "exists with explicit file key",
+			filesystem: fstest.MapFS{
+				"pkg":           &fstest.MapFile{Mode: fs.ModeDir},
+				"pkg/AGENTS.md": &fstest.MapFile{Mode: fs.ModePerm},
+			},
+			paths: nil,
+			linter: NewLinter(
+				".",
+				config.NewConfig(
+					config.Ls{
+						"pkg": config.Ls{
+							"AGENTS.md": "exists:1",
+						},
+					},
+					[]string{},
+				),
+				&debug.Statistic{
+					Start:     start,
+					Files:     0,
+					FileSkips: 0,
+					Dirs:      0,
+					DirSkips:  0,
+					RWMutex:   new(sync.RWMutex),
+				},
+				[]*rule.Error{},
+			),
+			expectedErr: nil,
+			expectedStatistic: &debug.Statistic{
+				Start:     start,
+				Files:     1,
+				FileSkips: 0,
+				Dirs:      2,
+				DirSkips:  0,
+				RWMutex:   new(sync.RWMutex),
+			},
+			expectedErrors: []*rule.Error{},
+		},
+		{
+			description: "exists with explicit file key error",
+			filesystem: fstest.MapFS{
+				"pkg":           &fstest.MapFile{Mode: fs.ModeDir},
+				"pkg/README.md": &fstest.MapFile{Mode: fs.ModePerm},
+			},
+			paths: nil,
+			linter: NewLinter(
+				".",
+				config.NewConfig(
+					config.Ls{
+						"pkg": config.Ls{
+							"AGENTS.md": "exists:1",
+						},
+					},
+					[]string{},
+				),
+				&debug.Statistic{
+					Start:     start,
+					Files:     0,
+					FileSkips: 0,
+					Dirs:      0,
+					DirSkips:  0,
+					RWMutex:   new(sync.RWMutex),
+				},
+				[]*rule.Error{},
+			),
+			expectedErr: nil,
+			expectedStatistic: &debug.Statistic{
+				Start:     start,
+				Files:     1,
+				FileSkips: 0,
+				Dirs:      2,
+				DirSkips:  0,
+				RWMutex:   new(sync.RWMutex),
+			},
+			expectedErrors: []*rule.Error{
+				{
+					Path: "pkg",
+					Ext:  "AGENTS.md",
+					Rules: []rule.Rule{
+						new(rule.Exists).Init(),
+					},
+					RWMutex: new(sync.RWMutex),
+				},
+			},
+		},
+		{
 			description: "required",
 			filesystem: fstest.MapFS{
 				"packages":                      &fstest.MapFile{Mode: fs.ModeDir},

@@ -138,7 +138,8 @@ func (linter *Linter) validateFile(index config.RuleIndex, path string, validate
 	var rulesNonExclusiveError int8
 	rulesMutex := new(sync.Mutex)
 
-	exts := strings.Split(filepath.Base(path), extSep)[1:]
+	basename := filepath.Base(path)
+	exts := strings.Split(basename, extSep)[1:]
 	indexDir, rules := linter.config.GetConfig(index, path)
 
 	var pathDir string
@@ -147,62 +148,72 @@ func (linter *Linter) validateFile(index config.RuleIndex, path string, validate
 		pathDir = ""
 	}
 
-	n := len(exts)
-	maxCombinations := int(math.Pow(2, float64(n))) // 2^N combinations
+	withoutExt := basename
+	if len(exts) > 0 {
+		withoutExt = strings.TrimSuffix(basename, fmt.Sprintf("%s%s", extSep, strings.Join(exts, extSep)))
+	}
 
-	var withoutExt string
-	for i := 0; i < maxCombinations; i++ {
-		combination := make([]string, n)
-		for j := 0; j < n; j++ {
-			if i&(1<<(n-1-j)) == 0 { // from left to right; right to left: i&(1<<j)
-				combination[j] = exts[j] // Keep original
-			} else {
-				combination[j] = "*" // Replace with "*"
-			}
-		}
+	matchedRule := false
+	if _, ok := rules[basename]; ok {
+		ext = basename
+		matchedRule = true
+	} else {
+		n := len(exts)
+		maxCombinations := int(math.Pow(2, float64(n))) // 2^N combinations
 
-		ext = fmt.Sprintf("%s%s", extSep, strings.Join(combination, extSep))
-
-		if i == 0 {
-			withoutExt = strings.TrimSuffix(filepath.Base(path), ext)
-		}
-
-		if _, ok := rules[ext]; ok {
-			for _, ruleFile := range rules[ext] {
-				if !validate && ruleFile.GetName() != "exists" && ruleFile.GetName() != "required" {
-					continue
+		for i := 0; i < maxCombinations; i++ {
+			combination := make([]string, n)
+			for j := 0; j < n; j++ {
+				if i&(1<<(n-1-j)) == 0 { // from left to right; right to left: i&(1<<j)
+					combination[j] = exts[j] // Keep original
+				} else {
+					combination[j] = "*" // Replace with "*"
 				}
-
-				g.Go(func() error {
-					if (ruleFile.GetName() == "exists" || ruleFile.GetName() == "required") && pathDir != indexDir {
-						return nil
-					}
-
-					value := withoutExt
-					if ruleFile.GetName() == "required" {
-						value = filepath.Base(path)
-					}
-
-					valid, err := ruleFile.Validate(value, pathDir, ruleFile.GetName() != "exists" && ruleFile.GetName() != "required")
-					if err != nil {
-						return err
-					}
-
-					if !ruleFile.GetExclusive() {
-						rulesMutex.Lock()
-						rulesNonExclusiveCount++
-						if !valid {
-							rulesNonExclusiveError++
-						}
-						rulesMutex.Unlock()
-					}
-
-					return nil
-				})
 			}
 
-			break
+			ext = fmt.Sprintf("%s%s", extSep, strings.Join(combination, extSep))
+			if _, ok := rules[ext]; ok {
+				matchedRule = true
+				break
+			}
 		}
+	}
+
+	if !matchedRule {
+		return indexDir, ext, nil
+	}
+
+	for _, ruleFile := range rules[ext] {
+		if !validate && ruleFile.GetName() != "exists" && ruleFile.GetName() != "required" {
+			continue
+		}
+
+		g.Go(func() error {
+			if (ruleFile.GetName() == "exists" || ruleFile.GetName() == "required") && pathDir != indexDir {
+				return nil
+			}
+
+			value := withoutExt
+			if ruleFile.GetName() == "required" {
+				value = basename
+			}
+
+			valid, err := ruleFile.Validate(value, pathDir, ruleFile.GetName() != "exists" && ruleFile.GetName() != "required")
+			if err != nil {
+				return err
+			}
+
+			if !ruleFile.GetExclusive() {
+				rulesMutex.Lock()
+				rulesNonExclusiveCount++
+				if !valid {
+					rulesNonExclusiveError++
+				}
+				rulesMutex.Unlock()
+			}
+
+			return nil
+		})
 	}
 
 	if err := g.Wait(); err != nil {
