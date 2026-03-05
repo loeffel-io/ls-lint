@@ -84,32 +84,57 @@ func (linter *Linter) validateDir(index config.RuleIndex, path string, validate 
 		return indexDir, dir, nil
 	}
 
-	if _, exists := rules[dir]; !exists {
+	ruleKeys := []string{}
+	if _, exists := rules[dir]; exists {
+		ruleKeys = append(ruleKeys, dir)
+	}
+
+	if _, exists := rules[basename]; exists {
+		ruleKeys = append(ruleKeys, basename)
+	}
+
+	if len(ruleKeys) == 0 {
 		return indexDir, dir, nil
 	}
 
-	for _, ruleDir := range rules[dir] {
-		g.Go(func() error {
-			if (ruleDir.GetName() == "exists" || ruleDir.GetName() == "required") && pathDir != indexDir {
-				return nil
-			}
+	for _, ruleKeyName := range ruleKeys {
+		for _, ruleDir := range rules[ruleKeyName] {
+			g.Go(func() error {
+				if ruleDir.GetName() == "exists" {
+					switch ruleKeyName {
+					case dir:
+						if pathDir != indexDir {
+							return nil
+						}
+					default:
+						parentDir := filepath.ToSlash(filepath.Dir(pathDir))
+						if parentDir == "." {
+							parentDir = ""
+						}
 
-			valid, err := ruleDir.Validate(basename, pathDir, ruleDir.GetName() != "exists" && ruleDir.GetName() != "required")
-			if err != nil {
-				return err
-			}
-
-			if !ruleDir.GetExclusive() {
-				rulesMutex.Lock()
-				rulesNonExclusiveCount++
-				if !valid {
-					rulesNonExclusiveError++
+						if parentDir != indexDir {
+							return nil
+						}
+					}
 				}
-				rulesMutex.Unlock()
-			}
 
-			return nil
-		})
+				valid, err := ruleDir.Validate(basename, pathDir, ruleDir.GetName() != "exists")
+				if err != nil {
+					return err
+				}
+
+				if !ruleDir.GetExclusive() {
+					rulesMutex.Lock()
+					rulesNonExclusiveCount++
+					if !valid {
+						rulesNonExclusiveError++
+					}
+					rulesMutex.Unlock()
+				}
+
+				return nil
+			})
+		}
 	}
 
 	if err := g.Wait(); err != nil {
@@ -120,14 +145,24 @@ func (linter *Linter) validateDir(index config.RuleIndex, path string, validate 
 		return indexDir, dir, nil
 	}
 
+	ruleKey := dir
+	if len(ruleKeys) == 1 && ruleKeys[0] == basename {
+		ruleKey = basename
+	}
+
+	relevantRules := rules[ruleKey]
+	if len(ruleKeys) == 2 {
+		relevantRules = append(rules[dir], rules[basename]...)
+	}
+
 	linter.AddError(&rule.Error{
 		Path:    path,
-		Ext:     dir,
-		Rules:   rules[dir],
+		Ext:     ruleKey,
+		Rules:   relevantRules,
 		RWMutex: new(sync.RWMutex),
 	})
 
-	return indexDir, dir, nil
+	return indexDir, ruleKey, nil
 }
 
 func (linter *Linter) validateFile(index config.RuleIndex, path string, validate bool) (string, string, error) {
@@ -184,21 +219,16 @@ func (linter *Linter) validateFile(index config.RuleIndex, path string, validate
 	}
 
 	for _, ruleFile := range rules[ext] {
-		if !validate && ruleFile.GetName() != "exists" && ruleFile.GetName() != "required" {
+		if !validate && ruleFile.GetName() != "exists" {
 			continue
 		}
 
 		g.Go(func() error {
-			if (ruleFile.GetName() == "exists" || ruleFile.GetName() == "required") && pathDir != indexDir {
+			if ruleFile.GetName() == "exists" && pathDir != indexDir {
 				return nil
 			}
 
-			value := withoutExt
-			if ruleFile.GetName() == "required" {
-				value = basename
-			}
-
-			valid, err := ruleFile.Validate(value, pathDir, ruleFile.GetName() != "exists" && ruleFile.GetName() != "required")
+			valid, err := ruleFile.Validate(withoutExt, pathDir, ruleFile.GetName() != "exists")
 			if err != nil {
 				return err
 			}
@@ -384,7 +414,7 @@ func (linter *Linter) Run(filesystem fs.FS, paths map[string]struct{}, debug boo
 			}
 
 			for _, r := range rules {
-				if r.GetName() != "exists" && r.GetName() != "required" {
+				if r.GetName() != "exists" {
 					continue
 				}
 

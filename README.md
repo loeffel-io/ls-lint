@@ -52,27 +52,13 @@ ls:
       .test.ts: regex:${1}
 
   packages:
-    .dir: required
+    .dir: exists
   packages/*:
     .dir: kebab-case | exists:1
-    .md: required:AGENTS.md
+    AGENTS.md: exists:1
 
 ignore:
   - node_modules
-```
-
-`required` can be used in two forms:
-
-- `required` - shorthand that enforces at least one matching entry in scope
-- `required:<name>` - enforces a specific file or directory name
-
-```yaml
-ls:
-  packages:
-    .dir: required
-
-  packages/*:
-    .md: required:AGENTS.md
 ```
 
 `exists` controls count constraints for matching entries in scope:
@@ -90,8 +76,13 @@ ls:
     AGENTS.md: exists:1
 ```
 
-`required:<name>` remains available as a concise way to enforce a specific
-filename/directory on broader keys (for example, `.md: required:AGENTS.md`).
+You can also apply `exists` to an explicit directory key:
+
+```yaml
+ls:
+  packages/*:
+    src: exists:1
+```
 
 ### Result
 

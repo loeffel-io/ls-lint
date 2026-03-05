@@ -815,7 +815,106 @@ func TestLinter_Run(t *testing.T) {
 			},
 		},
 		{
-			description: "required",
+			description: "exists with explicit dir key",
+			filesystem: fstest.MapFS{
+				"packages":         &fstest.MapFile{Mode: fs.ModeDir},
+				"packages/app":     &fstest.MapFile{Mode: fs.ModeDir},
+				"packages/app/src": &fstest.MapFile{Mode: fs.ModeDir},
+			},
+			paths: nil,
+			linter: NewLinter(
+				".",
+				config.NewConfig(
+					config.Ls{
+						"packages": config.Ls{
+							".dir": "exists",
+						},
+						"packages/*": config.Ls{
+							".dir": "exists:1",
+							"src":  "exists:1",
+						},
+					},
+					[]string{},
+				),
+				&debug.Statistic{
+					Start:     start,
+					Files:     0,
+					FileSkips: 0,
+					Dirs:      0,
+					DirSkips:  0,
+					RWMutex:   new(sync.RWMutex),
+				},
+				[]*rule.Error{},
+			),
+			expectedErr: nil,
+			expectedStatistic: &debug.Statistic{
+				Start:     start,
+				Files:     0,
+				FileSkips: 0,
+				Dirs:      4,
+				DirSkips:  0,
+				RWMutex:   new(sync.RWMutex),
+			},
+			expectedErrors: []*rule.Error{},
+		},
+		{
+			description: "exists with explicit dir key error",
+			filesystem: fstest.MapFS{
+				"packages":         &fstest.MapFile{Mode: fs.ModeDir},
+				"packages/app":     &fstest.MapFile{Mode: fs.ModeDir},
+				"packages/app/lib": &fstest.MapFile{Mode: fs.ModeDir},
+			},
+			paths: nil,
+			linter: NewLinter(
+				".",
+				config.NewConfig(
+					config.Ls{
+						"packages": config.Ls{
+							".dir": "exists",
+						},
+						"packages/*": config.Ls{
+							".dir": "exists:1",
+							"src":  "exists:1",
+						},
+					},
+					[]string{},
+				),
+				&debug.Statistic{
+					Start:     start,
+					Files:     0,
+					FileSkips: 0,
+					Dirs:      0,
+					DirSkips:  0,
+					RWMutex:   new(sync.RWMutex),
+				},
+				[]*rule.Error{},
+			),
+			expectedErr: nil,
+			expectedStatistic: &debug.Statistic{
+				Start:     start,
+				Files:     0,
+				FileSkips: 0,
+				Dirs:      4,
+				DirSkips:  0,
+				RWMutex:   new(sync.RWMutex),
+			},
+			expectedErrors: []*rule.Error{
+				{
+					Path: "packages/app",
+					Ext:  "src",
+					Rules: []rule.Rule{
+						func() rule.Rule {
+							r := new(rule.Exists).Init()
+							_ = r.SetParameters([]string{"1"})
+							return r
+						}(),
+					},
+					RWMutex: new(sync.RWMutex),
+				},
+			},
+		},
+		{
+			description: "exists supports explicit mandatory keys",
 			filesystem: fstest.MapFS{
 				"packages":                      &fstest.MapFile{Mode: fs.ModeDir},
 				"packages/my-package":           &fstest.MapFile{Mode: fs.ModeDir},
@@ -827,11 +926,11 @@ func TestLinter_Run(t *testing.T) {
 				config.NewConfig(
 					config.Ls{
 						"packages": config.Ls{
-							".dir": "required",
+							".dir": "exists",
 						},
 						"packages/*": config.Ls{
-							".dir": "kebab-case | exists:1",
-							".md":  "required:AGENTS.md",
+							".dir":      "kebab-case | exists:1",
+							"AGENTS.md": "exists:1",
 						},
 					},
 					[]string{},
@@ -858,7 +957,7 @@ func TestLinter_Run(t *testing.T) {
 			expectedErrors: []*rule.Error{},
 		},
 		{
-			description: "required with error",
+			description: "exists explicit file key with error",
 			filesystem: fstest.MapFS{
 				"packages":                 &fstest.MapFile{Mode: fs.ModeDir},
 				"packages/foo":             &fstest.MapFile{Mode: fs.ModeDir},
@@ -872,11 +971,11 @@ func TestLinter_Run(t *testing.T) {
 				config.NewConfig(
 					config.Ls{
 						"packages": config.Ls{
-							".dir": "required",
+							".dir": "exists",
 						},
 						"packages/*": config.Ls{
-							".dir": "kebab-case | exists:1",
-							".md":  "required:AGENTS.md",
+							".dir":      "kebab-case | exists:1",
+							"AGENTS.md": "exists:1",
 						},
 					},
 					[]string{},
@@ -903,16 +1002,20 @@ func TestLinter_Run(t *testing.T) {
 			expectedErrors: []*rule.Error{
 				{
 					Path: "packages/foo",
-					Ext:  ".md",
+					Ext:  "AGENTS.md",
 					Rules: []rule.Rule{
-						new(rule.Required).Init(),
+						func() rule.Rule {
+							r := new(rule.Exists).Init()
+							_ = r.SetParameters([]string{"1"})
+							return r
+						}(),
 					},
 					RWMutex: new(sync.RWMutex),
 				},
 			},
 		},
 		{
-			description: "required with paths and bypass error",
+			description: "exists explicit file key with paths and bypass error",
 			filesystem: fstest.MapFS{
 				"packages":                     &fstest.MapFile{Mode: fs.ModeDir},
 				"packages/foo":                 &fstest.MapFile{Mode: fs.ModeDir},
@@ -928,11 +1031,12 @@ func TestLinter_Run(t *testing.T) {
 				config.NewConfig(
 					config.Ls{
 						"packages": config.Ls{
-							".dir": "required",
+							".dir": "exists",
 						},
 						"packages/*": config.Ls{
-							".dir": "kebab-case | exists:1",
-							".md":  "required:AGENTS.md | exists:1-2",
+							".dir":      "kebab-case | exists:1",
+							"AGENTS.md": "exists:1",
+							".md":       "exists:1-2",
 						},
 					},
 					[]string{},
@@ -959,7 +1063,7 @@ func TestLinter_Run(t *testing.T) {
 			expectedErrors: []*rule.Error{},
 		},
 		{
-			description: "required with exists combined error",
+			description: "exists explicit file key with range combined error",
 			filesystem: fstest.MapFS{
 				"packages":          &fstest.MapFile{Mode: fs.ModeDir},
 				"packages/foo":      &fstest.MapFile{Mode: fs.ModeDir},
@@ -975,11 +1079,12 @@ func TestLinter_Run(t *testing.T) {
 				config.NewConfig(
 					config.Ls{
 						"packages": config.Ls{
-							".dir": "required",
+							".dir": "exists",
 						},
 						"packages/*": config.Ls{
-							".dir": "kebab-case | exists:1",
-							".md":  "required:AGENTS.md | exists:1-2",
+							".dir":      "kebab-case | exists:1",
+							"AGENTS.md": "exists:1",
+							".md":       "exists:1-2",
 						},
 					},
 					[]string{},
@@ -1006,11 +1111,11 @@ func TestLinter_Run(t *testing.T) {
 			expectedErrors: []*rule.Error{
 				{
 					Path: "packages/bar",
-					Ext:  ".md",
+					Ext:  "AGENTS.md",
 					Rules: []rule.Rule{
 						func() rule.Rule {
-							r := new(rule.Required).Init()
-							_ = r.SetParameters([]string{"AGENTS.md"})
+							r := new(rule.Exists).Init()
+							_ = r.SetParameters([]string{"1"})
 							return r
 						}(),
 					},
@@ -1030,11 +1135,11 @@ func TestLinter_Run(t *testing.T) {
 				},
 				{
 					Path: "packages/foo",
-					Ext:  ".md",
+					Ext:  "AGENTS.md",
 					Rules: []rule.Rule{
 						func() rule.Rule {
-							r := new(rule.Required).Init()
-							_ = r.SetParameters([]string{"AGENTS.md"})
+							r := new(rule.Exists).Init()
+							_ = r.SetParameters([]string{"1"})
 							return r
 						}(),
 					},

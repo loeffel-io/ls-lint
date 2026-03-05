@@ -4,7 +4,6 @@ var RulesIndex = map[string]Rule{
 	"lowercase": new(Lowercase).Init(),
 	"regex":     new(Regex).Init(),
 	"exists":    new(Exists).Init(),
-	"required":  new(Required).Init(),
 
 	"camelcase":          new(CamelCase).Init(),
 	"pascalcase":         new(PascalCase).Init(),
@@ -17,7 +16,6 @@ var Rules = map[string]Rule{
 	"lowercase": RulesIndex["lowercase"],
 	"regex":     RulesIndex["regex"],
 	"exists":    RulesIndex["exists"],
-	"required":  RulesIndex["required"],
 
 	"camelcase": RulesIndex["camelcase"],
 	"camelCase": RulesIndex["camelcase"],
