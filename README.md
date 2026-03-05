@@ -84,6 +84,35 @@ ls:
     src: exists:1
 ```
 
+### Monorepo TypeScript/Next.js style example
+
+```yaml
+ls:
+  packages:
+    .dir: kebab-case
+
+  packages/*:
+    .md: regex:(AGENTS|README|CLAUDE|GEMINI)
+    AGENTS.md: exists:1
+    README.md: exists:1
+    src: exists:1
+
+  packages/ui/src/components:
+    .dir: kebab-case | exists
+    .tsx: exists:0
+
+  packages/ui/src/components/*:
+    .tsx: regex:${0} | exists:1
+    .test.tsx: regex:${0} | exists:1
+```
+
+This ensures each package can only use whitelisted markdown files, requires
+`AGENTS.md`, `README.md`, and a `src` directory, and enforces folder-based UI
+components with paired component/test naming.
+
+This relies on explicit basename `exists` keys (for example `README.md: exists:1`
+and `src: exists:1`), which are required for this exact policy shape.
+
 ### Result
 
 <img src="https://i.imgur.com/pxXkYcl.gif" alt="command" width="600">

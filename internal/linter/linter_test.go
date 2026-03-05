@@ -1147,6 +1147,172 @@ func TestLinter_Run(t *testing.T) {
 				},
 			},
 		},
+		{
+			description: "exists monorepo typescript ui example",
+			filesystem: fstest.MapFS{
+				"packages":                                          &fstest.MapFile{Mode: fs.ModeDir},
+				"packages/ui":                                       &fstest.MapFile{Mode: fs.ModeDir},
+				"packages/ui/AGENTS.md":                             &fstest.MapFile{Mode: fs.ModePerm},
+				"packages/ui/README.md":                             &fstest.MapFile{Mode: fs.ModePerm},
+				"packages/ui/CLAUDE.md":                             &fstest.MapFile{Mode: fs.ModePerm},
+				"packages/ui/src":                                   &fstest.MapFile{Mode: fs.ModeDir},
+				"packages/ui/src/components":                        &fstest.MapFile{Mode: fs.ModeDir},
+				"packages/ui/src/components/button":                 &fstest.MapFile{Mode: fs.ModeDir},
+				"packages/ui/src/components/button/button.tsx":      &fstest.MapFile{Mode: fs.ModePerm},
+				"packages/ui/src/components/button/button.test.tsx": &fstest.MapFile{Mode: fs.ModePerm},
+			},
+			paths: nil,
+			linter: NewLinter(
+				".",
+				config.NewConfig(
+					config.Ls{
+						"packages": config.Ls{
+							".dir": "kebab-case",
+						},
+						"packages/*": config.Ls{
+							".md":       "regex:(AGENTS|README|CLAUDE|GEMINI)",
+							"AGENTS.md": "exists:1",
+							"README.md": "exists:1",
+							"src":       "exists:1",
+						},
+						"packages/ui/src/components": config.Ls{
+							".dir": "kebab-case | exists",
+							".tsx": "exists:0",
+						},
+						"packages/ui/src/components/*": config.Ls{
+							".tsx":      "regex:${0} | exists:1",
+							".test.tsx": "regex:${0} | exists:1",
+						},
+					},
+					[]string{},
+				),
+				&debug.Statistic{
+					Start:     start,
+					Files:     0,
+					FileSkips: 0,
+					Dirs:      0,
+					DirSkips:  0,
+					RWMutex:   new(sync.RWMutex),
+				},
+				[]*rule.Error{},
+			),
+			expectedErr: nil,
+			expectedStatistic: &debug.Statistic{
+				Start:     start,
+				Files:     5,
+				FileSkips: 0,
+				Dirs:      6,
+				DirSkips:  0,
+				RWMutex:   new(sync.RWMutex),
+			},
+			expectedErrors: []*rule.Error{},
+		},
+		{
+			description: "exists monorepo typescript ui example with errors",
+			filesystem: fstest.MapFS{
+				"packages":                                  &fstest.MapFile{Mode: fs.ModeDir},
+				"packages/ui":                               &fstest.MapFile{Mode: fs.ModeDir},
+				"packages/ui/AGENTS.md":                     &fstest.MapFile{Mode: fs.ModePerm},
+				"packages/ui/src":                           &fstest.MapFile{Mode: fs.ModeDir},
+				"packages/ui/src/components":                &fstest.MapFile{Mode: fs.ModeDir},
+				"packages/ui/src/components/Button.tsx":     &fstest.MapFile{Mode: fs.ModePerm},
+				"packages/ui/src/components/NOT_ALLOWED.md": &fstest.MapFile{Mode: fs.ModePerm},
+			},
+			paths: nil,
+			linter: NewLinter(
+				".",
+				config.NewConfig(
+					config.Ls{
+						"packages": config.Ls{
+							".dir": "kebab-case",
+						},
+						"packages/*": config.Ls{
+							".md":       "regex:(AGENTS|README|CLAUDE|GEMINI)",
+							"AGENTS.md": "exists:1",
+							"README.md": "exists:1",
+							"src":       "exists:1",
+						},
+						"packages/ui/src/components": config.Ls{
+							".dir": "kebab-case | exists",
+							".tsx": "exists:0",
+						},
+						"packages/ui/src/components/*": config.Ls{
+							".tsx":      "regex:${0} | exists:1",
+							".test.tsx": "regex:${0} | exists:1",
+						},
+					},
+					[]string{},
+				),
+				&debug.Statistic{
+					Start:     start,
+					Files:     0,
+					FileSkips: 0,
+					Dirs:      0,
+					DirSkips:  0,
+					RWMutex:   new(sync.RWMutex),
+				},
+				[]*rule.Error{},
+			),
+			expectedErr: nil,
+			expectedStatistic: &debug.Statistic{
+				Start:     start,
+				Files:     3,
+				FileSkips: 0,
+				Dirs:      5,
+				DirSkips:  0,
+				RWMutex:   new(sync.RWMutex),
+			},
+			expectedErrors: []*rule.Error{
+				{
+					Path: "packages/ui",
+					Ext:  "README.md",
+					Rules: []rule.Rule{
+						func() rule.Rule {
+							r := new(rule.Exists).Init()
+							_ = r.SetParameters([]string{"1"})
+							return r
+						}(),
+					},
+					RWMutex: new(sync.RWMutex),
+				},
+				{
+					Path: "packages/ui/src/components",
+					Ext:  ".tsx",
+					Rules: []rule.Rule{
+						func() rule.Rule {
+							r := new(rule.Exists).Init()
+							_ = r.SetParameters([]string{"0"})
+							return r
+						}(),
+					},
+					RWMutex: new(sync.RWMutex),
+				},
+				{
+					Path: "packages/ui/src/components/*",
+					Ext:  ".test.tsx",
+					Rules: []rule.Rule{
+						func() rule.Rule {
+							r := new(rule.Exists).Init()
+							_ = r.SetParameters([]string{"1"})
+							return r
+						}(),
+					},
+					RWMutex: new(sync.RWMutex),
+				},
+				{
+					Path: "packages/ui/src/components/*",
+					Ext:  ".tsx",
+					Rules: []rule.Rule{
+						func() rule.Rule {
+							r := new(rule.Exists).Init()
+							_ = r.SetParameters([]string{"1"})
+							return r
+						}(),
+					},
+					RWMutex: new(sync.RWMutex),
+				},
+			},
+		},
 	}
 
 	i := 0
