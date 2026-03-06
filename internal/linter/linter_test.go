@@ -1170,6 +1170,7 @@ func TestLinter_Run(t *testing.T) {
 							".dir": "kebab-case",
 						},
 						"packages/*": config.Ls{
+							".dir":      "kebab-case",
 							".md":       "regex:(AGENTS|README|CLAUDE|GEMINI)",
 							"AGENTS.md": "exists:1",
 							"README.md": "exists:1",
@@ -1227,6 +1228,7 @@ func TestLinter_Run(t *testing.T) {
 							".dir": "kebab-case",
 						},
 						"packages/*": config.Ls{
+							".dir":      "kebab-case",
 							".md":       "regex:(AGENTS|README|CLAUDE|GEMINI)",
 							"AGENTS.md": "exists:1",
 							"README.md": "exists:1",
@@ -1389,4 +1391,121 @@ func TestLinter_Run(t *testing.T) {
 
 		i++
 	}
+}
+
+func TestLinter_Run_MonorepoComplexConstraints(t *testing.T) {
+	newMonorepoLinter := func() *Linter {
+		return NewLinter(
+			".",
+			config.NewConfig(
+				config.Ls{
+					"packages": config.Ls{
+						".dir": "kebab-case",
+					},
+					"packages/*": config.Ls{
+						".dir":      "kebab-case",
+						".md":       "regex:(AGENTS|README|CLAUDE|GEMINI)",
+						"AGENTS.md": "exists:1",
+						"README.md": "exists:1",
+						"src":       "exists:1",
+					},
+					"packages/ui/src/components": config.Ls{
+						".dir": "kebab-case | exists",
+						".tsx": "exists:0",
+					},
+					"packages/ui/src/components/*": config.Ls{
+						".tsx":      "regex:${0} | exists:1",
+						".test.tsx": "regex:${0} | exists:1",
+					},
+				},
+				[]string{},
+			),
+			&debug.Statistic{
+				Start:     time.Now(),
+				Files:     0,
+				FileSkips: 0,
+				Dirs:      0,
+				DirSkips:  0,
+				RWMutex:   new(sync.RWMutex),
+			},
+			[]*rule.Error{},
+		)
+	}
+
+	t.Run("passes with multiple packages and optional whitelisted files", func(t *testing.T) {
+		filesystem := fstest.MapFS{
+			"packages":                                          &fstest.MapFile{Mode: fs.ModeDir},
+			"packages/ui":                                       &fstest.MapFile{Mode: fs.ModeDir},
+			"packages/ui/AGENTS.md":                             &fstest.MapFile{Mode: fs.ModePerm},
+			"packages/ui/README.md":                             &fstest.MapFile{Mode: fs.ModePerm},
+			"packages/ui/GEMINI.md":                             &fstest.MapFile{Mode: fs.ModePerm},
+			"packages/ui/src":                                   &fstest.MapFile{Mode: fs.ModeDir},
+			"packages/ui/src/components":                        &fstest.MapFile{Mode: fs.ModeDir},
+			"packages/ui/src/components/button":                 &fstest.MapFile{Mode: fs.ModeDir},
+			"packages/ui/src/components/button/button.tsx":      &fstest.MapFile{Mode: fs.ModePerm},
+			"packages/ui/src/components/button/button.test.tsx": &fstest.MapFile{Mode: fs.ModePerm},
+			"packages/data-model":                               &fstest.MapFile{Mode: fs.ModeDir},
+			"packages/data-model/AGENTS.md":                     &fstest.MapFile{Mode: fs.ModePerm},
+			"packages/data-model/README.md":                     &fstest.MapFile{Mode: fs.ModePerm},
+			"packages/data-model/src":                           &fstest.MapFile{Mode: fs.ModeDir},
+		}
+
+		l := newMonorepoLinter()
+		err := l.Run(filesystem, nil, true)
+		if err != nil {
+			t.Fatalf("expected no error, got %v", err)
+		}
+		if len(l.GetErrors()) != 0 {
+			t.Fatalf("expected no lint errors, got %+v", l.GetErrors())
+		}
+	})
+
+	t.Run("fails for required monorepo constraints", func(t *testing.T) {
+		filesystem := fstest.MapFS{
+			"packages":                                  &fstest.MapFile{Mode: fs.ModeDir},
+			"packages/Bad_Pkg":                          &fstest.MapFile{Mode: fs.ModeDir},
+			"packages/Bad_Pkg/AGENTS.md":                &fstest.MapFile{Mode: fs.ModePerm},
+			"packages/Bad_Pkg/README.md":                &fstest.MapFile{Mode: fs.ModePerm},
+			"packages/Bad_Pkg/src":                      &fstest.MapFile{Mode: fs.ModeDir},
+			"packages/ui":                               &fstest.MapFile{Mode: fs.ModeDir},
+			"packages/ui/AGENTS.md":                     &fstest.MapFile{Mode: fs.ModePerm},
+			"packages/ui/NOTES.md":                      &fstest.MapFile{Mode: fs.ModePerm},
+			"packages/ui/src":                           &fstest.MapFile{Mode: fs.ModeDir},
+			"packages/ui/src/components":                &fstest.MapFile{Mode: fs.ModeDir},
+			"packages/ui/src/components/Button.tsx":     &fstest.MapFile{Mode: fs.ModePerm},
+			"packages/ui/src/components/NOT_ALLOWED.md": &fstest.MapFile{Mode: fs.ModePerm},
+		}
+
+		l := newMonorepoLinter()
+		err := l.Run(filesystem, nil, true)
+		if err != nil {
+			t.Fatalf("expected no execution error, got %v", err)
+		}
+		assertErrorHasRule(t, l.GetErrors(), "packages/Bad_Pkg", ".dir", "kebabcase")
+		assertErrorHasRule(t, l.GetErrors(), "packages/ui/NOTES.md", ".md", "regex")
+		assertErrorHasRule(t, l.GetErrors(), "packages/ui", "README.md", "exists")
+		assertErrorHasRule(t, l.GetErrors(), "packages/ui/src/components", ".tsx", "exists")
+		assertErrorHasRule(t, l.GetErrors(), "packages/ui/src/components/*", ".tsx", "exists")
+		assertErrorHasRule(t, l.GetErrors(), "packages/ui/src/components/*", ".test.tsx", "exists")
+	})
+}
+
+func assertErrorHasRule(t *testing.T, errors []*rule.Error, path string, ext string, ruleName string) {
+	t.Helper()
+
+	for _, lintErr := range errors {
+		if lintErr.GetPath() != path || lintErr.GetExt() != ext {
+			continue
+		}
+
+		for _, tmpRule := range lintErr.GetRules() {
+			if tmpRule.GetName() == ruleName {
+				return
+			}
+		}
+
+		t.Fatalf("found error for path=%s ext=%s, but rule=%s was missing: %+v", path, ext, ruleName, lintErr.GetRules())
+	}
+
+	t.Fatalf("missing expected lint error path=%s ext=%s rule=%s. actual=%+v", path, ext, ruleName, errors)
 }

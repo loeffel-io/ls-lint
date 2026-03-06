@@ -92,6 +92,7 @@ ls:
     .dir: kebab-case
 
   packages/*:
+    .dir: kebab-case
     .md: regex:(AGENTS|README|CLAUDE|GEMINI)
     AGENTS.md: exists:1
     README.md: exists:1
