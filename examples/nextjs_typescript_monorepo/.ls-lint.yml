@@ -1,45 +1,67 @@
 ls:
-  # Global defaults
+  # Apply shared defaults everywhere unless a more specific directory block overrides them.
   .dir: kebab-case
-  .md: kebab-case
+  .md: kebab-case | regex:(README|AGENTS|CLAUDE|GEMINI)
 
-  # Root-level config allowlist
+  # At the repo root, fail closed for file extensions we did not explicitly whitelist below.
+  .*: exists:0
+
+  # Root-level JSON files: allow only the known workspace/config basenames.
   .json: regex:(package|turbo)
-  .*.json: exists:0
+  .*.json: regex:(tsconfig\.base)
+
+  # Root-level YAML files: allow only the workspace manifest basename.
   .yaml: regex:(pnpm-workspace)
+
+  # Root-level required and optional config inventory. `exists:0-1` means optional, but no duplicates.
   package.json: exists:1
   pnpm-workspace.yaml: exists:1
   turbo.json: exists:0-1
   tsconfig.base.json: exists:0-1
 
-  # Root-level special-case markdown files
+  # Root-level coordination docs: the global `.md` rule already allows these names anywhere,
+  # and these explicit keys cap them to at most one copy at the repository root.
   README.md: exists:0-1
   AGENTS.md: exists:0-1
   CLAUDE.md: exists:0-1
   GEMINI.md: exists:0-1
 
+  # Package directories must be kebab-case children of `packages/`.
   packages:
     .dir: kebab-case
 
+  # Each package may only use the special markdown allowlist and must contain AGENTS.md,
+  # README.md, and a `src` directory. The repeated AGENTS/README keys are intentional:
+  # `.md` limits allowed markdown names, while `exists` enforces required files.
   packages/*:
     .dir: kebab-case
     .md: regex:(AGENTS|README|CLAUDE|GEMINI)
+    .ts: camelCase | PascalCase
+    .tsx: camelCase | PascalCase
+    .js: camelCase | PascalCase
+    .jsx: camelCase | PascalCase
     AGENTS.md: exists:1
     README.md: exists:1
     src: exists:1
 
+  # UI components must live in their own folder; direct component files are forbidden here.
   packages/ui/src/components:
     .dir: kebab-case | exists
     .tsx: exists:0
 
+  # Every UI component folder must contain exactly one component and one paired test
+  # whose basename matches the folder name.
   packages/ui/src/components/*:
     .tsx: regex:${0} | exists:1
     .test.tsx: regex:${0} | exists:1
 
 ignore:
+  # Ignore generated output and local environment files instead of trying to lint them structurally.
   - node_modules
   - .next
   - coverage
   - dist
   - build
   - packages/ui/dist
+  - .env*
+  - **/.env*

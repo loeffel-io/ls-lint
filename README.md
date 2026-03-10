@@ -92,9 +92,10 @@ For a full end-to-end example, see
 ```yaml
 ls:
   .dir: kebab-case
-  .md: kebab-case
+  .md: kebab-case | regex:(README|AGENTS|CLAUDE|GEMINI)
+  .*: exists:0
   .json: regex:(package|turbo)
-  .*.json: exists:0
+  .*.json: regex:(tsconfig\.base)
   .yaml: regex:(pnpm-workspace)
 
   package.json: exists:1
@@ -109,6 +110,10 @@ ls:
   packages/*:
     .dir: kebab-case
     .md: regex:(AGENTS|README|CLAUDE|GEMINI)
+    .ts: camelCase | PascalCase
+    .tsx: camelCase | PascalCase
+    .js: camelCase | PascalCase
+    .jsx: camelCase | PascalCase
     AGENTS.md: exists:1
     README.md: exists:1
     src: exists:1
@@ -128,15 +133,22 @@ ignore:
   - dist
   - build
   - packages/ui/dist
+  - .env*
+  - **/.env*
 ```
 
 This example shows how to:
 
 - apply global defaults such as `kebab-case` markdown and directory names
+- fail closed for unapproved root file types with `.*: exists:0`, then whitelist
+  only the root config files you want
 - whitelist root-level config files like `package.json`, `pnpm-workspace.yaml`,
-  and `tsconfig.base.json`
+  `turbo.json`, and `tsconfig.base.json`
 - allow special root markdown files like `README.md`, `AGENTS.md`, `CLAUDE.md`,
   and `GEMINI.md` without weakening the default `.md: kebab-case` rule
+- apply default `camelCase | PascalCase` naming to package TypeScript/JavaScript files
+- ignore local `.env*` files and generated build output instead of encoding them in
+  the structural policy
 - ignore generated build output directories completely
 - require `AGENTS.md`, `README.md`, and `src` inside each package
 - enforce folder-based UI components with paired component/test naming
@@ -144,6 +156,8 @@ This example shows how to:
 This relies on explicit basename `exists` keys (for example
 `package.json: exists:1`, `README.md: exists:1`, and `src: exists:1`), which are
 required for this exact policy shape.
+
+`exists:0-1` is the correct way to express “optional, but at most one”.
 
 ### Result
 
