@@ -86,10 +86,25 @@ ls:
 
 ### Monorepo TypeScript/Next.js style example
 
+For a full end-to-end example, see
+[`examples/nextjs_typescript_monorepo/.ls-lint.yml`](examples/nextjs_typescript_monorepo/.ls-lint.yml).
+
 ```yaml
 ls:
-  packages:
-    .dir: kebab-case
+  .dir: kebab-case
+  .md: kebab-case
+  .json: regex:(package|turbo)
+  .*.json: exists:0
+  .yaml: regex:(pnpm-workspace)
+
+  package.json: exists:1
+  pnpm-workspace.yaml: exists:1
+  turbo.json: exists:0-1
+  tsconfig.base.json: exists:0-1
+  README.md: exists:0-1
+  AGENTS.md: exists:0-1
+  CLAUDE.md: exists:0-1
+  GEMINI.md: exists:0-1
 
   packages/*:
     .dir: kebab-case
@@ -105,14 +120,30 @@ ls:
   packages/ui/src/components/*:
     .tsx: regex:${0} | exists:1
     .test.tsx: regex:${0} | exists:1
+
+ignore:
+  - node_modules
+  - .next
+  - coverage
+  - dist
+  - build
+  - packages/ui/dist
 ```
 
-This ensures each package can only use whitelisted markdown files, requires
-`AGENTS.md`, `README.md`, and a `src` directory, and enforces folder-based UI
-components with paired component/test naming.
+This example shows how to:
 
-This relies on explicit basename `exists` keys (for example `README.md: exists:1`
-and `src: exists:1`), which are required for this exact policy shape.
+- apply global defaults such as `kebab-case` markdown and directory names
+- whitelist root-level config files like `package.json`, `pnpm-workspace.yaml`,
+  and `tsconfig.base.json`
+- allow special root markdown files like `README.md`, `AGENTS.md`, `CLAUDE.md`,
+  and `GEMINI.md` without weakening the default `.md: kebab-case` rule
+- ignore generated build output directories completely
+- require `AGENTS.md`, `README.md`, and `src` inside each package
+- enforce folder-based UI components with paired component/test naming
+
+This relies on explicit basename `exists` keys (for example
+`package.json: exists:1`, `README.md: exists:1`, and `src: exists:1`), which are
+required for this exact policy shape.
 
 ### Result
 

@@ -1,0 +1,45 @@
+ls:
+  # Global defaults
+  .dir: kebab-case
+  .md: kebab-case
+
+  # Root-level config allowlist
+  .json: regex:(package|turbo)
+  .*.json: exists:0
+  .yaml: regex:(pnpm-workspace)
+  package.json: exists:1
+  pnpm-workspace.yaml: exists:1
+  turbo.json: exists:0-1
+  tsconfig.base.json: exists:0-1
+
+  # Root-level special-case markdown files
+  README.md: exists:0-1
+  AGENTS.md: exists:0-1
+  CLAUDE.md: exists:0-1
+  GEMINI.md: exists:0-1
+
+  packages:
+    .dir: kebab-case
+
+  packages/*:
+    .dir: kebab-case
+    .md: regex:(AGENTS|README|CLAUDE|GEMINI)
+    AGENTS.md: exists:1
+    README.md: exists:1
+    src: exists:1
+
+  packages/ui/src/components:
+    .dir: kebab-case | exists
+    .tsx: exists:0
+
+  packages/ui/src/components/*:
+    .tsx: regex:${0} | exists:1
+    .test.tsx: regex:${0} | exists:1
+
+ignore:
+  - node_modules
+  - .next
+  - coverage
+  - dist
+  - build
+  - packages/ui/dist

@@ -1399,6 +1399,19 @@ func TestLinter_Run_MonorepoComplexConstraints(t *testing.T) {
 			".",
 			config.NewConfig(
 				config.Ls{
+					".dir":                "kebab-case",
+					".md":                 "kebab-case",
+					".json":               "regex:(package|turbo)",
+					".*.json":             "exists:0",
+					".yaml":               "regex:(pnpm-workspace)",
+					"package.json":        "exists:1",
+					"pnpm-workspace.yaml": "exists:1",
+					"turbo.json":          "exists:0-1",
+					"tsconfig.base.json":  "exists:0-1",
+					"README.md":           "exists:0-1",
+					"AGENTS.md":           "exists:0-1",
+					"CLAUDE.md":           "exists:0-1",
+					"GEMINI.md":           "exists:0-1",
 					"packages": config.Ls{
 						".dir": "kebab-case",
 					},
@@ -1418,7 +1431,14 @@ func TestLinter_Run_MonorepoComplexConstraints(t *testing.T) {
 						".test.tsx": "regex:${0} | exists:1",
 					},
 				},
-				[]string{},
+				[]string{
+					"node_modules",
+					".next",
+					"coverage",
+					"dist",
+					"build",
+					"packages/ui/dist",
+				},
 			),
 			&debug.Statistic{
 				Start:     time.Now(),
@@ -1434,20 +1454,38 @@ func TestLinter_Run_MonorepoComplexConstraints(t *testing.T) {
 
 	t.Run("passes with multiple packages and optional whitelisted files", func(t *testing.T) {
 		filesystem := fstest.MapFS{
-			"packages":                                          &fstest.MapFile{Mode: fs.ModeDir},
-			"packages/ui":                                       &fstest.MapFile{Mode: fs.ModeDir},
-			"packages/ui/AGENTS.md":                             &fstest.MapFile{Mode: fs.ModePerm},
-			"packages/ui/README.md":                             &fstest.MapFile{Mode: fs.ModePerm},
-			"packages/ui/GEMINI.md":                             &fstest.MapFile{Mode: fs.ModePerm},
-			"packages/ui/src":                                   &fstest.MapFile{Mode: fs.ModeDir},
-			"packages/ui/src/components":                        &fstest.MapFile{Mode: fs.ModeDir},
-			"packages/ui/src/components/button":                 &fstest.MapFile{Mode: fs.ModeDir},
+			"package.json":                      &fstest.MapFile{Mode: fs.ModePerm},
+			"pnpm-workspace.yaml":               &fstest.MapFile{Mode: fs.ModePerm},
+			"tsconfig.base.json":                &fstest.MapFile{Mode: fs.ModePerm},
+			"README.md":                         &fstest.MapFile{Mode: fs.ModePerm},
+			"AGENTS.md":                         &fstest.MapFile{Mode: fs.ModePerm},
+			"architecture-notes.md":             &fstest.MapFile{Mode: fs.ModePerm},
+			"node_modules":                      &fstest.MapFile{Mode: fs.ModeDir},
+			"node_modules/BAD_NAME.js":          &fstest.MapFile{Mode: fs.ModePerm},
+			".next":                             &fstest.MapFile{Mode: fs.ModeDir},
+			".next/BAD_NAME.js":                 &fstest.MapFile{Mode: fs.ModePerm},
+			"build":                             &fstest.MapFile{Mode: fs.ModeDir},
+			"build/BAD_NAME.js":                 &fstest.MapFile{Mode: fs.ModePerm},
+			"dist":                              &fstest.MapFile{Mode: fs.ModeDir},
+			"dist/BAD_NAME.js":                  &fstest.MapFile{Mode: fs.ModePerm},
+			"coverage":                          &fstest.MapFile{Mode: fs.ModeDir},
+			"coverage/BAD_NAME.js":              &fstest.MapFile{Mode: fs.ModePerm},
+			"packages":                          &fstest.MapFile{Mode: fs.ModeDir},
+			"packages/ui":                       &fstest.MapFile{Mode: fs.ModeDir},
+			"packages/ui/AGENTS.md":             &fstest.MapFile{Mode: fs.ModePerm},
+			"packages/ui/README.md":             &fstest.MapFile{Mode: fs.ModePerm},
+			"packages/ui/GEMINI.md":             &fstest.MapFile{Mode: fs.ModePerm},
+			"packages/ui/src":                   &fstest.MapFile{Mode: fs.ModeDir},
+			"packages/ui/src/components":        &fstest.MapFile{Mode: fs.ModeDir},
+			"packages/ui/src/components/button": &fstest.MapFile{Mode: fs.ModeDir},
 			"packages/ui/src/components/button/button.tsx":      &fstest.MapFile{Mode: fs.ModePerm},
 			"packages/ui/src/components/button/button.test.tsx": &fstest.MapFile{Mode: fs.ModePerm},
-			"packages/data-model":                               &fstest.MapFile{Mode: fs.ModeDir},
-			"packages/data-model/AGENTS.md":                     &fstest.MapFile{Mode: fs.ModePerm},
-			"packages/data-model/README.md":                     &fstest.MapFile{Mode: fs.ModePerm},
-			"packages/data-model/src":                           &fstest.MapFile{Mode: fs.ModeDir},
+			"packages/ui/dist":              &fstest.MapFile{Mode: fs.ModeDir},
+			"packages/ui/dist/BAD_NAME.tsx": &fstest.MapFile{Mode: fs.ModePerm},
+			"packages/data-model":           &fstest.MapFile{Mode: fs.ModeDir},
+			"packages/data-model/AGENTS.md": &fstest.MapFile{Mode: fs.ModePerm},
+			"packages/data-model/README.md": &fstest.MapFile{Mode: fs.ModePerm},
+			"packages/data-model/src":       &fstest.MapFile{Mode: fs.ModeDir},
 		}
 
 		l := newMonorepoLinter()
@@ -1462,6 +1500,12 @@ func TestLinter_Run_MonorepoComplexConstraints(t *testing.T) {
 
 	t.Run("fails for required monorepo constraints", func(t *testing.T) {
 		filesystem := fstest.MapFS{
+			"pnpm-workspace.yaml":                       &fstest.MapFile{Mode: fs.ModePerm},
+			"package-lock.json":                         &fstest.MapFile{Mode: fs.ModePerm},
+			"tsconfig.app.json":                         &fstest.MapFile{Mode: fs.ModePerm},
+			"NOTES.md":                                  &fstest.MapFile{Mode: fs.ModePerm},
+			"build":                                     &fstest.MapFile{Mode: fs.ModeDir},
+			"build/IGNORED_BAD_NAME.ts":                 &fstest.MapFile{Mode: fs.ModePerm},
 			"packages":                                  &fstest.MapFile{Mode: fs.ModeDir},
 			"packages/Bad_Pkg":                          &fstest.MapFile{Mode: fs.ModeDir},
 			"packages/Bad_Pkg/AGENTS.md":                &fstest.MapFile{Mode: fs.ModePerm},
@@ -1474,6 +1518,8 @@ func TestLinter_Run_MonorepoComplexConstraints(t *testing.T) {
 			"packages/ui/src/components":                &fstest.MapFile{Mode: fs.ModeDir},
 			"packages/ui/src/components/Button.tsx":     &fstest.MapFile{Mode: fs.ModePerm},
 			"packages/ui/src/components/NOT_ALLOWED.md": &fstest.MapFile{Mode: fs.ModePerm},
+			"packages/ui/dist":                          &fstest.MapFile{Mode: fs.ModeDir},
+			"packages/ui/dist/IGNORED_BAD_NAME.tsx":     &fstest.MapFile{Mode: fs.ModePerm},
 		}
 
 		l := newMonorepoLinter()
@@ -1481,6 +1527,10 @@ func TestLinter_Run_MonorepoComplexConstraints(t *testing.T) {
 		if err != nil {
 			t.Fatalf("expected no execution error, got %v", err)
 		}
+		assertErrorHasRule(t, l.GetErrors(), "", "package.json", "exists")
+		assertErrorHasRule(t, l.GetErrors(), "package-lock.json", ".json", "regex")
+		assertErrorHasRule(t, l.GetErrors(), "", ".*.json", "exists")
+		assertErrorHasRule(t, l.GetErrors(), "NOTES.md", ".md", "kebabcase")
 		assertErrorHasRule(t, l.GetErrors(), "packages/Bad_Pkg", ".dir", "kebabcase")
 		assertErrorHasRule(t, l.GetErrors(), "packages/ui/NOTES.md", ".md", "regex")
 		assertErrorHasRule(t, l.GetErrors(), "packages/ui", "README.md", "exists")
