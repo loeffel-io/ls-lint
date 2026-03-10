@@ -92,11 +92,11 @@ For a full end-to-end example, see
 ```yaml
 ls:
   .dir: kebab-case
-  .md: kebab-case | regex:(README|AGENTS|CLAUDE|GEMINI)
+  .md: kebab-case | regex:^(README|AGENTS|CLAUDE|GEMINI)$
   .*: exists:0
-  .json: regex:(package|turbo)
-  .*.json: regex:(tsconfig\.base)
-  .yaml: regex:(pnpm-workspace)
+  .json: regex:^(package|turbo)$
+  .*.json: regex:^tsconfig\.base$
+  .yaml: regex:^pnpm-workspace$
 
   package.json: exists:1
   pnpm-workspace.yaml: exists:1
@@ -109,7 +109,7 @@ ls:
 
   packages/*:
     .dir: kebab-case
-    .md: regex:(AGENTS|README|CLAUDE|GEMINI)
+    .md: regex:^(AGENTS|README|CLAUDE|GEMINI)$
     .ts: camelCase | PascalCase
     .tsx: camelCase | PascalCase
     .js: camelCase | PascalCase
@@ -149,6 +149,8 @@ This example shows how to:
 - apply default `camelCase | PascalCase` naming to package TypeScript/JavaScript files
 - ignore local `.env*` files and generated build output instead of encoding them in
   the structural policy
+- keep `ignore:` explicit for ls-lint-specific structural skips; ls-lint does not
+  currently read `.gitignore`
 - ignore generated build output directories completely
 - require `AGENTS.md`, `README.md`, and `src` inside each package
 - enforce folder-based UI components with paired component/test naming

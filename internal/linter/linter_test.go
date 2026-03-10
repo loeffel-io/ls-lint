@@ -1171,7 +1171,7 @@ func TestLinter_Run(t *testing.T) {
 						},
 						"packages/*": config.Ls{
 							".dir":      "kebab-case",
-							".md":       "regex:(AGENTS|README|CLAUDE|GEMINI)",
+							".md":       "regex:^(AGENTS|README|CLAUDE|GEMINI)$",
 							"AGENTS.md": "exists:1",
 							"README.md": "exists:1",
 							"src":       "exists:1",
@@ -1229,7 +1229,7 @@ func TestLinter_Run(t *testing.T) {
 						},
 						"packages/*": config.Ls{
 							".dir":      "kebab-case",
-							".md":       "regex:(AGENTS|README|CLAUDE|GEMINI)",
+							".md":       "regex:^(AGENTS|README|CLAUDE|GEMINI)$",
 							"AGENTS.md": "exists:1",
 							"README.md": "exists:1",
 							"src":       "exists:1",
@@ -1397,11 +1397,11 @@ func TestLinter_Run_MonorepoComplexConstraints(t *testing.T) {
 	newMonorepoLs := func() config.Ls {
 		return config.Ls{
 			".dir":                "kebab-case",
-			".md":                 "kebab-case | regex:(README|AGENTS|CLAUDE|GEMINI)",
+			".md":                 "kebab-case | regex:^(README|AGENTS|CLAUDE|GEMINI)$",
 			".*":                  "exists:0",
-			".json":               "regex:(package|turbo)",
-			".*.json":             "regex:(tsconfig\\.base)",
-			".yaml":               "regex:(pnpm-workspace)",
+			".json":               "regex:^(package|turbo)$",
+			".*.json":             "regex:^tsconfig\\.base$",
+			".yaml":               "regex:^pnpm-workspace$",
 			"package.json":        "exists:1",
 			"pnpm-workspace.yaml": "exists:1",
 			"turbo.json":          "exists:0-1",
@@ -1415,7 +1415,7 @@ func TestLinter_Run_MonorepoComplexConstraints(t *testing.T) {
 			},
 			"packages/*": config.Ls{
 				".dir":      "kebab-case",
-				".md":       "regex:(AGENTS|README|CLAUDE|GEMINI)",
+				".md":       "regex:^(AGENTS|README|CLAUDE|GEMINI)$",
 				".ts":       "camelCase | PascalCase",
 				".tsx":      "camelCase | PascalCase",
 				".js":       "camelCase | PascalCase",
@@ -1564,6 +1564,152 @@ func TestLinter_Run_MonorepoComplexConstraints(t *testing.T) {
 		assertErrorHasRule(t, l.GetErrors(), "packages/ui/src/components/*", ".tsx", "exists")
 		assertErrorHasRule(t, l.GetErrors(), "packages/ui/src/components/*", ".test.tsx", "exists")
 	})
+}
+
+func TestLinter_Run_LargeRepoIgnoreConfigs(t *testing.T) {
+	const (
+		packageCount                  = 250
+		filesPerPackage               = 80
+		maxPerformanceRegressionRatio = 5.0
+	)
+
+	newLargeRepoLs := func(withRootCatchAll bool) config.Ls {
+		ls := config.Ls{
+			".dir":                "kebab-case",
+			".md":                 "kebab-case | regex:^(README|AGENTS|CLAUDE|GEMINI)$",
+			".json":               "regex:^(package|turbo)$",
+			".*.json":             "regex:^tsconfig\\.base$",
+			".yaml":               "regex:^pnpm-workspace$",
+			"package.json":        "exists:1",
+			"pnpm-workspace.yaml": "exists:1",
+			"turbo.json":          "exists:0-1",
+			"tsconfig.base.json":  "exists:0-1",
+			"README.md":           "exists:0-1",
+			"AGENTS.md":           "exists:0-1",
+			"CLAUDE.md":           "exists:0-1",
+			"GEMINI.md":           "exists:0-1",
+			"packages": config.Ls{
+				".dir": "kebab-case",
+			},
+			"packages/*": config.Ls{
+				".dir":      "kebab-case",
+				".md":       "regex:^(AGENTS|README|CLAUDE|GEMINI)$",
+				".ts":       "camelCase | PascalCase",
+				".tsx":      "camelCase | PascalCase",
+				".js":       "camelCase | PascalCase",
+				".jsx":      "camelCase | PascalCase",
+				"AGENTS.md": "exists:1",
+				"README.md": "exists:1",
+				"src":       "exists:1",
+			},
+		}
+		if withRootCatchAll {
+			ls[".*"] = "exists:0"
+		}
+
+		return ls
+	}
+
+	newLargeRepoIgnore := func() []string {
+		return []string{
+			"node_modules",
+			".next",
+			"coverage",
+			"dist",
+			"build",
+			".env*",
+			"**/.env*",
+		}
+	}
+
+	newLargeRepoLinter := func(withRootCatchAll bool) *Linter {
+		return NewLinter(
+			".",
+			config.NewConfig(newLargeRepoLs(withRootCatchAll), newLargeRepoIgnore()),
+			&debug.Statistic{
+				Start:     time.Now(),
+				Files:     0,
+				FileSkips: 0,
+				Dirs:      0,
+				DirSkips:  0,
+				RWMutex:   new(sync.RWMutex),
+			},
+			[]*rule.Error{},
+		)
+	}
+
+	buildLargeRepoFS := func(packageCount int, filesPerPackage int) fstest.MapFS {
+		filesystem := fstest.MapFS{
+			"package.json":        &fstest.MapFile{Mode: fs.ModePerm},
+			"pnpm-workspace.yaml": &fstest.MapFile{Mode: fs.ModePerm},
+			"tsconfig.base.json":  &fstest.MapFile{Mode: fs.ModePerm},
+			"README.md":           &fstest.MapFile{Mode: fs.ModePerm},
+			"AGENTS.md":           &fstest.MapFile{Mode: fs.ModePerm},
+			".env.local":          &fstest.MapFile{Mode: fs.ModePerm},
+			"packages":            &fstest.MapFile{Mode: fs.ModeDir},
+			"node_modules":        &fstest.MapFile{Mode: fs.ModeDir},
+			"node_modules/bad.js": &fstest.MapFile{Mode: fs.ModePerm},
+			"dist":                &fstest.MapFile{Mode: fs.ModeDir},
+			"dist/bad.js":         &fstest.MapFile{Mode: fs.ModePerm},
+		}
+
+		for i := 0; i < packageCount; i++ {
+			packageName := fmt.Sprintf("package-%04d", i)
+			packageDir := fmt.Sprintf("packages/%s", packageName)
+			srcDir := fmt.Sprintf("%s/src", packageDir)
+
+			filesystem[packageDir] = &fstest.MapFile{Mode: fs.ModeDir}
+			filesystem[fmt.Sprintf("%s/AGENTS.md", packageDir)] = &fstest.MapFile{Mode: fs.ModePerm}
+			filesystem[fmt.Sprintf("%s/README.md", packageDir)] = &fstest.MapFile{Mode: fs.ModePerm}
+			filesystem[srcDir] = &fstest.MapFile{Mode: fs.ModeDir}
+			filesystem[fmt.Sprintf("%s/.env.test", packageDir)] = &fstest.MapFile{Mode: fs.ModePerm}
+
+			for j := 0; j < filesPerPackage; j++ {
+				filesystem[fmt.Sprintf("%s/useFeature%d.ts", srcDir, j)] = &fstest.MapFile{Mode: fs.ModePerm}
+			}
+		}
+
+		return filesystem
+	}
+
+	measureRun := func(t *testing.T, withRootCatchAll bool, filesystem fstest.MapFS) time.Duration {
+		t.Helper()
+
+		l := newLargeRepoLinter(withRootCatchAll)
+		start := time.Now()
+		err := l.Run(filesystem, nil, false)
+		duration := time.Since(start)
+		if err != nil {
+			t.Fatalf("expected no execution error, got %v", err)
+		}
+		if len(l.GetErrors()) != 0 {
+			t.Fatalf("expected no lint errors, got %+v", l.GetErrors())
+		}
+
+		return duration
+	}
+
+	filesystem := buildLargeRepoFS(packageCount, filesPerPackage)
+	t.Logf(
+		"large repo simulation contains %d packages with %d source files each (> %d source files total), plus package metadata, ignored env files, and directories",
+		packageCount,
+		filesPerPackage,
+		packageCount*filesPerPackage,
+	)
+
+	withRootCatchAll := measureRun(t, true, filesystem)
+	withoutRootCatchAll := measureRun(t, false, filesystem)
+
+	t.Logf("large repo run with `.*: exists:0`: %s", withRootCatchAll)
+	t.Logf("large repo run without `.*: exists:0`: %s", withoutRootCatchAll)
+
+	if withoutRootCatchAll > 0 {
+		ratio := float64(withRootCatchAll) / float64(withoutRootCatchAll)
+		t.Logf("large repo performance ratio (with catch-all / without): %.2fx", ratio)
+		if ratio > maxPerformanceRegressionRatio {
+			t.Fatalf("expected root catch-all config to stay within %.2fx of baseline, got %.2fx", maxPerformanceRegressionRatio, ratio)
+		}
+	}
 }
 
 func assertErrorHasRule(t *testing.T, errors []*rule.Error, path string, ext string, ruleName string) {

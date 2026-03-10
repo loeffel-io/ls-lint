@@ -1,17 +1,17 @@
 ls:
   # Apply shared defaults everywhere unless a more specific directory block overrides them.
   .dir: kebab-case
-  .md: kebab-case | regex:(README|AGENTS|CLAUDE|GEMINI)
+  .md: kebab-case | regex:^(README|AGENTS|CLAUDE|GEMINI)$
 
   # At the repo root, fail closed for file extensions we did not explicitly whitelist below.
   .*: exists:0
 
   # Root-level JSON files: allow only the known workspace/config basenames.
-  .json: regex:(package|turbo)
-  .*.json: regex:(tsconfig\.base)
+  .json: regex:^(package|turbo)$
+  .*.json: regex:^tsconfig\.base$
 
   # Root-level YAML files: allow only the workspace manifest basename.
-  .yaml: regex:(pnpm-workspace)
+  .yaml: regex:^pnpm-workspace$
 
   # Root-level required and optional config inventory. `exists:0-1` means optional, but no duplicates.
   package.json: exists:1
@@ -35,7 +35,7 @@ ls:
   # `.md` limits allowed markdown names, while `exists` enforces required files.
   packages/*:
     .dir: kebab-case
-    .md: regex:(AGENTS|README|CLAUDE|GEMINI)
+    .md: regex:^(AGENTS|README|CLAUDE|GEMINI)$
     .ts: camelCase | PascalCase
     .tsx: camelCase | PascalCase
     .js: camelCase | PascalCase
@@ -57,6 +57,7 @@ ls:
 
 ignore:
   # Ignore generated output and local environment files instead of trying to lint them structurally.
+  # Keep this list explicit: ls-lint does not currently read `.gitignore` automatically.
   - node_modules
   - .next
   - coverage
