@@ -5,7 +5,10 @@ go_library(
     srcs = ["config.go"],
     importpath = "github.com/loeffel-io/ls-lint/v2/internal/config",
     visibility = ["//:__subpackages__"],
-    deps = ["//internal/rule"],
+    deps = [
+        "//internal/rule",
+        "@com_github_bmatcuk_doublestar_v4//:doublestar",
+    ],
 )
 
 go_test(

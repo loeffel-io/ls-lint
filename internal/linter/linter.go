@@ -283,8 +283,8 @@ func (linter *Linter) Run(filesystem fs.FS, paths map[string]struct{}, debug boo
 	}
 
 	// glob ignore index
-	ignoreIndex := linter.config.GetIgnoreIndex()
-	if err = glob.IgnoreIndex(filesystem, ignoreIndex, true); err != nil {
+	ignoreIndex, err := linter.config.GetIgnoreIndex()
+	if err != nil {
 		return err
 	}
 
@@ -315,8 +315,11 @@ func (linter *Linter) Run(filesystem fs.FS, paths map[string]struct{}, debug boo
 		}
 
 		fmt.Printf("-----------------------------\nignore index\n-----------------------------\n")
-		for path := range ignoreIndex {
+		for path := range ignoreIndex.Exact {
 			fmt.Printf("%s\n", path)
+		}
+		for _, pattern := range ignoreIndex.Glob {
+			fmt.Printf("%s\n", pattern)
 		}
 
 		fmt.Printf("-----------------------------\nlint\n-----------------------------\n")

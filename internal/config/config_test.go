@@ -1,6 +1,7 @@
 package config
 
 import (
+	"errors"
 	"reflect"
 	"testing"
 
@@ -62,27 +63,112 @@ func TestGetConfig(t *testing.T) {
 	}
 }
 
+func TestGetIgnoreIndex(t *testing.T) {
+	tests := []struct {
+		description   string
+		config        *Config
+		expectedExact map[string]bool
+		expectedGlob  []string
+		expectedErr   string
+	}{
+		{
+			description: "splits exact and glob ignores",
+			config: NewConfig(nil, []string{
+				"node_modules",
+				".env*",
+				"packages/*/dist",
+				`literal\*name`,
+			}),
+			expectedExact: map[string]bool{
+				"node_modules":  true,
+				`literal\*name`: true,
+			},
+			expectedGlob: []string{
+				".env*",
+				"packages/*/dist",
+			},
+		},
+		{
+			description: "fails for invalid glob ignore",
+			config: NewConfig(nil, []string{
+				"[",
+			}),
+			expectedErr: `invalid ignore pattern "["`,
+		},
+	}
+
+	for _, test := range tests {
+		index, err := test.config.GetIgnoreIndex()
+		if test.expectedErr != "" {
+			if err == nil || !errors.Is(err, ErrInvalidIgnorePattern) {
+				t.Fatalf("%s: expected invalid ignore pattern error %q, got %v", test.description, test.expectedErr, err)
+			}
+			continue
+		}
+		if err != nil {
+			t.Fatalf("%s: expected no error, got %v", test.description, err)
+		}
+		if !reflect.DeepEqual(index.Exact, test.expectedExact) {
+			t.Fatalf("%s: expected exact index %+v, got %+v", test.description, test.expectedExact, index.Exact)
+		}
+		if !reflect.DeepEqual(index.Glob, test.expectedGlob) {
+			t.Fatalf("%s: expected glob index %+v, got %+v", test.description, test.expectedGlob, index.Glob)
+		}
+	}
+}
+
 func TestShouldIgnore(t *testing.T) {
 	tests := []struct {
 		lslintConfig *Config
-		ignoreIndex  map[string]bool
+		ignoreIndex  *IgnoreIndex
 		path         string
 		expected     bool
 	}{
 		{
 			lslintConfig: NewConfig(nil, nil),
-			ignoreIndex: map[string]bool{
-				".git": true,
+			ignoreIndex: &IgnoreIndex{
+				Exact: map[string]bool{
+					".git": true,
+				},
 			},
 			path:     ".git",
 			expected: true,
 		},
 		{
 			lslintConfig: NewConfig(nil, nil),
-			ignoreIndex: map[string]bool{
-				"src": true,
+			ignoreIndex: &IgnoreIndex{
+				Exact: map[string]bool{
+					"src": true,
+				},
 			},
 			path:     "src/test/test.js",
+			expected: true,
+		},
+		{
+			lslintConfig: NewConfig(nil, nil),
+			ignoreIndex: &IgnoreIndex{
+				Exact: map[string]bool{},
+				Glob:  []string{".env*"},
+			},
+			path:     ".env.local",
+			expected: true,
+		},
+		{
+			lslintConfig: NewConfig(nil, nil),
+			ignoreIndex: &IgnoreIndex{
+				Exact: map[string]bool{},
+				Glob:  []string{"**/.env*"},
+			},
+			path:     "packages/ui/.env.local",
+			expected: true,
+		},
+		{
+			lslintConfig: NewConfig(nil, nil),
+			ignoreIndex: &IgnoreIndex{
+				Exact: map[string]bool{},
+				Glob:  []string{"packages/*/dist"},
+			},
+			path:     "packages/ui/dist/index.js",
 			expected: true,
 		},
 	}
