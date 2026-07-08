@@ -5,7 +5,6 @@
 An extremely fast directory and filename linter - Bring some structure to your project filesystem
 
 [![CI](https://github.com/loeffel-io/ls-lint/actions/workflows/bazel.yml/badge.svg?branch=master)](https://github.com/loeffel-io/ls-lint/actions/workflows/bazel.yml)
-[![Go Report Card](https://goreportcard.com/badge/github.com/loeffel-io/ls-lint)](https://goreportcard.com/report/github.com/loeffel-io/ls-lint)
 <a href="https://www.npmjs.com/package/@ls-lint/ls-lint"><img src="https://img.shields.io/npm/v/@ls-lint/ls-lint.svg?sanitize=true" alt="Version"></a>
 ![npm](https://img.shields.io/npm/dy/@ls-lint/ls-lint?label=npm%20downloads)
 ![npm](https://badgen.net/static/npm%20downloads%20total/12M+/green)
