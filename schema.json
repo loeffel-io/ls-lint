@@ -1,0 +1,24 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "https://raw.githubusercontent.com/loeffel-io/ls-lint/master/schema.json",
+    "title": "ls-lint config file",
+    "description": "The ls-lint config file. For details, see https://ls-lint.org/2.3/configuration/the-basics.html#creating-configuration.",
+    "type": "object",
+    "properties": {
+        "ls": {
+            "type": "object",
+            "description": "Define the structure of your project directories with all their rules for your extensions, sub-extensions and directories"
+        },
+        "ignore": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            },
+            "description": "Ignore files and directories completely"
+        }
+    },
+    "required": [
+        "ls"
+    ],
+    "additionalProperties": false
+}
