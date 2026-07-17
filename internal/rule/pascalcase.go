@@ -44,7 +44,10 @@ func (rule *PascalCase) GetExclusive() bool {
 // Validate checks if string is pascal case
 // false if rune is no letter and no digit
 // false if first rune is not upper
-func (rule *PascalCase) Validate(value string, _ string, _ bool) (bool, error) {
+func (rule *PascalCase) Validate(str string, _ string, _ bool) (bool, error) {
+	// we will iterate over the string as runes
+	// it allows us to get the previous rune easily
+	value := []rune(str)
 	for i, c := range value {
 		// must be letter or digit
 		if !unicode.IsLetter(c) && !unicode.IsDigit(c) {
@@ -62,17 +65,17 @@ func (rule *PascalCase) Validate(value string, _ string, _ bool) (bool, error) {
 			}
 
 			// rune -1 can be digit
-			if unicode.IsDigit(rune(value[i-1])) {
+			if unicode.IsDigit(value[i-1]) {
 				continue
 			}
 
 			// allow cases like SsrVFor.ts
-			if i >= 2 && unicode.IsUpper(rune(value[i-1])) && unicode.IsLower(rune(value[i-2])) {
+			if i >= 2 && unicode.IsUpper(value[i-1]) && unicode.IsLower(value[i-2]) {
 				continue
 			}
 
 			// rune -1 must be lower
-			if !unicode.IsLower(rune(value[i-1])) {
+			if !unicode.IsLower(value[i-1]) {
 				return false, nil
 			}
 		}

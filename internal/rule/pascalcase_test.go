@@ -14,6 +14,7 @@ func TestPascalCase(t *testing.T) {
 		{value: "pascalCase", expected: false, err: nil},
 		{value: "Pascalcase", expected: true, err: nil},
 		{value: "PascalCase", expected: true, err: nil},
+		{value: "PascałCase", expected: true, err: nil}, // here "l" has a diacritic mark: ł
 		{value: "Pascal1Case", expected: true, err: nil},
 		{value: "PascalVCase", expected: true, err: nil},
 		{value: "PascalCaseForever", expected: true, err: nil},
