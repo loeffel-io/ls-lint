@@ -729,6 +729,98 @@ func TestLinter_Run(t *testing.T) {
 				},
 			},
 		},
+		{
+			description: "extensionless",
+			filesystem: fstest.MapFS{
+				"BUILD":                         &fstest.MapFile{Mode: fs.ModePerm},
+				"ANOTHERBUILD":                  &fstest.MapFile{Mode: fs.ModePerm},
+				"Dockerfile":                    &fstest.MapFile{Mode: fs.ModePerm},
+				"a_folder":                      &fstest.MapFile{Mode: fs.ModeDir},
+				"a_folder/sub_folder":           &fstest.MapFile{Mode: fs.ModeDir},
+				"a_folder/sub_folder/SomeFile":  &fstest.MapFile{Mode: fs.ModePerm},
+				"another_folder":                &fstest.MapFile{Mode: fs.ModeDir},
+				"another_folder/YetAnother":     &fstest.MapFile{Mode: fs.ModePerm},
+				"should_exist":                  &fstest.MapFile{Mode: fs.ModeDir},
+				"should_exist/file1":            &fstest.MapFile{Mode: fs.ModePerm},
+				"should_not_exist":              &fstest.MapFile{Mode: fs.ModeDir},
+			},
+			paths: nil,
+			linter: NewLinter(
+				".",
+				config.NewConfig(
+					config.Ls{
+						".":             "snake_case",
+						"BUILD.":        "PascalCase",
+						"ANOTHERBUILD.": "PascalCase",
+						"a_folder/sub_folder": config.Ls{
+							"SomeFile.": "PascalCase",
+						},
+						"another_folder": config.Ls{
+							".*": "PascalCase",
+						},
+						"should_exist": config.Ls{
+							".": "exists:1",
+						},
+						"should_not_exist": config.Ls{
+							".": "exists:1",
+						},
+					},
+					[]string{},
+				),
+				&debug.Statistic{
+					Start:     start,
+					Files:     0,
+					FileSkips: 0,
+					Dirs:      0,
+					DirSkips:  0,
+					RWMutex:   new(sync.RWMutex),
+				},
+				[]*rule.Error{},
+			),
+			expectedErr: nil,
+			expectedStatistic: &debug.Statistic{
+				Start:     start,
+				Files:     6,
+				FileSkips: 0,
+				Dirs:      6,
+				DirSkips:  0,
+				RWMutex:   new(sync.RWMutex),
+			},
+			expectedErrors: []*rule.Error{
+				{
+					Path: "BUILD",
+					Ext:  "BUILD.",
+					Rules: []rule.Rule{
+						new(rule.PascalCase).Init(),
+					},
+					RWMutex: new(sync.RWMutex),
+				},
+				{
+					Path: "ANOTHERBUILD",
+					Ext:  "ANOTHERBUILD.",
+					Rules: []rule.Rule{
+						new(rule.PascalCase).Init(),
+					},
+					RWMutex: new(sync.RWMutex),
+				},
+				{
+					Path: "Dockerfile",
+					Ext:  ".",
+					Rules: []rule.Rule{
+						new(rule.SnakeCase).Init(),
+					},
+					RWMutex: new(sync.RWMutex),
+				},
+				{
+					Path: "should_not_exist",
+					Ext:  ".",
+					Rules: []rule.Rule{
+						new(rule.Exists).Init(),
+					},
+					RWMutex: new(sync.RWMutex),
+				},
+			},
+		},
 	}
 
 	i := 0
