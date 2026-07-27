@@ -54,6 +54,30 @@ ignore:
   - node_modules
 ```
 
+### Extending configurations
+
+A config can extend one or more other YAML config files:
+
+```yaml
+extends:
+  - node_modules/@enbw/linting/ls-lint/base.yml
+  - ./config/vue.yml
+
+ls:
+  src:
+    .vue: PascalCase
+```
+
+`extends` accepts either one path or an ordered list. Relative paths are
+resolved from the config file that declares them, and absolute paths are also
+supported. Extended configs are loaded first in list order, then the declaring
+config is applied. Like repeated `--config` flags, `ls` uses a shallow
+top-level merge where later values win, while `ignore` entries are combined
+and deduplicated.
+
+Paths inside `node_modules` work when written explicitly. Package-name
+resolution is not supported.
+
 ### Result
 
 <img src="https://i.imgur.com/pxXkYcl.gif" alt="command" width="600">

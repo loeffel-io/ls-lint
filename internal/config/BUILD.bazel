@@ -2,15 +2,24 @@ load("@rules_go//go:def.bzl", "go_library", "go_test")
 
 go_library(
     name = "config",
-    srcs = ["config.go"],
+    srcs = [
+        "config.go",
+        "loader.go",
+    ],
     importpath = "github.com/loeffel-io/ls-lint/v2/internal/config",
     visibility = ["//:__subpackages__"],
-    deps = ["//internal/rule"],
+    deps = [
+        "//internal/rule",
+        "@in_yaml_go_yaml_v3//:yaml",
+    ],
 )
 
 go_test(
     name = "config_test",
-    srcs = ["config_test.go"],
+    srcs = [
+        "config_test.go",
+        "loader_test.go",
+    ],
     embed = [":config"],
     deps = ["//internal/rule"],
 )

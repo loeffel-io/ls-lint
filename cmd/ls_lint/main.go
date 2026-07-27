@@ -5,10 +5,8 @@ import (
 	"flag"
 	"fmt"
 	"log"
-	"maps"
 	"os"
 	"runtime"
-	"slices"
 	"strings"
 
 	"github.com/loeffel-io/ls-lint/v2/internal/config"
@@ -16,7 +14,6 @@ import (
 	_flag "github.com/loeffel-io/ls-lint/v2/internal/flag"
 	"github.com/loeffel-io/ls-lint/v2/internal/linter"
 	"github.com/loeffel-io/ls-lint/v2/internal/rule"
-	"go.yaml.in/yaml/v3"
 )
 
 var Version = "dev"
@@ -69,23 +66,9 @@ func main() {
 		}
 	}
 
-	lslintConfig := config.NewConfig(make(config.Ls), make([]string, 0))
-	for _, c := range flagConfig {
-		tmpLslintConfig := config.NewConfig(nil, nil)
-		var tmpConfigBytes []byte
-
-		if tmpConfigBytes, err = os.ReadFile(c); err != nil {
-			log.Fatal(err)
-		}
-
-		if err = yaml.Unmarshal(tmpConfigBytes, tmpLslintConfig); err != nil {
-			log.Fatal(err)
-		}
-
-		maps.Copy(lslintConfig.GetLs(), tmpLslintConfig.GetLs())
-		lslintConfig.Ignore = append(lslintConfig.Ignore, tmpLslintConfig.GetIgnore()...)
-		slices.Sort(lslintConfig.Ignore)
-		lslintConfig.Ignore = slices.Compact(lslintConfig.Ignore)
+	lslintConfig, err := config.Load([]string(flagConfig))
+	if err != nil {
+		log.Fatal(err)
 	}
 
 	lslintLinter := linter.NewLinter(
