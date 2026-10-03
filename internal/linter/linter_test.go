@@ -729,6 +729,101 @@ func TestLinter_Run(t *testing.T) {
 				},
 			},
 		},
+		{
+			description: "paths with root .",
+			filesystem: fstest.MapFS{
+				"TRYSomeTHing.abc": &fstest.MapFile{Mode: fs.ModePerm},
+			},
+			paths: map[string]struct{}{
+				".": {},
+			},
+			linter: NewLinter(
+				".",
+				config.NewConfig(
+					config.Ls{
+						".abc": "lowercase",
+					},
+					[]string{},
+				),
+				&debug.Statistic{
+					Start:     start,
+					Files:     0,
+					FileSkips: 0,
+					Dirs:      0,
+					DirSkips:  0,
+					RWMutex:   new(sync.RWMutex),
+				},
+				[]*rule.Error{},
+			),
+			expectedErr: nil,
+			expectedStatistic: &debug.Statistic{
+				Start:     start,
+				Files:     1,
+				FileSkips: 0,
+				Dirs:      1,
+				DirSkips:  0,
+				RWMutex:   new(sync.RWMutex),
+			},
+			expectedErrors: []*rule.Error{
+				{
+					Path: "TRYSomeTHing.abc",
+					Ext:  ".abc",
+					Rules: []rule.Rule{
+						new(rule.Lowercase).Init(),
+					},
+					RWMutex: new(sync.RWMutex),
+				},
+			},
+		},
+		{
+			description: "paths with directory and unnormalized path",
+			filesystem: fstest.MapFS{
+				"src":                  &fstest.MapFile{Mode: fs.ModeDir},
+				"src/TRYSomeTHing.abc": &fstest.MapFile{Mode: fs.ModePerm},
+				"other":                &fstest.MapFile{Mode: fs.ModeDir},
+				"other/BAD_NAME.abc":   &fstest.MapFile{Mode: fs.ModePerm},
+			},
+			paths: map[string]struct{}{
+				"./src/": {},
+			},
+			linter: NewLinter(
+				".",
+				config.NewConfig(
+					config.Ls{
+						".abc": "lowercase",
+					},
+					[]string{},
+				),
+				&debug.Statistic{
+					Start:     start,
+					Files:     0,
+					FileSkips: 0,
+					Dirs:      0,
+					DirSkips:  0,
+					RWMutex:   new(sync.RWMutex),
+				},
+				[]*rule.Error{},
+			),
+			expectedErr: nil,
+			expectedStatistic: &debug.Statistic{
+				Start:     start,
+				Files:     2,
+				FileSkips: 0,
+				Dirs:      3,
+				DirSkips:  0,
+				RWMutex:   new(sync.RWMutex),
+			},
+			expectedErrors: []*rule.Error{
+				{
+					Path: "src/TRYSomeTHing.abc",
+					Ext:  ".abc",
+					Rules: []rule.Rule{
+						new(rule.Lowercase).Init(),
+					},
+					RWMutex: new(sync.RWMutex),
+				},
+			},
+		},
 	}
 
 	i := 0

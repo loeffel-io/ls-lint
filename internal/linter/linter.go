@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/fs"
 	"math"
+	_path "path"
 	"path/filepath"
 	"strings"
 	"sync"
@@ -142,7 +143,7 @@ func (linter *Linter) validateFile(index config.RuleIndex, path string, validate
 	indexDir, rules := linter.config.GetConfig(index, path)
 
 	var pathDir string
-	pathDir = filepath.ToSlash(filepath.Dir(path)); // compatibility with windows
+	pathDir = filepath.ToSlash(filepath.Dir(path)) // compatibility with windows
 	if pathDir == "." {
 		pathDir = ""
 	}
@@ -220,6 +221,22 @@ func (linter *Linter) validateFile(index config.RuleIndex, path string, validate
 }
 
 func (linter *Linter) Run(filesystem fs.FS, paths map[string]struct{}, debug bool) (err error) {
+	if len(paths) > 0 {
+		normalizedPaths := make(map[string]struct{}, len(paths))
+		for p := range paths {
+			cleaned := _path.Clean(filepath.ToSlash(p))
+			if cleaned == "." {
+				paths = nil
+				normalizedPaths = nil
+				break
+			}
+			normalizedPaths[cleaned] = struct{}{}
+		}
+		if normalizedPaths != nil {
+			paths = normalizedPaths
+		}
+	}
+
 	var pathsIndex map[string]map[string]struct{} = nil
 	if len(paths) > 0 {
 		pathsIndex = make(map[string]map[string]struct{})
@@ -313,8 +330,17 @@ func (linter *Linter) Run(filesystem fs.FS, paths map[string]struct{}, debug boo
 
 		var indexDir, ext string
 		validate := len(paths) == 0
-		if _, ok := paths[path]; !validate {
-			validate = ok
+		if !validate {
+			if _, ok := paths[path]; ok {
+				validate = true
+			} else {
+				for p := _path.Dir(path); p != "." && p != "/"; p = _path.Dir(p) {
+					if _, ok := paths[p]; ok {
+						validate = true
+						break
+					}
+				}
+			}
 		}
 
 		if info.IsDir() {

@@ -7,6 +7,8 @@ import (
 	"log"
 	"maps"
 	"os"
+	"path"
+	"path/filepath"
 	"runtime"
 	"slices"
 	"strings"
@@ -64,8 +66,13 @@ func main() {
 	var paths map[string]struct{}
 	if len(flags.Args()[0:]) > 0 {
 		paths = make(map[string]struct{}, len(flags.Args()[0:]))
-		for _, path := range flags.Args()[0:] {
-			paths[path] = struct{}{}
+		for _, p := range flags.Args()[0:] {
+			cleaned := path.Clean(filepath.ToSlash(p))
+			if cleaned == "." {
+				paths = nil
+				break
+			}
+			paths[cleaned] = struct{}{}
 		}
 	}
 
