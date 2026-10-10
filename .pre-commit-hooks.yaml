@@ -1,0 +1,18 @@
+- id: ls-lint
+  name: Lint files and directories
+  description: Run LS Lint on all files and directories
+  entry: ls-lint
+  pass_filenames: false
+  language: golang
+- id: ls-lint-docker
+  name: Lint files and directories
+  description: Run LS Lint on all files and directories using Docker
+  entry: lslintorg/ls-lint:latest
+  pass_filenames: false
+  language: docker_image
+- id: ls-lint-system
+  name: Lint files and directories
+  description: Run LS Lint on all files and directories using pre-installed binary
+  entry: ls-lint
+  pass_filenames: false
+  language: system
