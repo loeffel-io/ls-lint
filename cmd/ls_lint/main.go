@@ -7,6 +7,7 @@ import (
 	"log"
 	"maps"
 	"os"
+	"path/filepath"
 	"runtime"
 	"slices"
 	"strings"
@@ -61,10 +62,23 @@ func main() {
 	}
 
 	filesystem := os.DirFS(*flagWorkdir)
+
+	var absWorkdir string
+	if absWorkdir, err = filepath.Abs(*flagWorkdir); err != nil {
+		log.Fatal(err)
+	}
+
 	var paths map[string]struct{}
 	if len(flags.Args()[0:]) > 0 {
 		paths = make(map[string]struct{}, len(flags.Args()[0:]))
 		for _, path := range flags.Args()[0:] {
+			if filepath.IsAbs(path) {
+				if path, err = filepath.Rel(absWorkdir, path); err != nil {
+					log.Fatal(err)
+				}
+			}
+
+			path = filepath.ToSlash(filepath.Clean(path))
 			paths[path] = struct{}{}
 		}
 	}
