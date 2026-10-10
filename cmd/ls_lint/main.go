@@ -78,7 +78,12 @@ func main() {
 				}
 			}
 
-			path = filepath.ToSlash(filepath.Clean(path))
+			path = filepath.Clean(path)
+			if !filepath.IsLocal(path) {
+				log.Fatalf("path %q is outside of workdir %q", path, absWorkdir)
+			}
+
+			path = filepath.ToSlash(path)
 			if path == "." {
 				paths = nil
 				break
