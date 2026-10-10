@@ -1,14 +1,15 @@
 package config
 
 import (
-	"github.com/loeffel-io/ls-lint/v2/internal/rule"
 	"reflect"
 	"testing"
+
+	"github.com/loeffel-io/ls-lint/v2/internal/rule"
 )
 
 func TestGetConfig(t *testing.T) {
-	var config = new(Config)
-	var indexMock = map[string]map[string][]rule.Rule{
+	config := new(Config)
+	indexMock := map[string]map[string][]rule.Rule{
 		".": {
 			".dir": []rule.Rule{rule.RulesIndex["lowercase"]},
 		},
@@ -16,9 +17,9 @@ func TestGetConfig(t *testing.T) {
 			".dir": []rule.Rule{rule.RulesIndex["camelcase"]},
 		},
 	}
-	var indexMockEmpty = make(RuleIndex)
+	indexMockEmpty := make(RuleIndex)
 
-	var tests = []*struct {
+	tests := []*struct {
 		config   *Config
 		index    RuleIndex
 		path     string
@@ -48,7 +49,7 @@ func TestGetConfig(t *testing.T) {
 		},
 	}
 
-	var i = 0
+	i := 0
 	for _, test := range tests {
 		_, res := test.config.GetConfig(test.index, test.path)
 
@@ -86,7 +87,7 @@ func TestShouldIgnore(t *testing.T) {
 		},
 	}
 
-	var i = 0
+	i := 0
 	for _, test := range tests {
 		res := test.lslintConfig.ShouldIgnore(test.ignoreIndex, test.path)
 

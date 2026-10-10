@@ -43,7 +43,7 @@ func (rule *KebabCase) GetExclusive() bool {
 
 // Validate checks if string is kebab case
 // false if rune is no lowercase letter, digit or -
-func (rule *KebabCase) Validate(value string, fail bool) (bool, error) {
+func (rule *KebabCase) Validate(value string, _ string, _ bool) (bool, error) {
 	for _, c := range value {
 		if c == 45 || unicode.IsDigit(c) { // 45 => -
 			continue

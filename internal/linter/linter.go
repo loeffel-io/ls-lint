@@ -2,17 +2,18 @@ package linter
 
 import (
 	"fmt"
-	"github.com/loeffel-io/ls-lint/v2/internal/config"
-	"github.com/loeffel-io/ls-lint/v2/internal/debug"
-	"github.com/loeffel-io/ls-lint/v2/internal/glob"
-	"github.com/loeffel-io/ls-lint/v2/internal/rule"
-	"golang.org/x/sync/errgroup"
 	"io/fs"
 	"math"
 	"path/filepath"
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/loeffel-io/ls-lint/v2/internal/config"
+	"github.com/loeffel-io/ls-lint/v2/internal/debug"
+	"github.com/loeffel-io/ls-lint/v2/internal/glob"
+	"github.com/loeffel-io/ls-lint/v2/internal/rule"
+	"golang.org/x/sync/errgroup"
 )
 
 const (
@@ -66,11 +67,11 @@ func (linter *Linter) validateDir(index config.RuleIndex, path string, validate 
 		return indexDir, dir, nil
 	}
 
-	var g = new(errgroup.Group)
+	g := new(errgroup.Group)
 
 	var rulesNonExclusiveCount int8
 	var rulesNonExclusiveError int8
-	var rulesMutex = new(sync.Mutex)
+	rulesMutex := new(sync.Mutex)
 
 	var pathDir string
 	if pathDir = path; pathDir == "." {
@@ -93,17 +94,16 @@ func (linter *Linter) validateDir(index config.RuleIndex, path string, validate 
 				return nil
 			}
 
-			valid, err := ruleDir.Validate(basename, ruleDir.GetName() != "exists")
-
+			valid, err := ruleDir.Validate(basename, pathDir, ruleDir.GetName() != "exists")
 			if err != nil {
 				return err
 			}
 
 			if !ruleDir.GetExclusive() {
 				rulesMutex.Lock()
-				rulesNonExclusiveCount += 1
+				rulesNonExclusiveCount++
 				if !valid {
-					rulesNonExclusiveError += 1
+					rulesNonExclusiveError++
 				}
 				rulesMutex.Unlock()
 			}
@@ -132,22 +132,23 @@ func (linter *Linter) validateDir(index config.RuleIndex, path string, validate 
 
 func (linter *Linter) validateFile(index config.RuleIndex, path string, validate bool) (string, string, error) {
 	var ext string
-	var g = new(errgroup.Group)
+	g := new(errgroup.Group)
 
 	var rulesNonExclusiveCount int8
 	var rulesNonExclusiveError int8
-	var rulesMutex = new(sync.Mutex)
+	rulesMutex := new(sync.Mutex)
 
 	exts := strings.Split(filepath.Base(path), extSep)[1:]
 	indexDir, rules := linter.config.GetConfig(index, path)
 
 	var pathDir string
-	if pathDir = filepath.Dir(path); pathDir == "." {
+	pathDir = filepath.ToSlash(filepath.Dir(path)); // compatibility with windows
+	if pathDir == "." {
 		pathDir = ""
 	}
 
-	var n = len(exts)
-	var maxCombinations = int(math.Pow(2, float64(n))) // 2^N combinations
+	n := len(exts)
+	maxCombinations := int(math.Pow(2, float64(n))) // 2^N combinations
 
 	var withoutExt string
 	for i := 0; i < maxCombinations; i++ {
@@ -177,17 +178,16 @@ func (linter *Linter) validateFile(index config.RuleIndex, path string, validate
 						return nil
 					}
 
-					valid, err := ruleFile.Validate(withoutExt, ruleFile.GetName() != "exists")
-
+					valid, err := ruleFile.Validate(withoutExt, pathDir, ruleFile.GetName() != "exists")
 					if err != nil {
 						return err
 					}
 
 					if !ruleFile.GetExclusive() {
 						rulesMutex.Lock()
-						rulesNonExclusiveCount += 1
+						rulesNonExclusiveCount++
 						if !valid {
-							rulesNonExclusiveError += 1
+							rulesNonExclusiveError++
 						}
 						rulesMutex.Unlock()
 					}
@@ -237,7 +237,7 @@ func (linter *Linter) Run(filesystem fs.FS, paths map[string]struct{}, debug boo
 	}
 
 	// glob ignore index
-	var ignoreIndex = linter.config.GetIgnoreIndex()
+	ignoreIndex := linter.config.GetIgnoreIndex()
 	if err = glob.IgnoreIndex(filesystem, ignoreIndex, true); err != nil {
 		return err
 	}
@@ -253,7 +253,7 @@ func (linter *Linter) Run(filesystem fs.FS, paths map[string]struct{}, debug boo
 			}
 
 			for ext, rules := range pathIndex {
-				var tmpRules = make([]string, 0)
+				tmpRules := make([]string, 0)
 				for _, tmpRule := range rules {
 					if len(tmpRule.GetParameters()) > 0 {
 						tmpRules = append(tmpRules, fmt.Sprintf("%s:%s", tmpRule.GetName(), strings.Join(tmpRule.GetParameters(), ",")))
@@ -312,7 +312,7 @@ func (linter *Linter) Run(filesystem fs.FS, paths map[string]struct{}, debug boo
 		}
 
 		var indexDir, ext string
-		var validate = len(paths) == 0
+		validate := len(paths) == 0
 		if _, ok := paths[path]; !validate {
 			validate = ok
 		}
@@ -373,7 +373,7 @@ func (linter *Linter) Run(filesystem fs.FS, paths map[string]struct{}, debug boo
 				}
 
 				var valid bool
-				if valid, err = r.Validate("", true); err != nil {
+				if valid, err = r.Validate("", "", true); err != nil {
 					return err
 				}
 

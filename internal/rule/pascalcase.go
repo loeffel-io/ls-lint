@@ -44,7 +44,7 @@ func (rule *PascalCase) GetExclusive() bool {
 // Validate checks if string is pascal case
 // false if rune is no letter and no digit
 // false if first rune is not upper
-func (rule *PascalCase) Validate(value string, fail bool) (bool, error) {
+func (rule *PascalCase) Validate(value string, _ string, _ bool) (bool, error) {
 	for i, c := range value {
 		// must be letter or digit
 		if !unicode.IsLetter(c) && !unicode.IsDigit(c) {

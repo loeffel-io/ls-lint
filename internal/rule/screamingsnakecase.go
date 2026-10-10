@@ -43,7 +43,7 @@ func (rule *ScreamingSnakeCase) GetExclusive() bool {
 
 // Validate checks if string is screaming sneak case
 // false if rune is no uppercase letter, digit or _
-func (rule *ScreamingSnakeCase) Validate(value string, fail bool) (bool, error) {
+func (rule *ScreamingSnakeCase) Validate(value string, _ string, _ bool) (bool, error) {
 	for _, c := range value {
 		if c == 95 || unicode.IsDigit(c) { // 95 => _
 			continue

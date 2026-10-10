@@ -10,7 +10,6 @@ var RulesIndex = map[string]Rule{
 	"snakecase":          new(SnakeCase).Init(),
 	"screamingsnakecase": new(ScreamingSnakeCase).Init(),
 	"kebabcase":          new(KebabCase).Init(),
-	"pointcase":          new(PointCase).Init(),
 }
 
 var Rules = map[string]Rule{
@@ -32,9 +31,6 @@ var Rules = map[string]Rule{
 
 	"kebabcase":  RulesIndex["kebabcase"],
 	"kebab-case": RulesIndex["kebabcase"],
-
-	"pointcase":  RulesIndex["pointcase"],
-	"point.case": RulesIndex["pointcase"],
 }
 
 type Rule interface {
@@ -43,7 +39,12 @@ type Rule interface {
 	SetParameters(params []string) error
 	GetParameters() []string
 	GetExclusive() bool
-	Validate(value string, fail bool) (bool, error)
+	// Validate validates the value with the rule
+	// value:
+	//   - file: filename without extension
+	//   - dir: basename
+	// path: full dir path - empty on root
+	Validate(value string, path string, fail bool) (bool, error)
 	GetErrorMessage() string
 	Copy() Rule
 }

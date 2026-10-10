@@ -4,9 +4,6 @@ import (
 	"cmp"
 	"errors"
 	"fmt"
-	"github.com/loeffel-io/ls-lint/v2/internal/config"
-	"github.com/loeffel-io/ls-lint/v2/internal/debug"
-	"github.com/loeffel-io/ls-lint/v2/internal/rule"
 	"io/fs"
 	"reflect"
 	"slices"
@@ -15,12 +12,16 @@ import (
 	"testing"
 	"testing/fstest"
 	"time"
+
+	"github.com/loeffel-io/ls-lint/v2/internal/config"
+	"github.com/loeffel-io/ls-lint/v2/internal/debug"
+	"github.com/loeffel-io/ls-lint/v2/internal/rule"
 )
 
 func TestLinter_Run(t *testing.T) {
-	var start = time.Now()
+	start := time.Now()
 
-	var tests = []*struct {
+	tests := []*struct {
 		description       string
 		filesystem        fs.FS
 		paths             map[string]struct{}
@@ -516,6 +517,9 @@ func TestLinter_Run(t *testing.T) {
 						"not_exists": config.Ls{
 							".dir": "exists:1",
 						},
+						"dir_not_exists/*/not_exists": config.Ls{
+							".dir": "exists",
+						},
 						"wildcards/**": config.Ls{
 							".dir": "exists:1",
 							".*":   "snake_case | exists:1",
@@ -635,6 +639,14 @@ func TestLinter_Run(t *testing.T) {
 					},
 					RWMutex: new(sync.RWMutex),
 				},
+				{
+					Path: "dir_not_exists/*/not_exists",
+					Ext:  ".dir",
+					Rules: []rule.Rule{
+						new(rule.Exists).Init(),
+					},
+					RWMutex: new(sync.RWMutex),
+				},
 			},
 		},
 		{
@@ -719,11 +731,11 @@ func TestLinter_Run(t *testing.T) {
 		},
 	}
 
-	var i = 0
+	i := 0
 	for _, test := range tests {
 		fmt.Printf("Run test %d (%s)\n", i, test.description)
 
-		var err = test.linter.Run(test.filesystem, test.paths, true)
+		err := test.linter.Run(test.filesystem, test.paths, true)
 
 		if !errors.Is(err, test.expectedErr) {
 			t.Errorf("Test %d (%s) failed with unmatched error value - %v", i, test.description, err)
@@ -735,7 +747,7 @@ func TestLinter_Run(t *testing.T) {
 			return
 		}
 
-		var equalErrorsErr = fmt.Errorf("Test %d (%s) failed with unmatched linter errors value\nexpected: %+v\nactual: %+v", i, test.description, test.expectedErrors, test.linter.GetErrors())
+		equalErrorsErr := fmt.Errorf("Test %d (%s) failed with unmatched linter errors value\nexpected: %+v\nactual: %+v", i, test.description, test.expectedErrors, test.linter.GetErrors())
 		if len(test.linter.GetErrors()) != len(test.expectedErrors) {
 			t.Error(equalErrorsErr)
 			return

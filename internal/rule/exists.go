@@ -54,7 +54,7 @@ func (rule *Exists) SetParameters(params []string) error {
 	}
 
 	// exists:1
-	var split = strings.Split(params[0], "-")
+	split := strings.Split(params[0], "-")
 	if len(split) == 1 {
 		var value int64
 		var err error
@@ -101,7 +101,7 @@ func (rule *Exists) GetExclusive() bool {
 	return rule.exclusive
 }
 
-func (rule *Exists) Validate(value string, fail bool) (bool, error) {
+func (rule *Exists) Validate(value string, _ string, fail bool) (bool, error) {
 	if !fail {
 		rule.incrementCount()
 		return true, nil
@@ -140,17 +140,17 @@ func (rule *Exists) incrementCount() {
 
 func (rule *Exists) GetErrorMessage() string {
 	if rule.getMin() == rule.getMax() {
-		return fmt.Sprintf("%s:%d (debug: %d)", rule.GetName(), rule.getMin(), rule.getCount())
+		return fmt.Sprintf("%s:%d (found %d)", rule.GetName(), rule.getMin(), rule.getCount())
 	}
 
-	return fmt.Sprintf("%s:%d-%d (debug: %d)", rule.GetName(), rule.getMin(), rule.getMax(), rule.getCount())
+	return fmt.Sprintf("%s:%d-%d (found %d)", rule.GetName(), rule.getMin(), rule.getMax(), rule.getCount())
 }
 
 func (rule *Exists) Copy() Rule {
 	rule.RLock()
 	defer rule.RUnlock()
 
-	var c = new(Exists)
+	c := new(Exists)
 	c.Init()
 	c.min = rule.min
 	c.max = rule.max

@@ -42,7 +42,7 @@ func (rule *Lowercase) GetExclusive() bool {
 }
 
 // Validate checks if every letter is lower
-func (rule *Lowercase) Validate(value string, fail bool) (bool, error) {
+func (rule *Lowercase) Validate(value string, _ string, _ bool) (bool, error) {
 	for _, c := range value {
 		if unicode.IsLetter(c) && !unicode.IsLower(c) {
 			return false, nil
