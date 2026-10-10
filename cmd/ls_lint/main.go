@@ -79,6 +79,11 @@ func main() {
 			}
 
 			path = filepath.ToSlash(filepath.Clean(path))
+			if path == "." {
+				paths = nil
+				break
+			}
+
 			paths[path] = struct{}{}
 		}
 	}
