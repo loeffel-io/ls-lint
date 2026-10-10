@@ -9,38 +9,47 @@ import (
 func TestNormalizePaths(t *testing.T) {
 	workdir := t.TempDir()
 
-	tests := []struct {
-		name            string
-		paths           []string
-		normalizedPaths map[string]struct{}
-		expectedErr     bool
+	tests := []*struct {
+		description string
+		paths       []string
+		expected    map[string]struct{}
+		expectedErr bool
 	}{
-		{name: "no args", paths: nil, normalizedPaths: nil},
-		{name: "relative", paths: []string{"src/foo.js"}, normalizedPaths: map[string]struct{}{"src/foo.js": {}}},
-		{name: "dot slash", paths: []string{"./src/foo.js"}, normalizedPaths: map[string]struct{}{"src/foo.js": {}}},
-		{name: "trailing slash", paths: []string{"src/"}, normalizedPaths: map[string]struct{}{"src": {}}},
-		{name: "absolute", paths: []string{filepath.Join(workdir, "src", "foo.js")}, normalizedPaths: map[string]struct{}{"src/foo.js": {}}},
-		{name: "stays inside", paths: []string{"src/../lib/a.js"}, normalizedPaths: map[string]struct{}{"lib/a.js": {}}},
-		{name: "duplicates", paths: []string{"a.js", "./a.js"}, normalizedPaths: map[string]struct{}{"a.js": {}}},
-		{name: "dot", paths: []string{"."}, normalizedPaths: nil},
-		{name: "dot with others", paths: []string{"a.js", ".", "b.js"}, normalizedPaths: nil},
-		{name: "absolute workdir", paths: []string{workdir}, normalizedPaths: nil},
-		{name: "empty", paths: []string{""}, normalizedPaths: nil},
-		{name: "parent", paths: []string{"../x.js"}, expectedErr: true},
-		{name: "escapes", paths: []string{"src/../../x.js"}, expectedErr: true},
-		{name: "absolute outside", paths: []string{filepath.Join(filepath.Dir(workdir), "x.js")}, expectedErr: true},
+		{description: "no args", paths: nil, expected: nil, expectedErr: false},
+		{description: "relative", paths: []string{"src/foo.js"}, expected: map[string]struct{}{"src/foo.js": {}}, expectedErr: false},
+		{description: "dot slash", paths: []string{"./src/foo.js"}, expected: map[string]struct{}{"src/foo.js": {}}, expectedErr: false},
+		{description: "trailing slash", paths: []string{"src/"}, expected: map[string]struct{}{"src": {}}, expectedErr: false},
+		{description: "absolute", paths: []string{filepath.Join(workdir, "src", "foo.js")}, expected: map[string]struct{}{"src/foo.js": {}}, expectedErr: false},
+		{description: "stays inside", paths: []string{"src/../lib/a.js"}, expected: map[string]struct{}{"lib/a.js": {}}, expectedErr: false},
+		{description: "duplicates", paths: []string{"a.js", "./a.js"}, expected: map[string]struct{}{"a.js": {}}, expectedErr: false},
+		{description: "dot", paths: []string{"."}, expected: nil, expectedErr: false},
+		{description: "dot with others", paths: []string{"a.js", ".", "b.js"}, expected: nil, expectedErr: false},
+		{description: "absolute workdir", paths: []string{workdir}, expected: nil, expectedErr: false},
+		{description: "empty", paths: []string{""}, expected: nil, expectedErr: false},
+		{description: "parent", paths: []string{"../x.js"}, expected: nil, expectedErr: true},
+		{description: "escapes", paths: []string{"src/../../x.js"}, expected: nil, expectedErr: true},
+		{description: "absolute outside", paths: []string{filepath.Join(filepath.Dir(workdir), "x.js")}, expected: nil, expectedErr: true},
 	}
 
+	i := 0
 	for _, test := range tests {
-		t.Run(test.name, func(t *testing.T) {
-			got, err := normalizePaths(workdir, test.paths)
-			if (err != nil) != test.expectedErr {
-				t.Fatalf("err = %v, expectedErr = %v", err, test.expectedErr)
-			}
+		res, err := normalizePaths(workdir, test.paths)
 
-			if (got == nil) != (test.normalizedPaths == nil) || !maps.Equal(got, test.normalizedPaths) {
-				t.Fatalf("got = %v, want = %v", got, test.normalizedPaths)
-			}
-		})
+		if (err != nil) != test.expectedErr {
+			t.Errorf("Test %d (%s) failed with unmatched error value - %v", i, test.description, err)
+			return
+		}
+
+		if (res == nil) != (test.expected == nil) {
+			t.Errorf("Test %d (%s) failed with unmatched nil value - %#v", i, test.description, res)
+			return
+		}
+
+		if !maps.Equal(res, test.expected) {
+			t.Errorf("Test %d (%s) failed with unmatched return value - %#v", i, test.description, res)
+			return
+		}
+
+		i++
 	}
 }
