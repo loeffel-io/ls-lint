@@ -422,6 +422,60 @@ func TestLinter_Run(t *testing.T) {
 			expectedErrors: []*rule.Error{},
 		},
 		{
+			description: "exists with ignored glob directories",
+			filesystem: fstest.MapFS{
+				"docs":                                           &fstest.MapFile{Mode: fs.ModeDir},
+				"docs/features":                                  &fstest.MapFile{Mode: fs.ModeDir},
+				"docs/features/assets":                           &fstest.MapFile{Mode: fs.ModeDir},
+				"docs/features/feature.yaml":                     &fstest.MapFile{Mode: fs.ModePerm},
+				"docs/features/project_README.md":                &fstest.MapFile{Mode: fs.ModePerm},
+				"docs/features/README.md":                        &fstest.MapFile{Mode: fs.ModePerm},
+				"docs/features/responsibility.yaml":              &fstest.MapFile{Mode: fs.ModePerm},
+				"docs/features/subfeature-1":                     &fstest.MapFile{Mode: fs.ModeDir},
+				"docs/features/subfeature-1/assets":              &fstest.MapFile{Mode: fs.ModeDir},
+				"docs/features/subfeature-1/feature.yaml":        &fstest.MapFile{Mode: fs.ModePerm},
+				"docs/features/subfeature-1/project_README.md":   &fstest.MapFile{Mode: fs.ModePerm},
+				"docs/features/subfeature-1/README.md":           &fstest.MapFile{Mode: fs.ModePerm},
+				"docs/features/subfeature-1/responsibility.yaml": &fstest.MapFile{Mode: fs.ModePerm},
+			},
+			paths: nil,
+			linter: NewLinter(
+				".",
+				config.NewConfig(
+					config.Ls{
+						".dir": "kebab-case",
+						"docs/features/**": config.Ls{
+							".md":   "regex:(README|project_README) | exists:1-2",
+							".yaml": "regex:(feature|responsibility) | exists:2",
+							".*":    "exists:0",
+						},
+					},
+					[]string{
+						"**/assets/**",
+					},
+				),
+				&debug.Statistic{
+					Start:     start,
+					Files:     0,
+					FileSkips: 0,
+					Dirs:      0,
+					DirSkips:  0,
+					RWMutex:   new(sync.RWMutex),
+				},
+				[]*rule.Error{},
+			),
+			expectedErr: nil,
+			expectedStatistic: &debug.Statistic{
+				Start:     start,
+				Files:     8,
+				FileSkips: 0,
+				Dirs:      4,
+				DirSkips:  2,
+				RWMutex:   new(sync.RWMutex),
+			},
+			expectedErrors: []*rule.Error{},
+		},
+		{
 			description: "exists with paths",
 			filesystem: fstest.MapFS{
 				"snake_case.png":                     &fstest.MapFile{Mode: fs.ModePerm},

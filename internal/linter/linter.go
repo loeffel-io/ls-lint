@@ -362,6 +362,10 @@ func (linter *Linter) Run(filesystem fs.FS, paths map[string]struct{}, debug boo
 
 	// validate exists
 	for path, pathIndex := range index {
+		if linter.config.ShouldIgnore(ignoreIndex, path) {
+			continue
+		}
+
 		for ext, rules := range pathIndex {
 			if _, ok := pathsIndex[path][ext]; pathsIndex != nil && !ok {
 				continue
