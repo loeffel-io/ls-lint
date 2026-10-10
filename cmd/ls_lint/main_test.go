@@ -9,7 +9,7 @@ import (
 func TestNormalizePaths(t *testing.T) {
 	workdir := t.TempDir()
 
-	tests := []*struct {
+	tests := []struct {
 		description string
 		paths       []string
 		expected    map[string]struct{}
