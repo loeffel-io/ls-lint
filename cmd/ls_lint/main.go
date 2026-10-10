@@ -80,7 +80,7 @@ func main() {
 
 			path = filepath.Clean(path)
 			if !filepath.IsLocal(path) {
-				log.Fatalf("path %q is outside of workdir %q", path, absWorkdir)
+				log.Fatalf("%q is outside of workdir %q", path, absWorkdir)
 			}
 
 			path = filepath.ToSlash(path)
