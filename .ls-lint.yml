@@ -24,3 +24,4 @@ ignore:
   - gha-*
   - deployments/npm/pnpm-lock.yaml
   - deployments/docker
+  - crush
