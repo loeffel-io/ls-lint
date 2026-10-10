@@ -13,7 +13,7 @@ func TestNormalizePaths(t *testing.T) {
 		name            string
 		paths           []string
 		normalizedPaths map[string]struct{}
-		err             bool
+		expectedErr     bool
 	}{
 		{name: "no args", paths: nil, normalizedPaths: nil},
 		{name: "relative", paths: []string{"src/foo.js"}, normalizedPaths: map[string]struct{}{"src/foo.js": {}}},
@@ -26,16 +26,16 @@ func TestNormalizePaths(t *testing.T) {
 		{name: "dot with others", paths: []string{"a.js", ".", "b.js"}, normalizedPaths: nil},
 		{name: "absolute workdir", paths: []string{workdir}, normalizedPaths: nil},
 		{name: "empty", paths: []string{""}, normalizedPaths: nil},
-		{name: "parent", paths: []string{"../x.js"}, err: true},
-		{name: "escapes", paths: []string{"src/../../x.js"}, err: true},
-		{name: "absolute outside", paths: []string{filepath.Join(filepath.Dir(workdir), "x.js")}, err: true},
+		{name: "parent", paths: []string{"../x.js"}, expectedErr: true},
+		{name: "escapes", paths: []string{"src/../../x.js"}, expectedErr: true},
+		{name: "absolute outside", paths: []string{filepath.Join(filepath.Dir(workdir), "x.js")}, expectedErr: true},
 	}
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			got, err := normalizePaths(workdir, test.paths)
-			if (err != nil) != test.err {
-				t.Fatalf("err = %v, wantErr = %v", err, test.err)
+			if (err != nil) != test.expectedErr {
+				t.Fatalf("err = %v, expectedErr = %v", err, test.expectedErr)
 			}
 
 			if (got == nil) != (test.normalizedPaths == nil) || !maps.Equal(got, test.normalizedPaths) {
