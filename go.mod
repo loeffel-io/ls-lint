@@ -1,9 +1,9 @@
 module github.com/loeffel-io/ls-lint/v2
 
-go 1.24
+go 1.27.2
 
 require (
-	github.com/bmatcuk/doublestar/v4 v4.8.1
-	go.yaml.in/yaml/v3 v3.0.4
-	golang.org/x/sync v0.14.0
+	github.com/bmatcuk/doublestar/v4 v4.10.2
+	go.yaml.in/yaml/v3 v3.0.5
+	golang.org/x/sync v0.24.0
 )

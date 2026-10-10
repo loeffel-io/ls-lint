@@ -1,1 +1,3 @@
 build --stamp --workspace_status_command="bash scripts/bazel/workspace_status.sh"
+
+common --repo_env=DO_NOT_TRACK=1

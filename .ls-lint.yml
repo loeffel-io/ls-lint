@@ -8,17 +8,14 @@ ls:
   .md: SCREAMING_SNAKE_CASE
   .bazel: SCREAMING_SNAKE_CASE
   .bazel.lock: SCREAMING_SNAKE_CASE
-
   examples/**: # allow only .yml files
     .dir: snake_case
     .*: exists:0
     .yml: kebab-case
-
   assets/**: # allow only .png files
     .dir: snake_case
     .*: exists:0
     .png: kebab-case
-
 ignore:
   - .git
   - .github
@@ -27,3 +24,4 @@ ignore:
   - gha-*
   - deployments/npm/pnpm-lock.yaml
   - deployments/docker
+  - .crush
