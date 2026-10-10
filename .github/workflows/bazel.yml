@@ -1,12 +1,11 @@
 name: Bazel
-on: [ push, pull_request ]
-
+on: [push, pull_request]
 jobs:
   build-linux:
     if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     container:
-      image: gcr.io/bazel-public/bazel@sha256:e45b3b77bf94e6eeb9a2a7151e4474f75247cc52501e5da6a24f976d71e10b14
+      image: gcr.io/bazel-public/bazel@sha256:6158d62576c99301611a7d072aa37e2f721b6bc9cd7e28dc33c85f4719d93540
       options: --user root
       env:
         NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
@@ -24,7 +23,6 @@ jobs:
       - run: bazel test --remote_cache=$GOOGLE_BUCKET --google_default_credentials //...
       - run: bazel build --remote_cache=$GOOGLE_BUCKET --google_default_credentials //...
       - run: bazel run //cmd/ls_lint:ls-lint -- --config ${PWD}/.ls-lint.yml --workdir ${PWD}
-
   # bazel docker image does not support windows
   # windows does not run presubmit checks to avoid running bazel twice
   # gofumpt toolchain does not support windows (currently patched)
@@ -46,10 +44,9 @@ jobs:
         run: bazel test --remote_cache=$GOOGLE_BUCKET --google_default_credentials //...
       - shell: bash
         run: bazel build --remote_cache=$GOOGLE_BUCKET --google_default_credentials //...
-      # TODO: https://github.com/loeffel-io/ls-lint/actions/runs/15439266849/job/43452949977
-      # - shell: bash
-      #   run: bazel run //cmd/ls_lint:ls-lint -- --config ${PWD}/.ls-lint.yml --workdir ${PWD}
-
+        # TODO: https://github.com/loeffel-io/ls-lint/actions/runs/15439266849/job/43452949977
+        # - shell: bash
+        #   run: bazel run //cmd/ls_lint:ls-lint -- --config ${PWD}/.ls-lint.yml --workdir ${PWD}
   build-linux-no-cache: # external pull requests to hide secrets
     if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository
     runs-on: ubuntu-latest
@@ -66,7 +63,6 @@ jobs:
       - run: bazel test //...
       - run: bazel build //...
       - run: bazel run //cmd/ls_lint:ls-lint -- --config ${PWD}/.ls-lint.yml --workdir ${PWD}
-
   # bazel docker image does not support windows
   # windows does not run presubmit checks to avoid running bazel twice 
   # gofumpt toolchain does not support windows (currently patched)
@@ -82,10 +78,9 @@ jobs:
         run: bazel test //...
       - shell: bash
         run: bazel build //...
-      # TODO: https://github.com/loeffel-io/ls-lint/actions/runs/15439266849/job/43452949977
-      # - shell: bash
-      #   run: bazel run //cmd/ls_lint:ls-lint -- --config ${PWD}/.ls-lint.yml --workdir ${PWD}
-
+        # TODO: https://github.com/loeffel-io/ls-lint/actions/runs/15439266849/job/43452949977
+        # - shell: bash
+        #   run: bazel run //cmd/ls_lint:ls-lint -- --config ${PWD}/.ls-lint.yml --workdir ${PWD}
   release:
     needs: [build-linux, build-windows]
     if: startsWith(github.ref, 'refs/tags/v')
