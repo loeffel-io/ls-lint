@@ -422,7 +422,7 @@ func TestLinter_Run(t *testing.T) {
 			expectedErrors: []*rule.Error{},
 		},
 		{
-			description: "exists with ignored glob directories",
+			description: "#330: exists with ignored glob directories",
 			filesystem: fstest.MapFS{
 				"docs":                                           &fstest.MapFile{Mode: fs.ModeDir},
 				"docs/features":                                  &fstest.MapFile{Mode: fs.ModeDir},
