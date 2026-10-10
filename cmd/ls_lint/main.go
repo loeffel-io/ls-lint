@@ -69,28 +69,8 @@ func main() {
 	}
 
 	var paths map[string]struct{}
-	if len(flags.Args()[0:]) > 0 {
-		paths = make(map[string]struct{}, len(flags.Args()[0:]))
-		for _, path := range flags.Args()[0:] {
-			if filepath.IsAbs(path) {
-				if path, err = filepath.Rel(absWorkdir, path); err != nil {
-					log.Fatal(err)
-				}
-			}
-
-			path = filepath.Clean(path)
-			if !filepath.IsLocal(path) {
-				log.Fatalf("%q is outside of workdir %q", path, absWorkdir)
-			}
-
-			path = filepath.ToSlash(path)
-			if path == "." {
-				paths = nil
-				break
-			}
-
-			paths[path] = struct{}{}
-		}
+	if paths, err = normalizePaths(absWorkdir, flags.Args()); err != nil {
+		log.Fatal(err)
 	}
 
 	lslintConfig := config.NewConfig(make(config.Ls), make([]string, 0))
@@ -188,4 +168,37 @@ func main() {
 	}
 
 	os.Exit(exitCode)
+}
+
+func normalizePaths(
+	absWorkdir string,
+	args []string,
+) (map[string]struct{}, error) {
+	if len(args) == 0 {
+		return nil, nil
+	}
+
+	paths := make(map[string]struct{}, len(args))
+	for _, path := range args {
+		if filepath.IsAbs(path) {
+			var err error
+			if path, err = filepath.Rel(absWorkdir, path); err != nil {
+				return nil, err
+			}
+		}
+
+		path = filepath.Clean(path)
+		if !filepath.IsLocal(path) {
+			return nil, fmt.Errorf("%q is outside of workdir %q", path, absWorkdir)
+		}
+
+		path = filepath.ToSlash(path)
+		if path == "." {
+			return nil, nil
+		}
+
+		paths[path] = struct{}{}
+	}
+
+	return paths, nil
 }
