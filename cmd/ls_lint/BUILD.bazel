@@ -1,4 +1,4 @@
-load("@rules_go//go:def.bzl", "go_binary", "go_library")
+load("@rules_go//go:def.bzl", "go_binary", "go_library", "go_test")
 load("@rules_pkg//pkg:tar.bzl", "pkg_tar")
 load(":target.bzl", "targets")
 
@@ -66,4 +66,10 @@ genrule(
     cmd = "$(location //:coreutils) sha256sum $(SRCS) > $(OUTS)",
     tools = ["//:coreutils"],
     visibility = ["//visibility:public"],
+)
+
+go_test(
+    name = "ls_lint_test",
+    srcs = ["main_test.go"],
+    embed = [":ls_lint_lib"],
 )

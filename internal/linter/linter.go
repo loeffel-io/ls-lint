@@ -142,7 +142,7 @@ func (linter *Linter) validateFile(index config.RuleIndex, path string, validate
 	indexDir, rules := linter.config.GetConfig(index, path)
 
 	var pathDir string
-	pathDir = filepath.ToSlash(filepath.Dir(path)); // compatibility with windows
+	pathDir = filepath.ToSlash(filepath.Dir(path)) // compatibility with windows
 	if pathDir == "." {
 		pathDir = ""
 	}
