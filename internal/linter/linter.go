@@ -3,7 +3,6 @@ package linter
 import (
 	"fmt"
 	"io/fs"
-	"math"
 	"path/filepath"
 	"strings"
 	"sync"
@@ -138,7 +137,6 @@ func (linter *Linter) validateFile(index config.RuleIndex, path string, validate
 	var rulesNonExclusiveError int8
 	rulesMutex := new(sync.Mutex)
 
-	exts := strings.Split(filepath.Base(path), extSep)[1:]
 	indexDir, rules := linter.config.GetConfig(index, path)
 
 	var pathDir string
@@ -147,56 +145,77 @@ func (linter *Linter) validateFile(index config.RuleIndex, path string, validate
 		pathDir = ""
 	}
 
-	n := len(exts)
-	maxCombinations := int(math.Pow(2, float64(n))) // 2^N combinations
-
+	basename := filepath.Base(path)
+	parts := strings.Split(basename, extSep)
 	var withoutExt string
-	for i := 0; i < maxCombinations; i++ {
-		combination := make([]string, n)
-		for j := 0; j < n; j++ {
-			if i&(1<<(n-1-j)) == 0 { // from left to right; right to left: i&(1<<j)
-				combination[j] = exts[j] // Keep original
-			} else {
-				combination[j] = "*" // Replace with "*"
+
+	runValidation := func() {
+		for _, ruleFile := range rules[ext] {
+			if !validate && ruleFile.GetName() != "exists" {
+				continue
 			}
-		}
 
-		ext = fmt.Sprintf("%s%s", extSep, strings.Join(combination, extSep))
-
-		if i == 0 {
-			withoutExt = strings.TrimSuffix(filepath.Base(path), ext)
-		}
-
-		if _, ok := rules[ext]; ok {
-			for _, ruleFile := range rules[ext] {
-				if !validate && ruleFile.GetName() != "exists" {
-					continue
+			g.Go(func() error {
+				if ruleFile.GetName() == "exists" && pathDir != indexDir {
+					return nil
 				}
 
-				g.Go(func() error {
-					if ruleFile.GetName() == "exists" && pathDir != indexDir {
-						return nil
-					}
+				valid, err := ruleFile.Validate(withoutExt, pathDir, ruleFile.GetName() != "exists")
+				if err != nil {
+					return err
+				}
 
-					valid, err := ruleFile.Validate(withoutExt, pathDir, ruleFile.GetName() != "exists")
-					if err != nil {
-						return err
+				if !ruleFile.GetExclusive() {
+					rulesMutex.Lock()
+					rulesNonExclusiveCount++
+					if !valid {
+						rulesNonExclusiveError++
 					}
+					rulesMutex.Unlock()
+				}
 
-					if !ruleFile.GetExclusive() {
-						rulesMutex.Lock()
-						rulesNonExclusiveCount++
-						if !valid {
-							rulesNonExclusiveError++
-						}
-						rulesMutex.Unlock()
-					}
+				return nil
+			})
+		}
+	}
 
-					return nil
-				})
+	if len(parts) == 1 {
+		// File without extension
+		withoutExt = basename
+		potentialExts := []string{basename + extSep, extSep, extSep + "*"}
+
+		for _, currentExt := range potentialExts {
+			if _, ok := rules[currentExt]; ok {
+				ext = currentExt
+				runValidation()
+				break
+			}
+		}
+	} else {
+		// File with extension(s)
+		exts := parts[1:]
+		n := len(exts)
+		maxCombinations := 1 << n // 2^n combinations
+
+		originalExt := extSep + strings.Join(exts, extSep)
+		withoutExt = strings.TrimSuffix(basename, originalExt)
+
+		for i := 0; i < maxCombinations; i++ {
+			combination := make([]string, n)
+			for j := 0; j < n; j++ {
+				if i&(1<<(n-1-j)) == 0 {
+					combination[j] = exts[j]
+				} else {
+					combination[j] = "*"
+				}
 			}
 
-			break
+			currentExt := extSep + strings.Join(combination, extSep)
+			if _, ok := rules[currentExt]; ok {
+				ext = currentExt
+				runValidation()
+				break
+			}
 		}
 	}
 
