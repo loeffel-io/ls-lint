@@ -58,17 +58,7 @@ func main() {
 	}
 
 	if len(flagConfig) == 0 {
-		// Default config file name with .yaml extension
-		configFile := ".ls-lint.yaml"
-		if _, err := os.Stat(configFile); os.IsNotExist(err) {
-			// try to fallback to .yml extension if it exists, otherwise keep .yaml as default
-			altConfigFile := ".ls-lint.yml"
-			if _, err := os.Stat(altConfigFile); err == nil {
-				configFile = altConfigFile
-			}
-		}
-
-		flagConfig = _flag.Config{configFile}
+		flagConfig = _flag.Config{defaultConfigFile(".")}
 	}
 
 	filesystem := os.DirFS(*flagWorkdir)
@@ -211,4 +201,18 @@ func normalizePaths(
 	}
 
 	return paths, nil
+}
+
+func defaultConfigFile(dir string) string {
+	configFile := filepath.Join(dir, ".ls-lint.yaml")
+	if _, err := os.Stat(configFile); !os.IsNotExist(err) {
+		return configFile
+	}
+
+	legacyConfigFile := filepath.Join(dir, ".ls-lint.yml")
+	if _, err := os.Stat(legacyConfigFile); err == nil {
+		return legacyConfigFile
+	}
+
+	return configFile
 }
