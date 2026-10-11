@@ -15,8 +15,7 @@ body:
       description: |
         What version of ls-lint are you using (`ls-lint --version`)?
       placeholder: |
-        ls-lint dev
-        go go1.27.2
+        ls-lint ...
     validations:
       required: true
   - type: textarea
