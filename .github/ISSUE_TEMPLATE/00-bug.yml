@@ -1,0 +1,42 @@
+# https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/configuring-issue-templates-for-your-repository#creating-issue-forms
+# https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/syntax-for-githubs-form-schema
+name: Bugs
+description: The ls-lint command, or anything else
+title: "import/path: issue title"
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping us improve! 🙏 Please answer these questions and provide as much information as possible about your problem.
+  - type: input
+    id: go-version
+    attributes:
+      label: ls-lint version
+      description: |
+        What version of ls-lint are you using (`ls-lint --version`)?
+      placeholder: |
+        ls-lint dev
+        go go1.27.2
+    validations:
+      required: true
+  - type: textarea
+    id: what-did-you-do
+    attributes:
+      label: "What did you do?"
+      description: "If possible, provide a recipe for reproducing the error"
+    validations:
+      required: true
+  - type: textarea
+    id: actual-behavior
+    attributes:
+      label: "What did you see happen?"
+      description: Command invocations and their associated output, full --debug output (upload a file if it is very long), etc. Prefer copying text output over using screenshots.
+    validations:
+      required: true
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: "What did you expect to see?"
+      description: Why is the current output incorrect, and any additional context we may need to understand the issue.
+    validations:
+      required: true
