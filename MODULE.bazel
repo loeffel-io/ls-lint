@@ -7,6 +7,7 @@ bazel_dep(name = "aspect_rules_js", version = "3.5.1", dev_dependency = True)
 bazel_dep(name = "rules_multitool", version = "1.11.1", dev_dependency = True)  # override to support windows - remove after rules_lint bump
 bazel_dep(name = "aspect_rules_lint", version = "2.9.1", dev_dependency = True)
 bazel_dep(name = "rules_shell", version = "0.8.0", dev_dependency = True)
+bazel_dep(name = "buildifier_prebuilt", version = "10.1.0", dev_dependency = True)
 
 ####################################################################
 # rules_go #########################################################
