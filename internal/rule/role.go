@@ -8,7 +8,6 @@ import (
 type Role struct {
 	name      string
 	exclusive bool
-	roleIndex map[bool]struct{}
 	*sync.RWMutex
 }
 
