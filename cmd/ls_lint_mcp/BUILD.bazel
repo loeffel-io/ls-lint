@@ -1,0 +1,61 @@
+load("@rules_go//go:def.bzl", "go_binary", "go_library", "go_test")
+load("@rules_pkg//pkg:tar.bzl", "pkg_tar")
+load("//cmd:target.bzl", "targets")
+
+go_library(
+    name = "ls_lint_mcp_lib",
+    srcs = ["main.go"],
+    importpath = "github.com/loeffel-io/ls-lint/v2/cmd/ls_lint_mcp",
+    visibility = ["//visibility:private"],
+)
+
+go_binary(
+    name = "ls-lint-mcp",
+    embed = [":ls_lint_mcp_lib"],
+    pure = "on",
+    static = "on",
+    visibility = ["//visibility:public"],
+    x_defs = {"Version": "{STABLE_GIT_TAG}"},
+)
+
+[
+    go_binary(
+        name = "ls-lint-mcp-" + goos + "-" + goarch,
+        embed = [":ls_lint_mcp_lib"],
+        goarch = goarch,
+        goos = goos,
+        pure = "on",
+        static = "on",
+        visibility = ["//visibility:public"],
+        x_defs = {"Version": "{STABLE_GIT_TAG}"},
+    )
+    for goos, goarch in targets
+]
+
+[
+    pkg_tar(
+        name = "ls-lint-mcp-" + goos + "-" + goarch + "-pkg",
+        srcs = [
+            ":ls-lint-mcp-" + goos + "-" + goarch,
+            "//:LICENSE",
+        ],
+        package_file_name = "ls-lint-mcp-" + goos + "-" + goarch + ".tar.gz",
+        visibility = ["//visibility:public"],
+    )
+    for goos, goarch in targets
+]
+
+genrule(
+    name = "ls_lint_checksums",
+    srcs = [
+        "//cmd/ls_lint_mcp:ls-lint-mcp-" + goos + "-" + goarch
+        for goos, goarch in targets
+    ] + [
+        "//cmd/ls_lint_mcp:ls-lint-mcp-" + goos + "-" + goarch + "-pkg"
+        for goos, goarch in targets
+    ],
+    outs = ["checksums.txt"],
+    cmd = "$(location //:coreutils) sha256sum $(SRCS) > $(OUTS)",
+    tools = ["//:coreutils"],
+    visibility = ["//visibility:public"],
+)

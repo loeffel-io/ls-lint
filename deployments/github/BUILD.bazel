@@ -1,6 +1,6 @@
 load("@aspect_bazel_lib//lib:copy_to_directory.bzl", "copy_to_directory")
 load("@rules_shell//shell:sh_binary.bzl", "sh_binary")
-load("//cmd/ls_lint:target.bzl", "targets")
+load("//cmd:target.bzl", "targets")
 
 copy_to_directory(
     name = "github_files",
