@@ -58,7 +58,7 @@ func main() {
 	}
 
 	if len(flagConfig) == 0 {
-		flagConfig = _flag.Config{".ls-lint.yml"}
+		flagConfig = _flag.Config{defaultConfigFile(".")}
 	}
 
 	filesystem := os.DirFS(*flagWorkdir)
@@ -201,4 +201,18 @@ func normalizePaths(
 	}
 
 	return paths, nil
+}
+
+func defaultConfigFile(dir string) string {
+	configFile := filepath.Join(dir, ".ls-lint.yaml")
+	if _, err := os.Stat(configFile); !os.IsNotExist(err) {
+		return configFile
+	}
+
+	legacyConfigFile := filepath.Join(dir, ".ls-lint.yml")
+	if _, err := os.Stat(legacyConfigFile); err == nil {
+		return legacyConfigFile
+	}
+
+	return configFile
 }
