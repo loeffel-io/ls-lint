@@ -10,6 +10,12 @@ copy_to_directory(
     ] + [
         "//cmd/ls_lint:ls-lint-" + goos + "-" + goarch + "-pkg"
         for goos, goarch in targets
+    ] + [
+        "//cmd/ls_lint_mcp:ls-lint-mcp-" + goos + "-" + goarch
+        for goos, goarch in targets
+    ] + [
+        "//cmd/ls_lint_mcp:ls-lint-mcp-" + goos + "-" + goarch + "-pkg"
+        for goos, goarch in targets
     ],
     out = "github",
     root_paths = [
@@ -17,6 +23,12 @@ copy_to_directory(
         for goos, goarch in targets
     ] + [
         "cmd/ls_lint"
+        for goos, goarch in targets
+    ] + [
+        "cmd/ls_lint_mcp/ls-lint-mcp-" + goos + "-" + goarch + "_"
+        for goos, goarch in targets
+    ] + [
+        "cmd/ls_lint_mcp"
         for goos, goarch in targets
     ],
 )

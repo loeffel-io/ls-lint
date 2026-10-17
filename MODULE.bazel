@@ -28,6 +28,7 @@ go_deps.from_file(go_mod = "//:go.mod")
 use_repo(
     go_deps,
     "com_github_bmatcuk_doublestar_v4",
+    "com_github_modelcontextprotocol_go_sdk",
     "in_yaml_go_yaml_v3",
     "org_golang_x_sync",
 )
