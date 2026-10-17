@@ -10,7 +10,8 @@ import (
 )
 
 type (
-	Ls        map[string]interface{}
+	Roles     map[string]string
+	Ls        map[string]any
 	RuleIndex map[string]map[string][]rule.Rule
 )
 
@@ -20,17 +21,26 @@ const (
 )
 
 type Config struct {
-	Ls     Ls       `yaml:"ls"`
-	Ignore []string `yaml:"ignore"`
+	Roles  map[string]string `yaml:"roles"`
+	Ls     Ls                `yaml:"ls"`
+	Ignore []string          `yaml:"ignore"`
 	*sync.RWMutex
 }
 
-func NewConfig(ls Ls, ignore []string) *Config {
+func NewConfig(roles Roles, ls Ls, ignore []string) *Config {
 	return &Config{
+		Roles:   roles,
 		Ls:      ls,
 		Ignore:  ignore,
 		RWMutex: new(sync.RWMutex),
 	}
+}
+
+func (config *Config) GetRoles() Roles {
+	config.RLock()
+	defer config.RUnlock()
+
+	return config.Roles
 }
 
 func (config *Config) GetLs() Ls {

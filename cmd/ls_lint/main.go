@@ -73,9 +73,13 @@ func main() {
 		log.Fatal(err)
 	}
 
-	lslintConfig := config.NewConfig(make(config.Ls), make([]string, 0))
+	lslintConfig := config.NewConfig(
+		make(config.Roles),
+		make(config.Ls),
+		make([]string, 0),
+	)
 	for _, c := range flagConfig {
-		tmpLslintConfig := config.NewConfig(nil, nil)
+		tmpLslintConfig := config.NewConfig(nil, nil, nil)
 		var tmpConfigBytes []byte
 
 		if tmpConfigBytes, err = os.ReadFile(c); err != nil {
@@ -86,6 +90,7 @@ func main() {
 			log.Fatal(err)
 		}
 
+		maps.Copy(lslintConfig.GetRoles(), tmpLslintConfig.GetRoles())
 		maps.Copy(lslintConfig.GetLs(), tmpLslintConfig.GetLs())
 		lslintConfig.Ignore = append(lslintConfig.Ignore, tmpLslintConfig.GetIgnore()...)
 		slices.Sort(lslintConfig.Ignore)

@@ -70,7 +70,7 @@ func TestShouldIgnore(t *testing.T) {
 		expected     bool
 	}{
 		{
-			lslintConfig: NewConfig(nil, nil),
+			lslintConfig: NewConfig(nil, nil, nil),
 			ignoreIndex: map[string]bool{
 				".git": true,
 			},
@@ -78,7 +78,7 @@ func TestShouldIgnore(t *testing.T) {
 			expected: true,
 		},
 		{
-			lslintConfig: NewConfig(nil, nil),
+			lslintConfig: NewConfig(nil, nil, nil),
 			ignoreIndex: map[string]bool{
 				"src": true,
 			},

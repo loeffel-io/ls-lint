@@ -44,6 +44,7 @@ func TestLinter_Run(t *testing.T) {
 			linter: NewLinter(
 				".",
 				config.NewConfig(
+					nil,
 					config.Ls{
 						".png": "snake_case",
 					},
@@ -82,6 +83,7 @@ func TestLinter_Run(t *testing.T) {
 			linter: NewLinter(
 				".",
 				config.NewConfig(
+					nil,
 					config.Ls{
 						".png": "snake_case",
 					},
@@ -135,6 +137,7 @@ func TestLinter_Run(t *testing.T) {
 			linter: NewLinter(
 				".",
 				config.NewConfig(
+					nil,
 					config.Ls{
 						".png": "snake_case",
 						"src/**/c": config.Ls{
@@ -190,6 +193,7 @@ func TestLinter_Run(t *testing.T) {
 			linter: NewLinter(
 				".",
 				config.NewConfig(
+					nil,
 					config.Ls{
 						".png": "snake_case",
 						"src/**/c": config.Ls{
@@ -258,6 +262,7 @@ func TestLinter_Run(t *testing.T) {
 			linter: NewLinter(
 				".",
 				config.NewConfig(
+					nil,
 					config.Ls{
 						".png": "snake_case",
 						".jpg": "kebab-case",
@@ -319,6 +324,7 @@ func TestLinter_Run(t *testing.T) {
 			linter: NewLinter(
 				".",
 				config.NewConfig(
+					nil,
 					config.Ls{
 						".*":     "kebab-case",
 						".*.jpg": "kebab-case",
@@ -379,6 +385,7 @@ func TestLinter_Run(t *testing.T) {
 			linter: NewLinter(
 				".",
 				config.NewConfig(
+					nil,
 					config.Ls{
 						".png": "snake_case | exists:1",
 						"test": config.Ls{
@@ -442,6 +449,7 @@ func TestLinter_Run(t *testing.T) {
 			linter: NewLinter(
 				".",
 				config.NewConfig(
+					nil,
 					config.Ls{
 						".dir": "kebab-case",
 						"docs/features/**": config.Ls{
@@ -498,6 +506,7 @@ func TestLinter_Run(t *testing.T) {
 			linter: NewLinter(
 				".",
 				config.NewConfig(
+					nil,
 					config.Ls{
 						".png": "snake_case | exists:1",
 						"test": config.Ls{
@@ -559,6 +568,7 @@ func TestLinter_Run(t *testing.T) {
 			linter: NewLinter(
 				".",
 				config.NewConfig(
+					nil,
 					config.Ls{
 						".png": "snake_case | exists:2",
 						"test": config.Ls{
@@ -723,6 +733,7 @@ func TestLinter_Run(t *testing.T) {
 			linter: NewLinter(
 				".",
 				config.NewConfig(
+					nil,
 					config.Ls{
 						".png": "snake_case | exists:2",
 						"test": config.Ls{

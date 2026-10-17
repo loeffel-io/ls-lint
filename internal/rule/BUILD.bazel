@@ -10,6 +10,7 @@ go_library(
         "lowercase.go",
         "pascalcase.go",
         "regex.go",
+        "role.go",
         "rule.go",
         "screamingsnakecase.go",
         "snakecase.go",

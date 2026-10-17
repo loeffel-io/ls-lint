@@ -1,3 +1,5 @@
+roles:
+  image: Lorem ipsum
 ls:
   .dir: snake_case
   .*: snake_case
@@ -15,7 +17,7 @@ ls:
   assets/**: # allow only .png files
     .dir: snake_case
     .*: exists:0
-    .png: kebab-case
+    .png: kebab-case | role:image
 ignore:
   - .git
   - .github
