@@ -5,7 +5,7 @@ jobs:
     if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     container:
-      image: gcr.io/bazel-public/bazel@sha256:6158d62576c99301611a7d072aa37e2f721b6bc9cd7e28dc33c85f4719d93540
+      image: gcr.io/bazel-public/bazel@sha256:d090e62af5f0190bef545f278677bab7175d7db9c028d1e492bb4bfb3e1975fa
       options: --user root
       env:
         NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
@@ -51,7 +51,7 @@ jobs:
     if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository
     runs-on: ubuntu-latest
     container:
-      image: gcr.io/bazel-public/bazel@sha256:e45b3b77bf94e6eeb9a2a7151e4474f75247cc52501e5da6a24f976d71e10b14
+      image: gcr.io/bazel-public/bazel@sha256:66fc1507cb4123d9e622a5673f63025aca63485e6195ffd6d641a0617c6afbc4
       options: --user root
     steps:
       - run: set -eu
@@ -86,7 +86,7 @@ jobs:
     if: startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
     container:
-      image: gcr.io/bazel-public/bazel@sha256:e45b3b77bf94e6eeb9a2a7151e4474f75247cc52501e5da6a24f976d71e10b14
+      image: gcr.io/bazel-public/bazel@sha256:66fc1507cb4123d9e622a5673f63025aca63485e6195ffd6d641a0617c6afbc4
       options: --user root # ref: https://docs.github.com/en/actions/creating-actions/dockerfile-support-for-github-actions#user
     env:
       GH_TOKEN: ${{ github.token }}
