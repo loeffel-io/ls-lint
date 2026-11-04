@@ -2,9 +2,38 @@ package main
 
 import (
 	"maps"
+	"os"
 	"path/filepath"
 	"testing"
 )
+
+func TestDefaultConfigFile(t *testing.T) {
+	tests := []struct {
+		name     string
+		files    []string
+		expected string
+	}{
+		{name: "yaml only", files: []string{".ls-lint.yaml"}, expected: ".ls-lint.yaml"},
+		{name: "yml only", files: []string{".ls-lint.yml"}, expected: ".ls-lint.yml"},
+		{name: "both files", files: []string{".ls-lint.yaml", ".ls-lint.yml"}, expected: ".ls-lint.yaml"},
+		{name: "neither file", expected: ".ls-lint.yaml"},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			dir := t.TempDir()
+			for _, file := range test.files {
+				if err := os.WriteFile(filepath.Join(dir, file), nil, 0o600); err != nil {
+					t.Fatal(err)
+				}
+			}
+
+			if got := defaultConfigFile(dir); got != filepath.Join(dir, test.expected) {
+				t.Errorf("defaultConfigFile() = %q, want %q", got, filepath.Join(dir, test.expected))
+			}
+		})
+	}
+}
 
 func TestNormalizePaths(t *testing.T) {
 	workdir := t.TempDir()
