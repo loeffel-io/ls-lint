@@ -2,6 +2,7 @@ package glob
 
 import (
 	"io/fs"
+	"slices"
 	"strings"
 
 	"github.com/bmatcuk/doublestar/v4"
@@ -10,12 +11,19 @@ import (
 )
 
 func Index(filesystem fs.FS, index config.RuleIndex, files bool) (err error) {
-	for key, value := range index {
+	var keys []string
+	for key := range index {
+		if strings.ContainsAny(key, "*{}") {
+			keys = append(keys, key)
+		}
+	}
+
+	slices.Sort(keys)
+
+	for _, key := range keys {
 		var matches []string
 
-		if !strings.ContainsAny(key, "*{}") {
-			continue
-		}
+		value := index[key]
 
 		if matches, err = doublestar.Glob(filesystem, key); err != nil {
 			return err
@@ -57,12 +65,19 @@ func Index(filesystem fs.FS, index config.RuleIndex, files bool) (err error) {
 }
 
 func IgnoreIndex(filesystem fs.FS, index map[string]bool, files bool) (err error) {
-	for key, value := range index {
+	var keys []string
+	for key := range index {
+		if strings.ContainsAny(key, "*{}") {
+			keys = append(keys, key)
+		}
+	}
+
+	slices.Sort(keys)
+
+	for _, key := range keys {
 		var matches []string
 
-		if !strings.ContainsAny(key, "*{}") {
-			continue
-		}
+		value := index[key]
 
 		if matches, err = doublestar.Glob(filesystem, key); err != nil {
 			return err
