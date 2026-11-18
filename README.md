@@ -10,8 +10,8 @@ An extremely fast directory and filename linter - Bring some structure to your p
 ![npm](https://badgen.net/static/npm%20downloads%20total/17M+/green)
 <a href="https://www.npmjs.com/package/@ls-lint/ls-lint"><img src="https://img.shields.io/npm/l/@ls-lint/ls-lint.svg?sanitize=true" alt="License"></a>
 
-- Minimal setup with simple rules managed in one single or multiple `.ls-lint.yml` files
-- Works for directory and file names - all extensions supported - full unicode support
+- Minimal setup with simple rules managed in one single or multiple `.ls-lint.yaml` files
+- Works for directory and file names - all extensions supported - full Unicode support
 - Incredibly fast - lints thousands of files and directories in milliseconds
 - Support for Windows, MacOS and Linux + [NPM Package](https://www.npmjs.com/package/@ls-lint/ls-lint) + [GitHub Action](https://github.com/ls-lint/action) + [Homebrew](https://formulae.brew.sh/formula/ls-lint) + Docker
 - Reliable since 2020 - trusted by open source projects from [Ansible](https://github.com/ansible/ansible-hub-ui/blob/HEAD/.ls-lint.yml), [Buildkite](https://github.com/buildkite/docs/blob/HEAD/.ls-lint.yml), [ByteDance](https://github.com/web-infra-dev/garfish/blob/HEAD/.ls-lint.yml), [Huawei](https://github.com/DevCloudFE/vue-devui/blob/HEAD/.ls-lint.yml), [Philips](https://github.com/philips-software/amp-embedded-infra-lib/blob/HEAD/.ls-lint.yml), [Red Hat](https://github.com/pulp/pulp-ui/blob/HEAD/.ls-lint.yml), [Renovate](https://github.com/renovatebot/renovate/blob/HEAD/.ls-lint.yml) and many more
@@ -33,7 +33,7 @@ The full documentation can be found at [ls-lint.org](https://ls-lint.org)
 
 ## Demo
 
-### Configuration `.ls-lint.yml`
+### Configuration `.ls-lint.yaml`
 
 ```yaml
 ls:
